@@ -1,3 +1,22 @@
 <!DOCTYPE html>
 
 <!--REAL QUE EU ESQUECI COMO FAZER HTML AJSFKSFHSAHHJ-->
+
+<form>
+    {% if erro_usuario_nao_existe %}
+        <p style='color: red;'>Este usuário não existe.</p>
+    {% endif %}
+
+    {% if erro_senha_incorreta %}
+        <p style='color: red;'>Senha incorreta.</p>
+    {% endif %}
+
+    <label>Email</label>
+    <input type="text" name="email">
+    <br>
+    <label>Senha</label>
+    <input type="password" name="senha">
+    <br>
+    <input type="submit" value="Login" formaction="/login">
+    <input type="submit" value="Registrar" formaction="/registrar">
+</form>

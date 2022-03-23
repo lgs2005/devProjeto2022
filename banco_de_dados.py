@@ -4,7 +4,6 @@ db = SQLAlchemy()
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.Text, unique=True, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
     pwhash = db.Column(db.Text, nullable=False)
 
