@@ -7,8 +7,8 @@ from modelos import Usuario
 
 def usuario_logado() -> bool:
     """
-    Retorna True se o usuário tiver un login válido.
-    Apenas funciona em contexto de uma rota
+    Retorna True se o login for válido.
+    Apenas funciona em contexto de uma rota.
     """
     email = request.cookies.get('login_email')
     senha = request.cookies.get('login_senha')
@@ -21,8 +21,8 @@ def usuario_logado() -> bool:
 def view_login():
     """
     Rota para login do usuário, recebe email e senha.
-    Tanto login como registro utilizam a página login.html
-    Caso o usuário já estiver logado, será redirecionado para /inicio.
+    Tanto login como registro utilizam a página login.html.
+    Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
     if usuario_logado():
         return redirect('/inicio')
@@ -50,8 +50,8 @@ def view_login():
 def view_registrar():
     """
     Rota para registro de um novo usuário, recebe email e senha.
-    Tanto login como registro utilizam a página login.html
-    Caso o usuário já estiver logado, será redirecionado para /inicio.
+    Tanto login como registro utilizam a página login.html.
+    Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
     if usuario_logado():
         return redirect('/inicio')
