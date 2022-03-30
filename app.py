@@ -1,4 +1,3 @@
-import bcrypt
 from flask import redirect, render_template
 
 from init import app

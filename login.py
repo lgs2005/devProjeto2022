@@ -6,6 +6,10 @@ from modelos import Usuario
 
 
 def usuario_logado() -> bool:
+    """
+    Retorna True se o usuário tiver un login válido.
+    Apenas funciona em contexto de uma rota
+    """
     email = request.cookies.get('login_email')
     senha = request.cookies.get('login_senha')
 
@@ -16,6 +20,11 @@ def usuario_logado() -> bool:
 
 @app.route('/login')
 def login():
+    """
+    Rota para login do usuário, recebe email e senha.
+    Tanto login como registro utilizam a página login.html
+    Caso o usuário já estiver logado, será redirecionado para /inicio.
+    """
     if usuario_logado():
         return redirect('/inicio')
 
@@ -34,12 +43,18 @@ def login():
 
     resposta = make_response(redirect('/inicio'))
     resposta.set_cookie('login_email', email)
+    # TODO: Ao invés de usar a senha talvez seja melhor usar um token real que ninguem vai se importar mas eu nao tenho mais nada para fazer
     resposta.set_cookie('login_senha', senha)
 
     return resposta
 
 @app.route('/registrar')
 def registrar():
+    """
+    Rota para registro de um novo usuário, recebe email e senha.
+    Tanto login como registro utilizam a página login.html
+    Caso o usuário já estiver logado, será redirecionado para /inicio.
+    """
     if usuario_logado():
         return redirect('/inicio')
 
