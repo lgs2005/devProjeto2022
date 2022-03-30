@@ -18,7 +18,7 @@ def usuario_logado() -> bool:
 
     return usuario != None and bcrypt.checkpw(bytes(senha, 'utf-8'), usuario.pwhash)
 
-def view_login():
+def rota_login():
     """
     Rota para login do usuário, recebe email e senha.
     Tanto login como registro utilizam a página login.html
@@ -47,7 +47,7 @@ def view_login():
 
     return resposta
 
-def view_registrar():
+def rota_registro():
     """
     Rota para registro de um novo usuário, recebe email e senha.
     Tanto login como registro utilizam a página login.html
