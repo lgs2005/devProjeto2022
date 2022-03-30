@@ -8,7 +8,7 @@ from login import view_login, view_registrar, usuario_logado
 def hello_world():
     # https://www.youtube.com/watch?v=dwDns8x3Jb4
     return "<img src='https://media1.giphy.com/media/mf8UbIDew7e8g/200.gif'/>" + \
-        " ".join(["<p>around the world</p>"] * 200)
+        " ".join(["<p>around the world</p>"] * 144)
 
 def view_inicio():
     if not usuario_logado():
