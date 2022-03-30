@@ -6,4 +6,3 @@ app = Flask()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
 db = SQLAlchemy(app)
-db.create_all()
