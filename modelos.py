@@ -11,6 +11,8 @@ class Usuario(db.Model):
     def __repr__(self) -> str:
         return f'<User {self.id}, {self.nome}, {self.email}, {self.pwhash}>'
 
+#teste
+
 class Pagina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id))
