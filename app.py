@@ -18,8 +18,12 @@ def rota_inicio():
 
 db.create_all()
 
-app.add_url_rule('/', view_func=rota_inicio)
-app.add_url_rule('/inicio', view_func=rota_inicio)
+rotas_simples = {
+    '/': rota_inicio,
+    '/inicio': rota_inicio,
+    '/registrar': rota_registro,
+    '/login': rota_login
+}
 
-app.add_url_rule('/registrar', view_func=rota_registro)
-app.add_url_rule('/login', view_func=rota_login)
+for rota, view in rotas_simples.items():
+    app.add_url_rule(rota, view_func=view)
