@@ -11,13 +11,11 @@ class Usuario(db.Model):
     def __repr__(self) -> str:
         return f'<User {self.id}, {self.nome}, {self.email}, {self.pwhash}>'
 
-#teste
-
 class Pagina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id))
     nome = db.Column(db.Text, nullable=False)
-    conteudo = db.Column(db.Text, nullable=False)
+    conteudo = db.Column(db.Text, nullable=False) # armazenar link para arquivo JSON 
     data_exclusao = db.Column(db.Integer, nullable=False)
     data_criacao = db.Column(db.Integer, nullable=False)
     favorito = db.Column(db.Boolean, nullable=False)
