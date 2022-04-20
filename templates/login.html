@@ -7,11 +7,15 @@
         <p style='color: red;'>{{ erro }}</p>
     {% endif %}
 
-    <label>Email</label>
-    <input type="text" name="email">
+    <label for="nome">Nome</label>
+    <input id="nome" type="text" name="nome">
     <br>
-    <label>Senha</label>
-    <input type="password" name="senha">
+    <label for="email">Email</label>
+    <input id="email" type="text" name="email">
+    <br>
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" name="senha">
+    <br>
     <br>
     <input type="submit" value="Login" formaction="/login">
     <input type="submit" value="Registrar" formaction="/registrar">

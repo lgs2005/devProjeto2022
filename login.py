@@ -1,17 +1,20 @@
 import bcrypt
-from flask import make_response, redirect, render_template, request
+from flask import make_response, redirect, render_template, request, session
 
 from init import app, db
 from modelos import Usuario
 
+
+COOKIE_EMAIL = 'login_email'
+COOKIE_SENHA = 'login_senha'
 
 def usuario_logado() -> bool:
     """
     Retorna True se o login for válido.
     Apenas funciona em contexto de uma rota.
     """
-    email = request.cookies.get('login_email')
-    senha = request.cookies.get('login_senha')
+    email = request.cookies.get(COOKIE_EMAIL)
+    senha = request.cookies.get(COOKIE_SENHA)
 
     #usuario = db.session.query(Usuario).filter_by(email=email).first()
     usuario: Usuario = Usuario.query.filter_by(email=email).first()
@@ -27,25 +30,30 @@ def rota_login():
     if usuario_logado():
         return redirect('/inicio')
 
-    email, senha = request.args.get('email'), request.args.get('senha')
+    # TODO: Adicionar nome do usuário
 
-    if ('' in (email, senha)) or (None in (email, senha)):
-        return render_template('login.html', erro='Valores não podem estar vazios.')
+    email = request.args.get('email')
+    senha = request.args.get('senha')
+    erro = None
 
-    usuario: Usuario = Usuario.query.filter_by(email=email).first()    
+    if None in (email, senha):
+        erro = None
+    elif '' in (email, senha):
+        erro = 'Valores não podem estar vazios.'
+    else:
+        usuario: Usuario = Usuario.query.filter_by(email=email).first()
 
-    if usuario is None:
-        return render_template('login.html', erro='Este usuário não existe')
-    
-    if not bcrypt.checkpw(bytes(senha, 'utf-8'), usuario.pwhash):
-        return render_template('login.html', erro='Senha incorreta')
+        if usuario is None:
+            erro = 'Este usuário não existe.'
+        elif not bcrypt.checkpw(bytes(senha, 'utf-8', usuario.pwhash)):
+            erro = 'Senha Incorreta'
+        else:
+            resposta = make_response(redirect('/inicio'))
+            resposta.set_cookie(COOKIE_EMAIL, email)
+            resposta.set_cookie(COOKIE_SENHA, senha)
+            return resposta
 
-    resposta = make_response(redirect('/inicio'))
-    resposta.set_cookie('login_email', email)
-    # TODO: Ao invés de usar a senha talvez seja melhor usar um token real que ninguem vai se importar mas eu nao tenho mais nada para fazer
-    resposta.set_cookie('login_senha', senha)
-
-    return resposta
+    return render_template('login.html', erro=erro)
 
 def rota_registro():
     """
@@ -57,31 +65,35 @@ def rota_registro():
         return redirect('/inicio')
 
     email, senha = request.args.get('email'), request.args.get('senha')
+    erro = None
 
-    if ('' in (email, senha)) or (None in (email, senha)):
-        return render_template('login.html', erro='Valores não podem estar vazios.')
+    if None in (email, senha):
+        erro = None
+    elif '' in (email, senha):
+        erro = 'Valores não podem estar vazios.'
+    else:
+        usuario: Usuario = Usuario.query.filter_by(email=email).first()
 
-    usuario: Usuario = Usuario.query.filter_by(email=email).first()    
+        if usuario is not None:
+            erro = 'Este usuário já existe.'
+        else:
+            pwhash = bcrypt.hashpw(bytes(senha, 'utf-8'), bcrypt.gensalt())
 
-    if usuario is not None:
-        return render_template('login.html', erro='Este usuário já existe')
+            novo_usuario = Usuario(email=email, pwhash=pwhash)
+            db.session.add(novo_usuario)
+            db.session.commit()
 
-    pwhash = bcrypt.hashpw(bytes(senha, 'utf-8'), bcrypt.gensalt())
+            resposta = make_response(redirect('/inicio'))
+            resposta.set_cookie(COOKIE_EMAIL, email)
+            resposta.set_cookie(COOKIE_SENHA, senha)
+            return resposta
 
-    novo_usuario = Usuario(email=email, pwhash=pwhash)
-    db.session.add(novo_usuario)
-    db.session.commit()
-
-    resposta = make_response(redirect('/inicio'))
-    resposta.set_cookie('login_email', email)
-    resposta.set_cookie('login_senha', senha)
-
-    return resposta
+    return render_template('login.html', erro=erro)
 
 @app.route('/logout')
 def logout():
     resposta = make_response(redirect('/inicio'))
-    resposta.delete_cookie('login_email')
-    resposta.delete_cookie('login_senha')
+    resposta.delete_cookie(COOKIE_EMAIL)
+    resposta.delete_cookie(COOKIE_SENHA)
 
     return resposta
