@@ -23,14 +23,9 @@ class Pagina(db.Model):
     data_criacao = db.Column(db.Integer, nullable=False)
     favorito = db.Column(db.Boolean, nullable=False)
 
-    def carregar_pagina() -> str:
-        pass
+    def __str__(self):
+        return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.data_exclusao}, {self.data_criacao}, {self.favorito}>'
 
-    def atualizar_pagina(conteudo: str):
-        pass
-
-    def __str__():
-        pass
 
 class Compartilhamento(db.Model):
     id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id), primary_key=True)
@@ -38,5 +33,5 @@ class Compartilhamento(db.Model):
     usuario = db.relationship('Usuario')
     pagina = db.relationship('Pagina')
 
-    def __str__():
-        return f''
+    def __str__(self):
+        return f'<Pagina {self.id_usuario}, {self.id_pagina}>'
