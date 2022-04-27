@@ -2,6 +2,7 @@ from flask import redirect, render_template
 
 from init import app, db
 from login import rota_login, rota_registro, usuario_logado
+from pagina import rota_retornar_conteudo
 
 
 @app.route('/hello')
@@ -22,7 +23,8 @@ rotas_simples = {
     '/': rota_inicio,
     '/inicio': rota_inicio,
     '/registrar': rota_registro,
-    '/login': rota_login
+    '/login': rota_login,
+    '/retornar_conteudo/<id>': rota_retornar_conteudo,
 }
 
 for rota, view in rotas_simples.items():
