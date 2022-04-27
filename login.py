@@ -1,3 +1,4 @@
+from typing import Union
 import bcrypt
 from flask import make_response, redirect, render_template, request, session
 
@@ -8,18 +9,23 @@ from modelos import Usuario
 COOKIE_EMAIL = 'login_email'
 COOKIE_SENHA = 'login_senha'
 
-def usuario_logado() -> bool:
+def usuario_logado() -> Union[Usuario, None]:
     """
-    Retorna True se o login for válido.
-    Apenas funciona em contexto de uma rota.
+    Retorna o usuário que estpa acessando esta rota.
+    Se não tiver um usuário logado, será retornado None.
     """
     email = request.cookies.get(COOKIE_EMAIL)
     senha = request.cookies.get(COOKIE_SENHA)
 
-    #usuario = db.session.query(Usuario).filter_by(email=email).first()
-    usuario: Usuario = Usuario.query.filter_by(email=email).first()
+    if None in (email, senha): return None
 
-    return usuario != None and bcrypt.checkpw(bytes(senha, 'utf-8'), usuario.pwhash)
+    usuario: Usuario = Usuario.query.filter_by(email=email).first()
+    senha_b = bytes(senha, 'utf-8')
+
+    if usuario == None: return None
+    if bcrypt.checkpw(senha_b, usuario.pwhash) == False: return None
+
+    return Usuario
 
 def rota_login():
     """
@@ -64,7 +70,8 @@ def rota_registro():
     if usuario_logado():
         return redirect('/inicio')
 
-    email, senha = request.args.get('email'), request.args.get('senha')
+    email = request.args.get('email')
+    senha = request.args.get('senha')
     erro = None
 
     if None in (email, senha):
@@ -79,7 +86,7 @@ def rota_registro():
         else:
             pwhash = bcrypt.hashpw(bytes(senha, 'utf-8'), bcrypt.gensalt())
 
-            novo_usuario = Usuario(email=email, pwhash=pwhash)
+            novo_usuario = Usuario(email=email, pwhash=pwhash, nome='teste')
             db.session.add(novo_usuario)
             db.session.commit()
 
