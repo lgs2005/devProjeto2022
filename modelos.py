@@ -1,3 +1,4 @@
+from email import contentmanager
 from sqlalchemy import ForeignKey
 from init import db
 
@@ -26,6 +27,15 @@ class Pagina(db.Model):
     def __str__(self):
         return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.data_exclusao}, {self.data_criacao}, {self.favorito}>'
 
+    def json(self):
+        return {
+            "id": self.id,
+            "id_usuario": self.id_usuario,
+            "nome": self.nome,
+            "data_exclusao": self.data_exclusao,
+            "data_criacao": self.data_criacao,
+            "favorito": self.favorito
+        }
 
 class Compartilhamento(db.Model):
     id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id), primary_key=True)
@@ -35,3 +45,9 @@ class Compartilhamento(db.Model):
 
     def __str__(self):
         return f'<Pagina {self.id_usuario}, {self.id_pagina}>'
+
+if __name__ == "__main__":
+    p = Pagina(id_usuario=1, nome="teste", conteudo="", data_exclusao=0, data_criacao=0, favorito=False)
+
+    db.session.add(p)
+    db.session.commit()
