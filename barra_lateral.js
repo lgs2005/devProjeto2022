@@ -24,10 +24,17 @@ $(function() { // quando o documento estiver pronto/carregado
             }
         }
 
-        listar_favoritas(favoritos)
-        listar_outras(outras)
+        listar_paginas(privadas, "#corpoTabelaPaginasPrivadas")
+        listar_paginas(outras, "#corpoTabelaOutrasPaginas")
     }
 
+    function listar_paginas(paginas, idLista) {
+        for (var pagina of paginas) {
+            lin = `<tr><td>${pagina.nome}</td></tr>`;
+            $(idLista).append(lin);
+        }
+
+    /*
     function listar_favoritas (paginas) {
         // percorrer a lista de paginas retornadas; 
         for (var pagina of paginas) { 
@@ -60,5 +67,6 @@ $(function() { // quando o documento estiver pronto/carregado
             $('#corpoTabelaOutrasPaginas').append(lin);
         }
     }
+    */
 
 });
