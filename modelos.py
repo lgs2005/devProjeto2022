@@ -1,5 +1,3 @@
-from email import contentmanager
-from sqlalchemy import ForeignKey
 from init import db
 
 

@@ -51,7 +51,7 @@ def rota_login():
 
         if usuario is None:
             erro = 'Este usuário não existe.'
-        elif not bcrypt.checkpw(bytes(senha, 'utf-8', usuario.pwhash)):
+        elif not bcrypt.checkpw(bytes(senha, 'utf-8'), usuario.pwhash):
             erro = 'Senha Incorreta'
         else:
             resposta = make_response(redirect('/inicio'))

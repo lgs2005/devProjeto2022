@@ -2,8 +2,7 @@ from flask import redirect, render_template
 
 from init import app, db
 from login import rota_login, rota_registro, usuario_logado
-from pagina import rota_retornar_conteudo
-
+import api
 
 @app.route('/hello')
 def hello_world():
@@ -19,13 +18,23 @@ def rota_inicio():
 
 db.create_all()
 
-rotas_simples = {
+def adicionar_rotas(rotas):
+    for rota, options in rotas.items():
+        if type(options) == dict:
+            app.add_url_rule(rota, **options)
+        else:
+            app.add_url_rule(rota, view_func=options)
+    
+
+outras_rotas = {
     '/': rota_inicio,
     '/inicio': rota_inicio,
     '/registrar': rota_registro,
     '/login': rota_login,
-    '/retornar_conteudo/<id>': rota_retornar_conteudo,
 }
 
-for rota, view in rotas_simples.items():
-    app.add_url_rule(rota, view_func=view)
+adicionar_rotas(outras_rotas)
+adicionar_rotas(api.ROTAS)
+
+if __name__ == '__main__':
+    app.run(debug=True)
