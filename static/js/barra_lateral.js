@@ -1,11 +1,11 @@
-$(function() { // quando o documento estiver pronto/carregado
-    
+$(function () { // quando o documento estiver pronto/carregado
+
     $.ajax({
         url: 'listar_paginas', // qual url????
         method: 'GET',
         dataType: 'json', // os dados são recebidos no formato json
         success: listar_paginas, // chama a função listar para processar o resultado
-        error: function() {
+        error: function () {
             alert("Erro ao ler dados, verifique o backend");
         }
     });

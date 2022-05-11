@@ -1,39 +1,35 @@
-from http.client import BAD_REQUEST, NOT_FOUND, UNAUTHORIZED
-from flask import abort
-from api.util import int_or_badrequest
-from login import usuario_logado
-from modelos import Compartilhamento, Pagina
+from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
+from flask import abort, make_response, request
+from modelos import Compartilhamento, Pagina, Usuario
+
+from api.util import requerir_usuario
 
 PASTA_DE_PAGINAS = "./paginas"
 
 
-def rota_retornar_conteudo(id=None):
-    if id == None:
-        abort(BAD_REQUEST)
-    
-    usuario = usuario_logado()
-    if usuario == None:
-        abort(UNAUTHORIZED)
-
-    id = int_or_badrequest()
-    pagina: Pagina = Pagina.query.filter_by(id=id).first_or_404()
-
+def requerir_acesso(usuario: Usuario, pagina: Pagina):
     if pagina.id_usuario != usuario.id:
-        # procurar por um compartilhamento
-
-        compartilhamento = Compartilhamento.query.filter_by(id_usuario=usuario.id, id_pagina=pagina.id).first()
-
+        compartilhamento = Compartilhamento.query.filter_by(
+            id_usuario=usuario.id, id_pagina=pagina.id).first()
         if compartilhamento == None:
-            abort(UNAUTHORIZED)
+            abort(UNAUTHORIZED, "Você não tem acesso a esta página.")
+
+    return True
 
 
-    # a este ponto o usuário deve ter acesso
-    
+def rota_retornar_conteudo(id: int = None):
+    usuario = requerir_usuario()
+    pagina: Pagina = Pagina.query.filter_by(id=id).first_or_404()
+    requerir_acesso(pagina, usuario)
+
     try:
-        arquivo_pagina = open(f"{PASTA_DE_PAGINAS}/{pagina.conteudo}.json")
+        arquivo_pagina = open(
+            f"{PASTA_DE_PAGINAS}/{pagina.conteudo}.json", mode='r')
     except FileNotFoundError:
-        return abort(NOT_FOUND)
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
 
     conteudo = arquivo_pagina.read()
 
@@ -41,15 +37,30 @@ def rota_retornar_conteudo(id=None):
 
 
 # atualiza o conteúdo da página
-def rota_publicar_conteudo(id=None):
-    pass
+def rota_publicar_conteudo(id: int = None):
+    usuario = requerir_usuario()
+    pagina: Pagina = Pagina.query.filter_by(id=id).first_or_404()
+    requerir_acesso(pagina, usuario)
+
+    try:
+        arquivo_pagina = open(
+            f"{PASTA_DE_PAGINAS}/{pagina.conteudo}.json", mode='w')
+    except FileNotFoundError:
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
+
+    dados = request.data
+    arquivo_pagina = arquivo_pagina.write(dados)
+
+    return make_response(OK)
 
 
 def adicionar_rotas():
     return {
-        '/retornar_conteudo/<id>': rota_retornar_conteudo,
+        '/retornar_conteudo/<int:id>': rota_retornar_conteudo,
 
-        '/publicar_conteudo/<id>': {
+        '/publicar_conteudo/<int:id>': {
             'view_func': rota_publicar_conteudo,
             'methods': ['POST']
         }

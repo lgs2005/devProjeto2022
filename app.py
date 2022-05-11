@@ -1,8 +1,9 @@
 from flask import redirect, render_template
 
+import api
 from init import app, db
 from login import rota_login, rota_registro, usuario_logado
-import api
+
 
 @app.route('/hello')
 def hello_world():
@@ -10,13 +11,16 @@ def hello_world():
     return "<img src='https://media1.giphy.com/media/mf8UbIDew7e8g/200.gif'/>" + \
         " ".join(["<p>around the world</p>"] * 144)
 
+
 def rota_inicio():
     if not usuario_logado():
         return redirect('/login')
 
     return render_template('inicio.html')
 
+
 db.create_all()
+
 
 def adicionar_rotas(rotas):
     for rota, options in rotas.items():
@@ -24,7 +28,7 @@ def adicionar_rotas(rotas):
             app.add_url_rule(rota, **options)
         else:
             app.add_url_rule(rota, view_func=options)
-    
+
 
 outras_rotas = {
     '/': rota_inicio,

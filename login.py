@@ -1,13 +1,14 @@
 from typing import Union
+
 import bcrypt
-from flask import make_response, redirect, render_template, request, session
+from flask import make_response, redirect, render_template, request
 
 from init import app, db
 from modelos import Usuario
 
-
 COOKIE_EMAIL = 'login_email'
 COOKIE_SENHA = 'login_senha'
+
 
 def usuario_logado() -> Union[Usuario, None]:
     """
@@ -17,15 +18,19 @@ def usuario_logado() -> Union[Usuario, None]:
     email = request.cookies.get(COOKIE_EMAIL)
     senha = request.cookies.get(COOKIE_SENHA)
 
-    if None in (email, senha): return None
+    if None in (email, senha):
+        return None
 
     usuario: Usuario = Usuario.query.filter_by(email=email).first()
     senha_b = bytes(senha, 'utf-8')
 
-    if usuario == None: return None
-    if bcrypt.checkpw(senha_b, usuario.pwhash) == False: return None
+    if usuario == None:
+        return None
+    if bcrypt.checkpw(senha_b, usuario.pwhash) == False:
+        return None
 
     return Usuario
+
 
 def rota_login():
     """
@@ -60,6 +65,7 @@ def rota_login():
             return resposta
 
     return render_template('login.html', erro=erro)
+
 
 def rota_registro():
     """
@@ -96,6 +102,7 @@ def rota_registro():
             return resposta
 
     return render_template('login.html', erro=erro)
+
 
 @app.route('/logout')
 def logout():

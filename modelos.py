@@ -10,14 +10,17 @@ class Usuario(db.Model):
     def __repr__(self) -> str:
         return f'<User {self.id}, {self.nome}, {self.email}, {self.pwhash}>'
 
+
 class Pagina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id), nullable=False)
+    id_usuario = db.Column(
+        db.Integer, db.ForeignKey(Usuario.id), nullable=False)
     usuario = db.relationship('Usuario')
 
     nome = db.Column(db.Text, nullable=False)
-    conteudo = db.Column(db.Text, nullable=False) # armazenar link para arquivo JSON 
+    # armazenar link para arquivo JSON
+    conteudo = db.Column(db.Text, nullable=False)
     data_exclusao = db.Column(db.Integer, nullable=False)
     data_criacao = db.Column(db.Integer, nullable=False)
     favorito = db.Column(db.Boolean, nullable=False)
@@ -35,17 +38,22 @@ class Pagina(db.Model):
             "favorito": self.favorito
         }
 
+
 class Compartilhamento(db.Model):
-    id_usuario = db.Column(db.Integer, db.ForeignKey(Usuario.id), primary_key=True)
-    id_pagina = db.Column(db.Integer, db.ForeignKey(Pagina.id), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey(
+        Usuario.id), primary_key=True)
+    id_pagina = db.Column(db.Integer, db.ForeignKey(
+        Pagina.id), primary_key=True)
     usuario = db.relationship('Usuario')
     pagina = db.relationship('Pagina')
 
     def __str__(self):
         return f'<Pagina {self.id_usuario}, {self.id_pagina}>'
 
+
 if __name__ == "__main__":
-    p = Pagina(id_usuario=1, nome="teste", conteudo="", data_exclusao=0, data_criacao=0, favorito=False)
+    p = Pagina(id_usuario=1, nome="teste", conteudo="",
+               data_exclusao=0, data_criacao=0, favorito=False)
 
     db.session.add(p)
     db.session.commit()

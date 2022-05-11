@@ -1,23 +1,23 @@
-from os import abort
 from flask import jsonify, render_template
-
-from login import usuario_logado
 from modelos import Pagina
 
+from api.util import requerir_usuario
+
+
 def rota_listar_paginas():
-    usuario = usuario_logado()
+    usuario = requerir_usuario()
 
-    if usuario == None:
-        abort(403)
-
-    paginas: 'list[Pagina]' = Pagina.query.filter_by(id_usuario=usuario.id).all()
+    paginas: 'list[Pagina]' = Pagina.query.filter_by(
+        id_usuario=usuario.id).all()
     resposta = jsonify([p.json() for p in paginas])
 
     resposta.headers.add("Access-Control-Allow-Origin", "*")
     return resposta
 
+
 def rota_teste_barra_lateral():
     return render_template('listar_paginas.html')
+
 
 def adicionar_rotas():
     return {
