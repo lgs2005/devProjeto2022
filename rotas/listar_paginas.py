@@ -1,14 +1,13 @@
 from flask import jsonify, render_template
 from modelos import Pagina
 
-from api.util import requerir_usuario
+from rotas.util import requerir_usuario
 
 
 def rota_listar_paginas():
     usuario = requerir_usuario()
 
-    paginas: 'list[Pagina]' = Pagina.query.filter_by(
-        id_usuario=usuario.id).all()
+    paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=usuario).all()
     resposta = jsonify([p.json() for p in paginas])
 
     resposta.headers.add("Access-Control-Allow-Origin", "*")

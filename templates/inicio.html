@@ -1,7 +1,17 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<!--REAL QUE EU ESQUECI COMO FAZER HTML AJSFKSFHSAHHJ-->
+{% block conteudo %}
 
-<h1>Início</h1>
+    <div class="container">
+        <div class="row justify-content-center align-middle">
+            <div class="col">
+                <h2>Welcome to <b>OnTrack Pages</b></h2>
+                {% if current_user.is_authenticated %}
+                    <p><a href='/logout'>Sair</a></p>
+                {% endif %}
+                <p><a href="/listar_paginas">Operação listar</a></p>
+            </div>
+        </div>
+    </div>
 
-<p><a href='/logout'>Sair</a></p>
+{% endblock %}
