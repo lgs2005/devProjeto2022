@@ -13,7 +13,6 @@ $(function () { // quando o documento estiver pronto/carregado
     /** @param {Array} paginas */
     function listar_paginas(paginas) {
         let favoritos = []
-        let privadas = []
         let outras = []
 
         for (var pagina of paginas) {
@@ -35,40 +34,4 @@ $(function () { // quando o documento estiver pronto/carregado
             $(idLista).append(lin);
         }
     }
-
-    /*
-    function listar_favoritas (paginas) {
-        // percorrer a lista de paginas retornadas; 
-        for (var pagina of paginas) { 
-            lin = '<tr>' + // elabora linha com os dados da pagina
-              '<td>' + pagina.nome + '</td>' + 
-              '</tr>';
-            // adiciona a linha no corpo da tabela
-            $('#corpoTabelaPaginasFavoritas').append(lin);
-        }
-    }
-
-    function listar_privadas (paginas) {
-        // percorrer a lista de paginas retornadas; 
-        for (var pagina of paginas) { 
-            lin = '<tr>' + // elabora linha com os dados da pagina
-              '<td>' + pagina.nome + '</td>' + 
-              '</tr>';
-            // adiciona a linha no corpo da tabela
-            $('#corpoTabelaPaginasPrivadas').append(lin);
-        }
-    }
-
-    function listar_outras (paginas) {
-        // percorrer a lista de paginas retornadas; 
-        for (var pagina of paginas) { 
-            lin = '<tr>' + // elabora linha com os dados da pagina
-              '<td>' + pagina.nome + '</td>' + 
-              '</tr>';
-            // adiciona a linha no corpo da tabela
-            $('#corpoTabelaOutrasPaginas').append(lin);
-        }
-    }
-    */
-
 });

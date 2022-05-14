@@ -1,17 +1,28 @@
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, make_response, request
+from init import caminho_base
 from modelos import Compartilhamento, Pagina, Usuario
 
-from api.util import requerir_usuario
+from rotas.util import requerir_usuario
 
-PASTA_DE_PAGINAS = "./paginas"
+PASTA_DE_PAGINAS = f'{caminho_base}\\paginas'
+
+
+def abrir_pagina(pagina: Pagina, modo: str):
+    try:
+        return open(f'{PASTA_DE_PAGINAS}/{pagina.caminho}.json', mode=modo)
+    except FileNotFoundError:
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
 
 
 def requerir_acesso(usuario: Usuario, pagina: Pagina):
     if pagina.id_usuario != usuario.id:
-        compartilhamento = Compartilhamento.query.filter_by(
-            id_usuario=usuario.id, id_pagina=pagina.id).first()
+        compartilhamento = Compartilhamento.query \
+            .filter_by(usuario=usuario, pagina=pagina).first()
+
         if compartilhamento == None:
             abort(UNAUTHORIZED, "Você não tem acesso a esta página.")
 
@@ -20,17 +31,11 @@ def requerir_acesso(usuario: Usuario, pagina: Pagina):
 
 def rota_retornar_conteudo(id: int = None):
     usuario = requerir_usuario()
-    pagina: Pagina = Pagina.query.filter_by(id=id).first_or_404()
+    pagina: Pagina = Pagina.query.get_or_404(id)
+
     requerir_acesso(pagina, usuario)
 
-    try:
-        arquivo_pagina = open(
-            f"{PASTA_DE_PAGINAS}/{pagina.conteudo}.json", mode='r')
-    except FileNotFoundError:
-        abort(NOT_FOUND)
-    except OSError:
-        abort(INTERNAL_SERVER_ERROR)
-
+    arquivo_pagina = abrir_pagina(pagina, 'r')
     conteudo = arquivo_pagina.read()
 
     return conteudo
@@ -39,27 +44,23 @@ def rota_retornar_conteudo(id: int = None):
 # atualiza o conteúdo da página
 def rota_publicar_conteudo(id: int = None):
     usuario = requerir_usuario()
-    pagina: Pagina = Pagina.query.filter_by(id=id).first_or_404()
+    pagina: Pagina = Pagina.query.get_or_404(id)
+
     requerir_acesso(pagina, usuario)
 
-    try:
-        arquivo_pagina = open(
-            f"{PASTA_DE_PAGINAS}/{pagina.conteudo}.json", mode='w')
-    except FileNotFoundError:
-        abort(NOT_FOUND)
-    except OSError:
-        abort(INTERNAL_SERVER_ERROR)
-
+    arquivo_pagina = abrir_pagina(pagina, 'w')
     dados = request.data
-    arquivo_pagina = arquivo_pagina.write(dados)
 
+    arquivo_pagina.write(dados)
     return make_response(OK)
 
+
+# caralho esse codigo ta muito feio
+# nem sei o que fazer sobre isso entao vai assim mesmo
 
 def adicionar_rotas():
     return {
         '/retornar_conteudo/<int:id>': rota_retornar_conteudo,
-
         '/publicar_conteudo/<int:id>': {
             'view_func': rota_publicar_conteudo,
             'methods': ['POST']
