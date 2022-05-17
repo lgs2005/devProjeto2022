@@ -2,7 +2,7 @@
 
 {% block conteudo %}
 
-<form method="GET" style="position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;">
+<form method="GET" style="position: absolute; top: 25%; left: 25%; width: 50%; max-height: 50%;" id="form-login">
     {% if erro %}
         <div class="alert alert-danger" role="alert">
             {{ erro }}
@@ -10,20 +10,49 @@
     {% endif %}
 
     <div class="mb-3">
-        <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control" id="input-nome" name="nome">
-    </div>
-    <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="input-email" name="email">
+        <input type="email" class="form-control" id="input-email" name="email" autocomplete="email">
     </div>
+    
     <div class="mb-3">
         <label for="senha" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="input-senha" name="senha">
+        <input type="password" class="form-control" id="input-senha" name="senha" autocomplete="current-password">
     </div>
 
-    <button id="botao-login" type="submit" class="btn btn-primary" formaction="/login">Login</button>
-    <button id="botao-registro" type="submit" class="btn btn-primary" formaction="/registrar">Registrar</button>
+    <button id="botao-login" type="submit" class="btn btn-primary">Login</button>
+    <a href="/registrar" style="position: absolute; bottom: 0; right: 0;">Não tem uma conta? Clique aqui para registrar.</a>
 </form>
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    $(document).ready(function() {
+        function validarDados() {
+            let campos = [
+                $("#input-email"),
+                $("#input-senha")
+            ];
+
+            let valores = campos.map(c => c.val())
+            let naoPermitido = [undefined, null, '']
+
+            console.log(valores)
+
+            for (v of valores) {
+                if (naoPermitido.includes(v)){
+                    // TODO: mostrar um erro para o usuário
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        $('#form-login').submit(validarDados);
+    })
+</script>
 
 {% endblock %}

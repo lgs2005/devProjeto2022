@@ -3,7 +3,6 @@ from flask_login import current_user, login_required
 
 import rotas
 from init import app, db
-from rotas.login import rota_login
 
 @app.route('/hello')
 def hello_world():
@@ -41,7 +40,7 @@ def adicionar_rotas(rotas):
 
 
 outras_rotas = {
-    '/': rota_login,
+    '/': rota_inicio,
     '/inicio': rota_inicio,
 }
 
@@ -49,4 +48,4 @@ adicionar_rotas(outras_rotas)
 adicionar_rotas(rotas.ROTAS)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
