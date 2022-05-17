@@ -5,3 +5,15 @@ flask
 flask-sqlalchemy
 flask-login
 flask-bcrypt
+
+
+
+
+
+
+
+
+
+
+
+

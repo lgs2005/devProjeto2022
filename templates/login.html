@@ -2,7 +2,7 @@
 
 {% block conteudo %}
 
-<form method="GET">
+<form method="GET" style="position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;">
     {% if erro %}
         <div class="alert alert-danger" role="alert">
             {{ erro }}
@@ -11,18 +11,19 @@
 
     <div class="mb-3">
         <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control" id="nome" name="nome">
+        <input type="text" class="form-control" id="input-nome" name="nome">
     </div>
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email">
+        <input type="email" class="form-control" id="input-email" name="email">
     </div>
     <div class="mb-3">
         <label for="senha" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="senha" name="senha">
+        <input type="password" class="form-control" id="input-senha" name="senha">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
 
+    <button id="botao-login" type="submit" class="btn btn-primary" formaction="/login">Login</button>
+    <button id="botao-registro" type="submit" class="btn btn-primary" formaction="/registrar">Registrar</button>
 </form>
 
 {% endblock %}
