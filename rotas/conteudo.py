@@ -6,13 +6,15 @@ from modelos import Compartilhamento, Pagina, Usuario
 
 from rotas.util import requerir_usuario
 
-PASTA_DE_PAGINAS = f'{caminho_base}\\paginas'
+PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
 
 
 def abrir_pagina(pagina: Pagina, modo: str):
     try:
         return open(f'{PASTA_DE_PAGINAS}/{pagina.caminho}.json', mode=modo)
     except FileNotFoundError:
+        if modo == 'w':
+            return abrir_pagina(pagina, 'x')
         abort(NOT_FOUND)
     except OSError:
         abort(INTERNAL_SERVER_ERROR)
@@ -33,7 +35,7 @@ def rota_retornar_conteudo(id: int = None):
     usuario = requerir_usuario()
     pagina: Pagina = Pagina.query.get_or_404(id)
 
-    requerir_acesso(pagina, usuario)
+    requerir_acesso(usuario, pagina)
 
     arquivo_pagina = abrir_pagina(pagina, 'r')
     conteudo = arquivo_pagina.read()
@@ -46,13 +48,13 @@ def rota_publicar_conteudo(id: int = None):
     usuario = requerir_usuario()
     pagina: Pagina = Pagina.query.get_or_404(id)
 
-    requerir_acesso(pagina, usuario)
+    requerir_acesso(usuario, pagina)
 
     arquivo_pagina = abrir_pagina(pagina, 'w')
-    dados = request.data
+    dados = request.get_data().decode()
 
     arquivo_pagina.write(dados)
-    return make_response(OK)
+    return make_response('sucesso!', OK)
 
 
 # caralho esse codigo ta muito feio

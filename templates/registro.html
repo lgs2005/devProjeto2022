@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block conteudo %}
+
+<form method="GET" style="position: absolute; top: 25%; left: 25%; width: 50%; max-height: 50%;">
+    {% if erro %}
+        <div class="alert alert-danger" role="alert">
+            {{ erro }}
+        </div>
+    {% endif %}
+
+	<div class="mb-3">
+		<label for="input-nome" class="form-label">Nome</label>
+		<input type="text" class="form-control" id="input-nome" name="nome">
+	</div>
+
+    <div class="mb-3">
+        <label for="input-email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="input-email" name="email" autocomplete="email">
+    </div>
+    
+    <div class="mb-3">
+        <label for="input-senha" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="input-senha" name="senha" autocomplete="new-password">
+    </div>
+
+    <button id="botao-registro" type="submit" class="btn btn-primary">Registrar</button>
+    <a href="/login" style="position: absolute; bottom: 0; right: 0;">Já tem uma conta? Clique aqui para fazer login.</a>
+</form>
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+	$(document).ready(function() {
+		function validarDados() {
+			let campos = [
+				$("#input-nome"),
+				$("#input-senha"),
+				$("$input-email")
+			];
+
+			let valores = campos.map(c => c.val())
+			let naoPermitido = [undefined, null, '']
+
+			for (v of valores) {
+				if (naoPermitido.includes(v)){
+					// TODO: mostrar um erro para o usuário
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		$('#botao-registro').submit(validarDados);
+	})
+</script>
+
+{% endblock %}

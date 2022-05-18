@@ -70,7 +70,7 @@ def rota_registro():
 
             return redirect('/')
 
-    return render_template('login.html', titulo='Cadastro', erro=erro)
+    return render_template('registro.html', titulo='Cadastro', erro=erro)
 
 
 def rota_logout():

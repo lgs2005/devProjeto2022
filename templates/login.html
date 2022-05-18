@@ -1,29 +1,66 @@
 {% extends "layout.html" %}
 
 {% block conteudo %}
+<div class="row justify-content-center mt-5">
+    <h1 class="display-4 fw-semibold text-center">Bem vindo de novo!</h1>
+</div>
 
-<form method="GET" style="position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;">
-    {% if erro %}
-        <div class="alert alert-danger" role="alert">
-            {{ erro }}
-        </div>
-    {% endif %}
+<div class="row justify-content-center mt-5">
+    <div class="col-sm-3">
+        <form method="GET" id="form-login">
+            {% if erro %}
+                <div class="alert alert-danger" role="alert">
+                    {{ erro }}
+                </div>
+            {% endif %}
+        
+            <div class="mb-2">
+                <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
+            </div>
+        
+            <div class="mb-2">
+                <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha">
+            </div>
+        
+            <div class="d-grid col-4 mx-auto mt-4">
+                <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <div class="mb-3">
-        <label for="nome" class="form-label">Nome</label>
-        <input type="text" class="form-control" id="input-nome" name="nome">
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="input-email" name="email">
-    </div>
-    <div class="mb-3">
-        <label for="senha" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="input-senha" name="senha">
-    </div>
 
-    <button id="botao-login" type="submit" class="btn btn-primary" formaction="/login">Login</button>
-    <button id="botao-registro" type="submit" class="btn btn-primary" formaction="/registrar">Registrar</button>
-</form>
+{% endblock %}
+
+{% block script %}
+
+<script>
+    $(document).ready(function() {
+        function validarDados() {
+            let campos = [
+                $("#input-email"),
+                $("#input-senha")
+            ];
+
+            let valores = campos.map(c => c.val())
+            let naoPermitido = [undefined, null, '']
+
+            console.log(valores)
+
+            for (v of valores) {
+                if (naoPermitido.includes(v)) {
+                    // TODO: mostrar um erro para o usuário
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        $('#form-login').submit(validarDados);
+    })
+</script>
 
 {% endblock %}
