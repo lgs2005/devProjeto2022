@@ -7,3 +7,5 @@ ROTAS = {
     **rotas.listar_paginas.adicionar_rotas(),
     **rotas.login.adicionar_rotas(),
 }
+
+print(ROTAS)
