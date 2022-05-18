@@ -48,4 +48,4 @@ adicionar_rotas(outras_rotas)
 adicionar_rotas(rotas.ROTAS)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
