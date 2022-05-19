@@ -9,7 +9,6 @@ from init import db, login_manager
 def load_user(user_id):
     return Usuario.query.get(user_id)
 
-
 class Usuario(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.Text, nullable=True)
@@ -40,9 +39,6 @@ class Pagina(db.Model):
     )
     excluir_em = db.Column(db.DateTime, nullable=True)
 
-    def __str__(self):
-        return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.excluir_em}, {self.data_criacao}, {self.favorito}>'
-
     def json(self):
         return {
             'id': self.id,
@@ -52,6 +48,9 @@ class Pagina(db.Model):
             'data_criacao': self.data_criacao,
             'favorito': self.favorito
         }
+
+    def __str__(self):
+        return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.excluir_em}, {self.data_criacao}, {self.favorito}>'
 
 
 class Compartilhamento(db.Model):
@@ -80,3 +79,5 @@ class Compartilhamento(db.Model):
 
 #     db.session.add(p)
 #     db.session.commit()
+
+# Selecione os comentários e digite: Ctrl + ;:

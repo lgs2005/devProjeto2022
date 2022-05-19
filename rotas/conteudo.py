@@ -6,6 +6,7 @@ from modelos import Compartilhamento, Pagina, Usuario
 
 from rotas.util import requerir_usuario
 
+
 PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
 
 
