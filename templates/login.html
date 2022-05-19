@@ -1,33 +1,39 @@
 {% extends "layout.html" %}
 
 {% block conteudo %}
-<div class="row justify-content-center mt-5">
-    <h1 class="display-4 fw-semibold text-center">Bem vindo de novo!</h1>
-</div>
 
-<div class="row justify-content-center mt-5">
-    <div class="col-sm-3">
-        <form method="GET" id="form-login">
-            {% if erro %}
-                <div class="alert alert-danger" role="alert">
-                    {{ erro }}
-                </div>
-            {% endif %}
-        
-            <div class="mb-2">
-                <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
+<!-- Eu realmente não consegui alinhar o form no centro da tela, por enquanto vou deixar assim.
+Não esta ruim, mas não ta como o protótipo que mostrei pra vcs há algumas semanas.  -->
+
+<div class="d-flex">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <h1 class="display-3 mb-4 lh-1 fw-semibold text-center font-roboto">Bem vindo <br> de novo!</h1>
+    
+            <div class="col-md-4">
+                <form method="GET" id="form-login">
+                    {% if erro %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ erro }}
+                        </div>
+                    {% endif %}
+    
+                    <div class="mb-2">
+                        <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                        <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
+                    </div>
+    
+                    <div class="mb-2">
+                        <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha">
+                    </div>
+    
+                    <div class="d-grid col-4 mx-auto mt-4">
+                        <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                    </div>
+                </form>
             </div>
-        
-            <div class="mb-2">
-                <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha">
-            </div>
-        
-            <div class="d-grid col-4 mx-auto mt-4">
-                <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -62,5 +68,6 @@
         $('#form-login').submit(validarDados);
     })
 </script>
+<!-- Podemos tentar com py-script. Ainda não sei como funciona, é um projeto novo do Anaconda Team. -->
 
 {% endblock %}
