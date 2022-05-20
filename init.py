@@ -17,5 +17,6 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-login_manager.login_message = u'Por favor, entre na sua conta para acessar esta página.'
-login_manager.login_view = '/login'
+login_manager.login_message = u"Por favor, entre na sua conta para acessar esta página."
+login_manager.login_message_category = "info"
+login_manager.login_view = 'rota_login'

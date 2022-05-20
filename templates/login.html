@@ -3,7 +3,7 @@
 {% block conteudo %}
 
 <!-- Eu realmente não consegui alinhar o form no centro da tela, por enquanto vou deixar assim.
-Não esta ruim, mas não ta como o protótipo que mostrei pra vcs há algumas semanas.  -->
+Não esta ruim, mas não ta igual ao protótipo que mostrei pra vcs há algumas semanas.  -->
 
 <div class="d-flex">
     <div class="container">
@@ -11,13 +11,7 @@ Não esta ruim, mas não ta como o protótipo que mostrei pra vcs há algumas se
             <h1 class="display-3 mb-4 lh-1 fw-semibold text-center font-roboto">Bem vindo <br> de novo!</h1>
     
             <div class="col-md-4">
-                <form method="GET" id="form-login">
-                    {% if erro %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ erro }}
-                        </div>
-                    {% endif %}
-    
+                <form method="GET" id="form-login">   
                     <div class="mb-2">
                         <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
                         <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
@@ -36,7 +30,6 @@ Não esta ruim, mas não ta como o protótipo que mostrei pra vcs há algumas se
         </div>
     </div>
 </div>
-
 
 {% endblock %}
 
@@ -58,7 +51,7 @@ Não esta ruim, mas não ta como o protótipo que mostrei pra vcs há algumas se
             for (v of valores) {
                 if (naoPermitido.includes(v)) {
                     // TODO: mostrar um erro para o usuário
-                    return false;
+                    return false; 
                 }
             }
 

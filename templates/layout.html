@@ -16,15 +16,31 @@
 
     <!-- Nosso CSS -->
     <link rel="stylesheet" href="../static/style.css">
-
-    <title>{{ titulo }}</title>
+    
+    <title>{{ tituloPagina }}</title>
 
 </head>
 
 <body>
 
+    <div class="d-flex">
+        <div class="container w-75 flash-messages pt-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
     {% block conteudo %}
     {% endblock %}
+
 
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

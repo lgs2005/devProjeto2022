@@ -9,26 +9,20 @@
     
             <div class="col-md-4">
                 <form method="GET">
-                    {% if erro %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ erro }}
-                        </div>
-                    {% endif %}
-
 					<div class="mb-2">
 						<label for="input-nome" class="form-label">Nome</label>
-						<input type="text" class="form-control" id="input-nome" name="nome" placeholder="Seu nome de usuário">
+						<input type="text" class="form-control shadow-sm" id="input-nome" name="nome" placeholder="Seu nome de usuário">
 					</div>
 				
     
                     <div class="mb-2">
                         <label for="input-email" class="form-label">Email</label>
-        				<input type="email" class="form-control" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
+        				<input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
                     </div>
     
                     <div class="mb-2">
                         <label for="input-senha" class="form-label">Senha</label>
-        				<input type="password" class="form-control" id="input-senha" name="senha" autocomplete="new-password" placeholder="Sua senha">
+        				<input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="new-password" placeholder="Sua senha">
                     </div>
     
                     <div class="d-grid col-4 mx-auto mt-4">
