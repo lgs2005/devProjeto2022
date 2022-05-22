@@ -19,4 +19,4 @@ login_manager = LoginManager(app)
 
 login_manager.login_message = u"Por favor, entre na sua conta para acessar esta página."
 login_manager.login_message_category = "info"
-login_manager.login_view = 'rota_login'
+login_manager.login_view = 'rota_login' # ok mais tipo como ele descobre a função pra essa rota ??????

@@ -1,5 +1,5 @@
-from flask import render_template
-from flask_login import login_required
+from flask import render_template, redirect
+from flask_login import login_required, current_user
 
 from rotas import ROTAS
 from init import app, db
@@ -13,12 +13,10 @@ def hello_world():
 
 @login_required
 def rota_inicio():
-
     return render_template('inicio.html')
 
-
-db.create_all()
-
+def rota_default():
+    return redirect('/inicio' if current_user.is_authenticated else '/login')
 
 def adicionar_rotas(rotas):
     '''
@@ -38,7 +36,7 @@ def adicionar_rotas(rotas):
 
 
 outras_rotas = {
-    '/': rota_inicio,
+    '/': rota_default,
     '/inicio': rota_inicio,
 }
 
@@ -46,4 +44,5 @@ adicionar_rotas(outras_rotas)
 adicionar_rotas(ROTAS)
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)

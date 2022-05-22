@@ -75,7 +75,7 @@ def rota_registro():
 
 def rota_logout():
     logout_user()
-    return redirect(url_for('rota_inicio'))
+    return redirect('/')
 
 def adicionar_rotas():
     return {
