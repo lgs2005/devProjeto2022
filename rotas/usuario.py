@@ -78,7 +78,7 @@ def rota_logout():
     Rota para logout do usuário.
     """
     logout_user()
-    return redirect(url_for('rota_inicio'))
+    return redirect('/')
 
 
 def adicionar_rotas():
