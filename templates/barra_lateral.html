@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+<!-- As mensagens de erro vão aparecer aqui em cima, deixando meio zoado o layout -->
+
+{% block conteudo %}
+<div class="d-flex flex-column flex-shrink-0 p-3 position-fixed shadow" style="width: 260px; height: 100%">
+
+    <a href="/inicio" class="text-center pb-3 mb-3 text-decoration-none link-dark border-bottom">
+        <span class="fs-3 fw-semibold">OnTrack Pages</span>
+    </a>
+
+    <!-- Os botões ainda não estão animados -->
+
+    <ul class="list-unstyled ps-0">
+        <!-- Páginas favoritas -->
+        <li class="pb-2">
+            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaFavoritasCollapse"
+                aria-expanded="false" aria-controls="listaFavoritasCollapse">
+                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas Favoritas
+            </a>
+
+            <div class="collapse" id="listaFavoritasCollapse">
+                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasFavoritas">
+                    <!-- Paginas aqui -->
+                </ul>
+            </div>
+        </li>
+
+        <!-- Páginas privadas -->
+        <li class="pb-2">
+            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaPrivadasCollapse"
+                aria-expanded="false" aria-controls="listaPrivadasCollapse">
+                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas Privadas
+            </a>
+
+            <div class="collapse" id="listaPrivadasCollapse">
+                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasPrivadas">
+                    <!-- Paginas aqui -->
+                </ul>
+            </div>
+        </li>
+
+
+        <!-- Páginas comuns (nem favoritas nem privadas) -->
+        <li class="pb-2">
+            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaComunsCollapse"
+                aria-expanded="false" aria-controls="listaComunsCollapse">
+                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas
+            </a>
+
+            <div class="collapse" id="listaComunsCollapse">
+                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasComuns">
+                    <!-- Paginas aqui -->
+                </ul>
+            </div>
+        </li>   
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% block script %}
+
+<script src="/static/js/barra_lateral.js"></script>
+
+{% endblock %}  
