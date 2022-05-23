@@ -1,21 +1,22 @@
 from flask import jsonify, render_template
+from flask_login import current_user, login_required
+
 from modelos import Pagina
 
-from rotas.util import requerir_usuario
 
-
+@login_required
 def rota_listar_paginas():
-    usuario = requerir_usuario()
+    usuario = current_user
 
-    paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=usuario).all()
+    paginas = Pagina.query.filter_by(usuario=usuario).all()
     resposta = jsonify([p.json() for p in paginas])
-
+    
     resposta.headers.add("Access-Control-Allow-Origin", "*")
     return resposta
 
 
 def rota_teste_barra_lateral():
-    return render_template('listar_paginas.html')
+    return render_template('barra_lateral.html')
 
 
 def adicionar_rotas():

@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
+
 caminho_base = os.path.dirname(__file__)
 
 app = Flask("projeto 2")
