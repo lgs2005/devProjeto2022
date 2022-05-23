@@ -1,5 +1,5 @@
-from flask import render_template
-from flask_login import login_required
+from flask import render_template, redirect
+from flask_login import login_required, current_user
 
 
 @login_required
@@ -13,8 +13,15 @@ def rota_inicio():
     return render_template('inicio.html')
 
 
+def rota_default():
+    """
+    Rota default.
+    """
+    return redirect('/inicio' if current_user.is_authenticated else '/login')
+
+
 def adicionar_rotas():
     return {
-        '/': rota_inicio,
+        '/': rota_default,
         '/inicio': rota_inicio,
     }
