@@ -41,12 +41,12 @@ class Pagina(db.Model):
 
     def json(self):
         return {
-            'id': self.id,
-            'id_usuario': self.id_usuario,
-            'nome': self.nome,
-            'excluir_em': self.excluir_em,
-            'data_criacao': self.data_criacao,
-            'favorito': self.favorito
+            "id": self.id,
+            "id_usuario": self.id_usuario,
+            "nome": self.nome,
+            "excluir_em": self.excluir_em,
+            "data_criacao": self.data_criacao,
+            "favorito": self.favorito
         }
 
     def __str__(self):
