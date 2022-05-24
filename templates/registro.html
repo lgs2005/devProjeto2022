@@ -6,8 +6,38 @@
     <div class="container">
         <div class="row justify-content-center mt-5">
             <h1 class="display-3 mb-4 lh-1 fw-semibold text-center font-roboto">Abra sua conta <br> hoje.</h1>
-    
+
             <div class="col-md-4">
+
+				<div class="container">
+					<div class="row p-2 justify-content-center">
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <a href="/login" class="btn-auth-page inactive">Login</a>
+                            </div>
+                        </div>
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <a href="/registrar" class="btn-auth-page active">Registrar</a>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+
+
+				<div class="container flash-messages pt-3">
+					{% with messages = get_flashed_messages(with_categories=true) %}
+						{% if messages %}
+							{% for category, message in messages %}
+							<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+								{{ message }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
+				</div>
+
                 <form method="GET">
 					<div class="mb-2">
 						<label for="input-nome" class="form-label">Nome</label>

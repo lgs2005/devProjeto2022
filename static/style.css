@@ -1,3 +1,21 @@
 .font-roboto {
     font-family: 'Roboto', sans-serif;
 }
+
+.btn-auth-page {
+    padding-bottom: 8px;
+    background-color: transparent;
+    text-decoration: none;
+    text-align: center;
+    border-bottom: 2px solid;
+    transform: scaleX(1);
+}
+
+.active {
+    color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.inactive {
+    opacity: 0.3;
+}

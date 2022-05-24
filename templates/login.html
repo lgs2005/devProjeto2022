@@ -2,18 +2,41 @@
 
 {% block conteudo %}
 
-<!-- Eu realmente não consegui alinhar o form no centro da tela, por enquanto vou deixar assim.
-Não esta ruim, mas não ta igual ao protótipo que mostrei pra vcs há algumas semanas.  -->
-<!-- fICO BOM assim acho que em cima fica legal tbm -->
-
-<!-- TODO: adicionar um link para a página de registro sla -->
-
 <div class="d-flex">
     <div class="container">
         <div class="row justify-content-center mt-5">
             <h1 class="display-3 mb-4 lh-1 fw-semibold text-center font-roboto">Bem vindo <br> de novo!</h1>
     
             <div class="col-md-4">
+
+                <div class="container">
+					<div class="row p-2 justify-content-center">
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <a href="/login" class="btn-auth-page active">Login</a>
+                            </div>
+                        </div>
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <a href="/registrar" class="btn-auth-page inactive">Registrar</a>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+
+                <div class="container flash-messages pt-3">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
                 <form method="GET" id="form-login">   
                     <div class="mb-2">
                         <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
@@ -22,7 +45,7 @@ Não esta ruim, mas não ta igual ao protótipo que mostrei pra vcs há algumas 
     
                     <div class="mb-2">
                         <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste123">
+                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
                     </div>
     
                     <div class="d-grid col-4 mx-auto mt-4">
