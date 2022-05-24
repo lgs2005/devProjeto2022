@@ -1,4 +1,4 @@
-from flask import request, redirect, render_template, url_for, flash
+from flask import request, redirect, render_template, flash
 from flask_login import current_user, login_user, logout_user
 
 from modelos import Usuario
@@ -14,7 +14,7 @@ def rota_login():
     """
     if current_user.is_authenticated:
         # Se assume que o usuário já está logado. 
-        return redirect(url_for('rota_inicio'))
+        return redirect('/')
 
     email = request.args.get('email')
     senha = request.args.get('senha')
@@ -28,7 +28,7 @@ def rota_login():
             flash('Senha incorreta.', 'danger')
         else:
             login_user(usuario)
-            return redirect(url_for('rota_inicio'))
+            return redirect('/')
 
     return render_template('login.html', tituloPagina='Login')
 
@@ -42,7 +42,7 @@ def rota_registro():
     """
     if current_user.is_authenticated:
         # Se assume que o usuário já está logado. 
-        return redirect(url_for('rota_inicio'))
+        return redirect('/')
 
     nome = request.args.get('nome')
     email = request.args.get('email')
@@ -68,7 +68,7 @@ def rota_registro():
 
             login_user(novo_usuario)
 
-            return redirect(url_for('rota_inicio'))
+            return redirect('/')
 
     return render_template('registro.html', tituloPagina='Cadastro', erro=erro)
 
