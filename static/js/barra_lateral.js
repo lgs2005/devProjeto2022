@@ -11,12 +11,12 @@ $(function () {
     });
     
     function createPagesList(paginas) {
-        for (var i in paginas) {
-            if (paginas[i].favorito) {
-                lin = '<li class="mb-2">' + paginas[i].nome + '</li>';
+        for (let pagina of paginas) {
+            lin = `<li class="mb-2">${pagina.nome}</li>`;
+            
+            if (pagina.favorito) {
                 $("#listaPaginasFavoritas").append(lin);
             } else {
-                lin = '<li class="mb-2">' + paginas[i].nome + '</li>';
                 $("#listaPaginasComuns").append(lin);
             }
         }

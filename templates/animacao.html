@@ -1,9 +1,5 @@
 {% extends "layout.html" %}
 
-{% block import %}
-<link rel="stylesheet" href="/static/slider.css">
-{% endblock %}
-
 {% block conteudo %}
 
 <div class="d-flex">
@@ -13,23 +9,20 @@
     
             <div class="col-md-4">
 
-                <div class="container slider-control">
+                <div class="container">
 					<div class="row p-2 justify-content-center">
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button">Login</button>
+                                <button class="btn-auth-page active">Login</button>
                                 <!-- <a href="/login" class="btn-auth-page active">Login</a> -->
                             </div>
                         </div>
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button">Registrar</button>
+                                <button class="btn-auth-page inactive">Registrar</button>
                                 <!-- <a href="/registrar" class="btn-auth-page inactive">Registrar</a> -->
                             </div>
                         </div>
-                    </div>
-
-                    <div class="slider-faker">
                     </div>
 				</div>
 
@@ -53,30 +46,4 @@
     </div>
 </div>
 
-{% endblock %}
-
-{% block script %}
-<script>
-    $(document).ready(function() {
-        for (let controller of $(".slider-control")) {
-            let buttons = $(controller).find(".slider-button");
-            let faker = $(controller).find(".slider-faker");
-
-            if (buttons.length < 1 )
-                console.error("faltam botões no slider");
-            else if (faker == undefined)
-                console.error("falt o coisa la");
-            else {
-                buttons.each((i, button) => {
-                    button.onclick = () => {
-                        console.log(i)
-
-                        faker.css("transform", `scaleX(${i})`)
-                    }
-                });
-
-            }
-        }
-    })
-</script>
 {% endblock %}
