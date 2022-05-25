@@ -16,6 +16,11 @@
     transition: transform ease 300ms;
 }
 
+/*
+    Então aparentemente o elemento ::after apenas existe no css, 
+    e geralmente não é possível modificá-lo no javascript.
+    Esta classe existe só para isso.
+*/
 .slider-control .slider-button.sb-active::after {
     transform: scaleX(1);
 }
