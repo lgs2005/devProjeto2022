@@ -1,21 +1,23 @@
+/* Fonte ROBOTO, usada em títulos (página login/registrar) */
 .font-roboto {
     font-family: 'Roboto', sans-serif;
 }
 
-.btn-auth-page {
-    padding-bottom: 8px;
-    background-color: transparent;
-    text-decoration: none;
-    text-align: center;
-    border-bottom: 2px solid;
-    transform: scaleX(1);
+/* animação botão switch (login/registrar) */
+.animated-divider {
+    height: 2px;
+    width: 50%;
+    background-color: black
 }
 
-.active {
-    color: #0d6efd;
-    border-color: #0d6efd;
+/* Ao clicar, a linha vai para a esquerda (abaixo do botão login) */
+.to-left {
+    transform: translateX(0%);
+    transition: ease-in-out .2s;
 }
 
-.inactive {
-    opacity: 0.3;
+/* Ao clicar, a linha vai para a direita (abaixo do botão registrar) */
+.to-rigth {
+    transform: translateX(100%);
+    transition: ease-in-out .2s;
 }
