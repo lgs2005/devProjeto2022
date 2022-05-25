@@ -32,24 +32,31 @@
                                 {{ message }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
+                            
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
                 </div>
 
+                <div id="erro" class="visually-hidden">
+                    <div class="alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
+                    </div>
+                </div>
+
                 <form method="GET" id="form-login">   
                     <div class="mb-2">
                         <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                        <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
                     </div>
     
                     <div class="mb-2">
                         <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
+                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha">
                     </div>
     
                     <div class="d-grid col-4 mx-auto mt-4">
-                        <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                        <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm" onclick="isError()">Login</button>
                     </div>
                 </form>
             </div>
@@ -69,25 +76,19 @@
                 $("#input-senha")
             ];
 
+            let erroCustomizado = $("#erro")
+
             let valores = campos.map(c => c.val())
             let naoPermitido = [undefined, null, '']
 
-            console.log(valores)
-
             for (v of valores) {
                 if (naoPermitido.includes(v)) {
-                    // TODO: mostrar um erro para o usuário
-                    return false; 
+                    erroCustomizado.removeClass("visually-hidden")
                 }
             }
-
-            return true;
         }
 
         $('#form-login').submit(validarDados);
     })
 </script>
-<!-- Podemos tentar com py-script. Ainda não sei como funciona, é um projeto novo do Anaconda Team. -->
-<!-- Lucas passando aqui só pra dizer POR FAVOR NÃO EU NÃO VOU AGUENTAR USAR PYTHON NO FRONT TAMBÉM -->
-
 {% endblock %}
