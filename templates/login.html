@@ -60,22 +60,20 @@
     $(document).ready(function() {
         for (let controller of $(".slider-control")) {
             let buttons = $(controller).find(".slider-button");
-            let faker = $(controller).find(".slider-faker");
 
-            if (buttons.length < 1 )
-                console.error("faltam botões no slider");
-            else if (faker == undefined)
-                console.error("falt o coisa la");
-            else {
-                buttons.each((i, button) => {
-                    button.onclick = () => {
-                        console.log(i)
+            buttons.each((index, buttonElement) => {
+                $(buttonElement).click(() => {
+                    buttons.each((otherIndex, otherButton) => {
+                        if (otherIndex != index) {
+                            // resetar outros botões
+                            $(otherButton).toggleClass("sb-active", false);
+                        }
+                    });
 
-                        faker.css("transform", `scaleX(${i})`)
-                    }
-                });
-
-            }
+                    // animar este botão
+                    $(buttonElement).toggleClass("sb-active", true);
+                })
+            })
         }
     })
 </script>

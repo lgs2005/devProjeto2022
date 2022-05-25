@@ -1,18 +1,21 @@
 .slider-control .slider-button {
-    padding-bottom: 8px;
     background-color: transparent;
     text-decoration: none;
     text-align: center;
     border: 0;
-    transform: scaleX(1);
 }
 
-.slider-control  .slider-faker {
-    padding-bottom: 8px;
-    background-color: transparent;
-    text-decoration: none;
-    text-align: center;
+.slider-control .slider-button::after {
+    content: "";
     border-bottom: 2px #0d6efd solid;
-    transform: scaleX(1);
+    width: 100%;
+    height: 8px;
+    float: left;
+
+    transform: scaleX(0);
     transition: transform ease 300ms;
+}
+
+.slider-control .slider-button.sb-active::after {
+    transform: scaleX(1);
 }
