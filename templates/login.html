@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
-{% block import %}
-<link rel="stylesheet" href="/static/slider.css">
+{% block head %}
+<link rel="stylesheet" href="/static/login_slider.css">
 {% endblock %}
 
 {% block conteudo %}
@@ -17,90 +17,55 @@
 					<div class="row p-2 justify-content-center">
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button" data-slider-index="1">Botão 1</button>
+                                <button class="slider-button" data-slider-index="1">Login</button>
                             </div>
                         </div>
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button" data-slider-index="2">Botão 2</button>
-                            </div>
-                        </div>
-                        <div class="col ps-0 pe-0">
-                            <div class="d-grid">
-                                <button class="slider-button" data-slider-index="3">Botão 3</button>
-                            </div>
-                        </div>
-                        <div class="col ps-0 pe-0">
-                            <div class="d-grid">
-                                <button class="slider-button" data-slider-index="4">Botão 4</button>
+                                <button class="slider-button" data-slider-index="2">Registrar</button>
                             </div>
                         </div>
                     </div>
 				</div>
 
-                <form class="slider-item" data-slider-index="1">   
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                <div class="d-grid">
+                    <div class="slider-item" style="grid-area: 1/1;" data-slider-index="1">   
+                        <div class="mb-2">
+                            <label for="login-email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                            <input type="email" id="login-email" class="form-control shadow-sm" autocomplete="email" value="teste@gmail.com">
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="login-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                            <input type="password" id="login-senha" class="form-control shadow-sm" autocomplete="current-password" value="teste">
+                        </div>
+                        
+                        <div class="d-grid col-4 mx-auto mt-4">
+                            <button id="submit-login" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                        </div>
                     </div>
-                    
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
-                    </div>
-                    
-                    <div class="d-grid col-4 mx-auto mt-4">
-                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 1</button>
-                    </div>
-                </form>
 
-                <form class="slider-item" data-slider-index="2">   
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
-                    </div>
-                    
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
-                    </div>
-                    
-                    <div class="d-grid col-4 mx-auto mt-4">
-                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 2</button>
-                    </div>
-                </form>
+                    <div class="slider-item" style="grid-area: 1/1;" data-slider-index="2">   
+                        <div class="mb-2">
+                            <label for="registro-email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                            <input type="email" id="registro-email" class="form-control shadow-sm" autocomplete="email">
+                        </div>
 
-                <form class="slider-item" data-slider-index="3">   
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                        <div class="mb-2">
+                            <label for="registro-nome" class="form-label fs-5 mb-1 ms-2">Nome</label>
+                            <input type="text" id="registro-nome" class="form-control shadow-sm">
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="registro-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                            <input type="password" id="registro-senha" class="form-control shadow-sm">
+                        </div>
+                        
+                        <div class="d-grid col-4 mx-auto mt-4">
+                            <button id="submit-registro" class="btn btn-outline-primary rounded-pill shadow-sm">Registrar</button>
+                        </div>
                     </div>
-                    
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
-                    </div>
-                    
-                    <div class="d-grid col-4 mx-auto mt-4">
-                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 3</button>
-                    </div>
-                </form>
-
-                <form class="slider-item" data-slider-index="4">   
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
-                    </div>
-                    
-                    <div class="mb-2">
-                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
-                    </div>
-                    
-                    <div class="d-grid col-4 mx-auto mt-4">
-                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 4</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -109,46 +74,6 @@
 {% endblock %}
 
 {% block script %}
-<script>
-    $(document).ready(function() {
-        function activateIndex(parent, index) {
-            $(parent).find(".slider-button").each((_, button) => {
-                let buttonIndex = $(button).attr("data-slider-index");
-                $(button).toggleClass("sb-active", buttonIndex == index);
-            });
-            
-            let numIndex = parseInt(index);
-
-            $(parent).find(".slider-item").each((_, item) => {
-                let itemIndex = $(item).attr("data-slider-index");
-                let numItemIndex = parseInt(itemIndex);
-                let move = numItemIndex - numIndex;
-
-                $(item)
-                    .toggleClass("si-move-left", move < 0)
-                    .toggleClass("si-move-right", move > 0)
-                    .toggleClass("si-show", move == 0);
-            });
-        }
-
-        // set --si-vertical-translate
-        $(".slider-item").each((_, item) => {
-            let index = $(item).attr("data-slider-index");
-            let numIndex = parseInt(index);
-
-            $(item).css("--si-vertical-translate", -(numIndex - 1));
-        })
-
-        // ativar o index 1 no documento inteiro
-        activateIndex(document, 1);
-
-        for (let controller of $(".slider-control")) {
-            for (let button of $(controller).find(".slider-button")) {
-                $(button).click(() => {
-                    activateIndex(controller, $(button).attr("data-slider-index"));
-                });
-            }
-        }
-    })
-</script>
+<script src="/static/js/slider.js"></script>
+<script src="/static/js/login.js"></script>
 {% endblock %}

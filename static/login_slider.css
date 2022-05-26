@@ -27,22 +27,22 @@
 }
 
 .slider-control .slider-item {
-    --si-vertical-translate: 0; /* this will be set on javascript */
-    --si-vertical-translate-percent: calc(100% * var(--si-vertical-translate));
     opacity: 0;
-    transform: translate(0, var(--si-vertical-translate-percent));
+    transform: translateX(0);
     transition: opacity ease 300ms, transform ease 300ms;
 }
 
 .slider-control .slider-item.si-move-left {
-    transform: translate(-100%, var(--si-vertical-translate-percent));
+    pointer-events: none;
+    transform: translate(-100%);
 }
 
 .slider-control .slider-item.si-move-right {
-    transform: translate(100%, var(--si-vertical-translate-percent));
+    pointer-events: none;
+    transform: translate(100%);
 }
 
 .slider-control .slider-item.si-show {
     opacity: 1;
-    /* transform inherited from .slider-item */
+    transform: translateX(0);
 }
