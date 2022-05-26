@@ -11,41 +11,94 @@
         <div class="row justify-content-center mt-5">
             <h1 class="display-3 mb-4 lh-1 fw-semibold text-center font-roboto">Bem vindo <br> de novo!</h1>
     
-            <div class="col-md-4">
+            <div class="col-md-4 slider-control">
 
-                <div class="container slider-control">
+                <div class="container">
 					<div class="row p-2 justify-content-center">
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button">Login</button>
-                                <!-- <a href="/login" class="btn-auth-page active">Login</a> -->
+                                <button class="slider-button" data-slider-index="1">Botão 1</button>
                             </div>
                         </div>
                         <div class="col ps-0 pe-0">
                             <div class="d-grid">
-                                <button class="slider-button">Registrar</button>
-                                <!-- <a href="/registrar" class="btn-auth-page inactive">Registrar</a> -->
+                                <button class="slider-button" data-slider-index="2">Botão 2</button>
+                            </div>
+                        </div>
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <button class="slider-button" data-slider-index="3">Botão 3</button>
+                            </div>
+                        </div>
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <button class="slider-button" data-slider-index="4">Botão 4</button>
                             </div>
                         </div>
                     </div>
-
-                    <div class="slider-faker">
-                    </div>
 				</div>
 
-                <form method="GET" id="form-login">   
+                <form class="slider-item" data-slider-index="1">   
                     <div class="mb-2">
-                        <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                        <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
+                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
                     </div>
-    
+                    
                     <div class="mb-2">
-                        <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                        <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
+                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
+                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
                     </div>
-    
+                    
                     <div class="d-grid col-4 mx-auto mt-4">
-                        <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 1</button>
+                    </div>
+                </form>
+
+                <form class="slider-item" data-slider-index="2">   
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
+                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
+                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
+                    </div>
+                    
+                    <div class="d-grid col-4 mx-auto mt-4">
+                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 2</button>
+                    </div>
+                </form>
+
+                <form class="slider-item" data-slider-index="3">   
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
+                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
+                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
+                    </div>
+                    
+                    <div class="d-grid col-4 mx-auto mt-4">
+                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 3</button>
+                    </div>
+                </form>
+
+                <form class="slider-item" data-slider-index="4">   
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Email</label>
+                        <input type="email" class="form-control shadow-sm" name="email" autocomplete="email" placeholder="Seu email" value="teste@gmail.com">
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="form-label fs-5 mb-1 ms-2">Senha</label>
+                        <input type="password" class="form-control shadow-sm" name="senha" autocomplete="current-password" placeholder="Sua senha" value="teste">
+                    </div>
+                    
+                    <div class="d-grid col-4 mx-auto mt-4">
+                        <button type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Form 4</button>
                     </div>
                 </form>
             </div>
@@ -58,22 +111,43 @@
 {% block script %}
 <script>
     $(document).ready(function() {
+        function activateIndex(parent, index) {
+            $(parent).find(".slider-button").each((_, button) => {
+                let buttonIndex = $(button).attr("data-slider-index");
+                $(button).toggleClass("sb-active", buttonIndex == index);
+            });
+            
+            let numIndex = parseInt(index);
+
+            $(parent).find(".slider-item").each((_, item) => {
+                let itemIndex = $(item).attr("data-slider-index");
+                let numItemIndex = parseInt(itemIndex);
+                let move = numItemIndex - numIndex;
+
+                $(item)
+                    .toggleClass("si-move-left", move < 0)
+                    .toggleClass("si-move-right", move > 0)
+                    .toggleClass("si-show", move == 0);
+            });
+        }
+
+        // set --si-vertical-translate
+        $(".slider-item").each((_, item) => {
+            let index = $(item).attr("data-slider-index");
+            let numIndex = parseInt(index);
+
+            $(item).css("--si-vertical-translate", -(numIndex - 1));
+        })
+
+        // ativar o index 1 no documento inteiro
+        activateIndex(document, 1);
+
         for (let controller of $(".slider-control")) {
-            let buttons = $(controller).find(".slider-button");
-
-            buttons.each((index, buttonElement) => {
-                $(buttonElement).click(() => {
-                    buttons.each((otherIndex, otherButton) => {
-                        if (otherIndex != index) {
-                            // resetar outros botões
-                            $(otherButton).toggleClass("sb-active", false);
-                        }
-                    });
-
-                    // animar este botão
-                    $(buttonElement).toggleClass("sb-active", true);
-                })
-            })
+            for (let button of $(controller).find(".slider-button")) {
+                $(button).click(() => {
+                    activateIndex(controller, $(button).attr("data-slider-index"));
+                });
+            }
         }
     })
 </script>
