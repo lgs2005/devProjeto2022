@@ -1,9 +1,12 @@
-from flask import request, redirect, render_template, flash
+from http.client import BAD_REQUEST
+import re
+from flask import request, redirect, render_template, flash, abort, jsonify
 from flask_login import current_user, login_user, logout_user
 
 from modelos import Usuario
 from init import bcrypt, db
 
+emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
 def rota_login():
     """
@@ -12,25 +15,49 @@ def rota_login():
     Template utilizado: 'login.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
-    if current_user.is_authenticated:
-        # Se assume que o usuário já está logado. 
-        return redirect('/')
 
-    email = request.args.get('email')
-    senha = request.args.get('senha')
+    if request.method == "GET":
+        if current_user.is_authenticated:
+            return redirect('/')
+        else:
+            return render_template('login.html')
+    
+    elif request.method == "POST":
+        dados: dict[str, str] = request.get_json();
 
-    if '' not in (email, senha) and None not in (email, senha):
+        if (type(dados) != dict):
+            abort(BAD_REQUEST)
+        
+        if (("email" not in dados) or ("senha" not in dados)):
+            abort(BAD_REQUEST)
+
+        email = dados["email"]
+        senha = dados["senha"]
+        sucesso = False
+        erro = "none";
+
+        # acho que não é necessário validar o email e a senha aqui
+        # ja que isto já é feito durante o registro, então seria
+        # impossível fazer login com email e senha inválidos de qualquer
+        # jeito
+
         usuario: Usuario = Usuario.query.filter_by(email=email).first()
 
         if usuario == None:
-            flash('Este usuário não existe.', 'danger')
+            erro = "Este usuário não existe."
         elif not bcrypt.check_password_hash(usuario.pwhash, senha):
-            flash('Senha incorreta.', 'danger')
+            erro = "Senha incorreta."
         else:
-            login_user(usuario)
-            return redirect('/')
+            if current_user.is_authenticated:
+                logout_user()
 
-    return render_template('login.html', tituloPagina='Login')
+            login_user(usuario)
+            sucesso = True
+
+        return jsonify({
+            'sucesso': sucesso,
+            'erro': erro,
+        })
 
 
 def rota_registro():
@@ -40,37 +67,56 @@ def rota_registro():
     Template utilizado: 'registro.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
-    if current_user.is_authenticated:
-        # Se assume que o usuário já está logado. 
-        return redirect('/')
+    if request.method == "GET":
+        return redirect("/login")
 
-    nome = request.args.get('nome')
-    email = request.args.get('email')
-    senha = request.args.get('senha')
+    elif request.method == "POST":
+        dados: dict[str, str] = request.get_json()
 
-    erro = None
+        if (type(dados) != dict):
+            abort(BAD_REQUEST)
 
-    if '' not in (nome, email, senha) and None not in (nome, email, senha):
-        if Usuario.query.filter_by(email=email).first() != None:
-            flash('Este usuário já existe.', 'info')
+        # se qualquer um destes não existir, será abortado
+        for campo in ["email", "senha", "nome"]:
+            if campo not in dados:
+                abort(BAD_REQUEST)
+
+        email = dados["email"]
+        senha = dados["senha"]
+        nome = dados["nome"]
+        sucesso = False
+        erro = "none";
+
+        if (not emailPattern.fullmatch(email)):
+            erro = "E-mail inválido."
+        elif (senha == ""):
+            erro = "Senha inválida."
         else:
-            pwhash = bcrypt.generate_password_hash(senha) \
-				.decode('utf-8', 'ignore')
-				
-            novo_usuario = Usuario(
-                nome=nome,
-                email=email,
-                pwhash=pwhash,
-            )
+            if Usuario.query.filter_by(email=email).first() != None:
+                erro = "Este usuário já existe."
+            else:
+                pwhash = bcrypt.generate_password_hash(senha) \
+                    .decode('utf-8', 'ignore')
+                    
+                novo_usuario = Usuario(
+                    nome=nome,
+                    email=email,
+                    pwhash=pwhash,
+                )
 
-            db.session.add(novo_usuario)
-            db.session.commit()
+                db.session.add(novo_usuario)
+                db.session.commit()
 
-            login_user(novo_usuario)
+                if current_user.is_authenticated:
+                    logout_user()
 
-            return redirect('/')
-
-    return render_template('registro.html', tituloPagina='Cadastro', erro=erro)
+                login_user(novo_usuario)
+                sucesso = True
+        
+        return jsonify({
+            'sucesso': sucesso,
+            'erro': erro,
+        })
 
 
 def rota_logout():
@@ -83,7 +129,16 @@ def rota_logout():
 
 def adicionar_rotas():
     return {
-        '/registrar': rota_registro,
-        '/login': rota_login,
+
+        '/login': {
+            'methods': ["POST", "GET"],
+            'view_func': rota_login
+        },
+
+        '/registrar': {
+            'methods': ["POST", "GET"],
+            'view_func': rota_registro
+        },
+
         '/logout': rota_logout,
     }

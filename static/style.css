@@ -2,22 +2,3 @@
 .font-roboto {
     font-family: 'Roboto', sans-serif;
 }
-
-/* animação botão switch (login/registrar) */
-.animated-divider {
-    height: 2px;
-    width: 50%;
-    background-color: black
-}
-
-/* Ao clicar, a linha vai para a esquerda (abaixo do botão login) */
-.to-left {
-    transform: translateX(0%);
-    transition: ease-in-out .2s;
-}
-
-/* Ao clicar, a linha vai para a direita (abaixo do botão registrar) */
-.to-rigth {
-    transform: translateX(100%);
-    transition: ease-in-out .2s;
-}

@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="/static/login_slider.css">
+{% endblock %}
+
 {% block conteudo %}
 
 <div class="d-flex">
@@ -8,79 +12,61 @@
             <div class="col-lg-5">
                 <h2 class="display-3 mb-5 lh-1 fw-semibold text-center font-roboto">Welcome to <br> OnTrack Pages</h2>
     
+            <div class="col-md-4 slider-control">
+
                 <div class="container">
-                    <!-- Botão switch (login/registrar) -->
-                    <div class="col text-center">
-                        <div class="row">
-                            <div class="col pb-2" id="login-clickable-area">
-                                ENTRAR
-                            </div>
-                            <div class="col pb-2" id="registrar-clickable-area">
-                                REGISTRAR
+					<div class="row p-2 justify-content-center">
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <button class="slider-button" data-slider-index="1">Login</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="animated-divider" id="animated-divider"></div>
+                        <div class="col ps-0 pe-0">
+                            <div class="d-grid">
+                                <button class="slider-button" data-slider-index="2">Registrar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="container flash-messages pt-3">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </div>
+				</div>
 
-                <div class="row">
-                    <div class="col" id="coluna-form-login">
-                        <form method="GET" id="form-login">   
-                            <div class="mb-2">
-                                <label for="email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                                <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
-                            </div>
-            
-                            <div class="mb-2">
-                                <label for="senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                                <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="current-password" placeholder="Sua senha">
-                            </div>
-            
-                            <div class="d-grid col-4 mx-auto mt-4">
-                                <button id="botao-login" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="col visually-hidden" id="coluna-form-registrar">
-                        <form method="GET" id="form-registrar">
-                            <div class="mb-2">
-                                <label for="input-nome" class="form-label fs-5 mb-1 ms-2">Nome</label>
-                                <input type="text" class="form-control shadow-sm" id="input-nome" name="nome" placeholder="Seu nome de usuário">
-                            </div>
+                <div class="d-grid">
+                    <div class="slider-item" style="grid-area: 1/1;" data-slider-index="1">   
+                        <div class="mb-2">
+                            <label for="login-email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                            <input type="email" id="login-email" class="form-control shadow-sm" autocomplete="email" value="teste@gmail.com">
+                        </div>
                         
-                            <div class="mb-2">
-                                <label for="input-email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                                <input type="email" class="form-control shadow-sm" id="input-email" name="email" autocomplete="email" placeholder="Seu email">
-                            </div>
-            
-                            <div class="mb-2">
-                                <label for="input-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                                <input type="password" class="form-control shadow-sm" id="input-senha" name="senha" autocomplete="new-password" placeholder="Sua senha">
-                            </div>
-            
-                            <div class="d-grid col-4 mx-auto mt-4">
-                                <button id="botao-registro" type="submit" class="btn btn-outline-primary rounded-pill shadow-sm">Registrar</button>
-                            </div>
-                        </form>
+                        <div class="mb-2">
+                            <label for="login-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                            <input type="password" id="login-senha" class="form-control shadow-sm" autocomplete="current-password" value="teste">
+                        </div>
+                        
+                        <div class="d-grid col-4 mx-auto mt-4">
+                            <button id="submit-login" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                        </div>
                     </div>
-                </div>                            
+
+                    <div class="slider-item" style="grid-area: 1/1;" data-slider-index="2">   
+                        <div class="mb-2">
+                            <label for="registro-email" class="form-label fs-5 mb-1 ms-2">Email</label>
+                            <input type="email" id="registro-email" class="form-control shadow-sm" autocomplete="email">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="registro-nome" class="form-label fs-5 mb-1 ms-2">Nome</label>
+                            <input type="text" id="registro-nome" class="form-control shadow-sm">
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="registro-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
+                            <input type="password" id="registro-senha" class="form-control shadow-sm">
+                        </div>
+                        
+                        <div class="d-grid col-4 mx-auto mt-4">
+                            <button id="submit-registro" class="btn btn-outline-primary rounded-pill shadow-sm">Registrar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -92,5 +78,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="/static/js/botao_switch.js"></script>
+<script src="/static/js/slider.js"></script>
+<script src="/static/js/login.js"></script>
 {% endblock %}

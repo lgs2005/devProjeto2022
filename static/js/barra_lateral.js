@@ -13,6 +13,7 @@ $(function () {
     function createPagesList(paginas) {
         for (let pagina of paginas) {
             lin = `<li class="mb-2">${pagina.nome}</li>`;
+            
             if (pagina.favorito) {
                 $("#listaPaginasFavoritas").append(lin);
             } else {
