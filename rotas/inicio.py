@@ -16,7 +16,9 @@ def rota_inicio():
 def rota_default():
     """
     Rota default.
-    Esta rota só existe para o usuário poder acessar o site normalmente sem ter "POR FAVOR ENTRE EM SUA CONTA PARA VISUALIZAR ESTA PÁGINA" na sua primeira vez.
+    Esta rota só existe para o usuário poder acessar o site normalmente 
+    sem ter "POR FAVOR ENTRE EM SUA CONTA PARA VISUALIZAR ESTA PÁGINA" 
+    na sua primeira vez.
     """
     return redirect('/inicio' if current_user.is_authenticated else '/login')
 
