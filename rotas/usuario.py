@@ -8,6 +8,10 @@ from init import bcrypt, db
 
 emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
+# esse back-end ta meio nebuloso
+# nao daria pra fazer a autenticacao do usuario na mesma rota?
+# login e registrar na mesma rota
+
 def rota_login():
     """
     Rota para login do usuário, recebe nome, email e senha.
@@ -23,7 +27,7 @@ def rota_login():
             return render_template('login.html')
     
     elif request.method == "POST":
-        dados: dict[str, str] = request.get_json();
+        dados: dict[str, str] = request.get_json()
 
         if (type(dados) != dict):
             abort(BAD_REQUEST)
@@ -34,7 +38,7 @@ def rota_login():
         email = dados["email"]
         senha = dados["senha"]
         sucesso = False
-        erro = "none";
+        erro = "none"
 
         # acho que não é necessário validar o email e a senha aqui
         # ja que isto já é feito durante o registro, então seria
@@ -64,7 +68,7 @@ def rota_registro():
     """
     Rota para registro de um novo usuário, recebe nome, email e senha.
 
-    Template utilizado: 'registro.html'.
+    Template utilizado: 'login.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
     if request.method == "GET":
@@ -85,7 +89,7 @@ def rota_registro():
         senha = dados["senha"]
         nome = dados["nome"]
         sucesso = False
-        erro = "none";
+        erro = "none"
 
         if (not emailPattern.fullmatch(email)):
             erro = "E-mail inválido."
