@@ -8,9 +8,6 @@ from utils import requerir_acesso, abrir_pagina
 from modelos import Pagina
 
 
-PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
-
-
 def rota_retornar_conteudo(id: int = None):
     '''
     Rota retornar conteúdo.
