@@ -3,7 +3,9 @@ from http.client import UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR
 from flask import abort
 
 from modelos import Compartilhamento, Pagina, Usuario
-from conteudo import PASTA_DE_PAGINAS
+
+
+PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
 
 
 def requerir_acesso(usuario: Usuario, pagina: Pagina):
