@@ -31,7 +31,7 @@ $(function() {
 
 	// ativar o index 1 no documento inteiro assim que carregar a página
 	// index 1 -> Login
-	activateIndex(document, 1);
+	activateIndex($("html"), 1);
 
 	for (let controller of $(".slider-control")) {
 		for (let button of $(controller).find(".slider-button")) {
