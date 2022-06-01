@@ -2,6 +2,7 @@ from http.client import UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR
 
 from flask import abort
 
+from init import caminho_base
 from modelos import Compartilhamento, Pagina, Usuario
 
 

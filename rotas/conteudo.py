@@ -3,8 +3,7 @@ from http.client import OK
 from flask import make_response, request
 from flask_login import current_user
 
-from init import caminho_base
-from utils import requerir_acesso, abrir_pagina
+from .utils import requerir_acesso, abrir_pagina
 from modelos import Pagina
 
 
