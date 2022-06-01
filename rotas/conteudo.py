@@ -1,11 +1,13 @@
-from http.client import OK
+from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
 
-from flask import make_response, request
+from flask import make_response, request, abort
 from flask_login import current_user
 
 from init import caminho_base
-from utils import requerir_acesso, abrir_pagina
-from modelos import Pagina
+from modelos import Usuario, Pagina, Compartilhamento
+
+
+PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
 
 
 def rota_retornar_conteudo(id: int = None):
@@ -57,3 +59,34 @@ def adicionar_rotas():
             'methods': ['POST']
         }
     }
+
+def requerir_acesso(usuario: Usuario, pagina: Pagina):
+    '''
+    Requerir acesso à uma página.
+
+    Recebe Usuario e Página.
+    Retorna "Acesso não autorizado", caso não existe um 
+    compartilhamento de páginas.
+    '''
+    if pagina.id_usuario != usuario.id:
+        compartilhamento = Compartilhamento.query \
+            .filter_by(usuario=usuario, pagina=pagina).first()
+        if compartilhamento == None:
+            abort(UNAUTHORIZED, 'Você não tem acesso a esta página.')
+    return True
+
+
+def abrir_pagina(pagina: Pagina, modo: str):
+    '''
+    Abrir página.
+    
+    Recebe Página e modo (write ou read).
+    '''
+    try:
+        return open(f'{PASTA_DE_PAGINAS}/{pagina.caminho}.json', mode=modo)
+    except FileNotFoundError:
+        if modo == 'w':
+            return abrir_pagina(pagina, 'x')
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
