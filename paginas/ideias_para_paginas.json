@@ -1,0 +1,23 @@
+{
+    "nome": "Página",
+    "conteudo": [
+        {
+            "tipo": "Calendário",
+            "datas": [
+                {"dia": 0, "nome": "avaliacao", "cor": "verde"},
+                {"dia": 1650499200, "nome": "Tiradentes", "cor": "laranja"},
+                {"dia": 1650499200, "nome": "Sábado Letivo", "cor": "cinza"}
+        
+            ]
+        },
+        {
+            "tipo": "Lista",
+            "estilo": "Ordenada"
+        },
+        {
+            "tipo": "Nota Simples",
+            "assunto": "Opiniões Jogo da semana passada",
+            "conteúdo": ""
+        }
+    ]
+}
