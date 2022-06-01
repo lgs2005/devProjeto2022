@@ -1,20 +1,25 @@
 $(function() {
 	// https://www.w3resource.com/javascript/form/email-validation.php
 	const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+	
+	$("#login-email").on("input", () => {
+		console.log('input clicado;')
+	})
 
 	$("#submit-login").on("click", () => {
 		let email = $("#login-email").val().toString();
 		let senha = $("#login-senha").val().toString();
+		let error = $("#container-erros-email");
 
-		console.log("login", email, senha);
-
-		if (email == "")
-			console.log("Digite um email."); // cada um desses devia mostrar um erro
-		else if (!emailPattern.test(email))
+		if (email == "") {
+			error.text("Preencha o campo email.");
+			$("#login-email").addClass("is-invalid");
+			console.log("Email vazio.");
+		} else if (!emailPattern.test(email)) {
 			console.log("Email inválido.");
-		else if (senha == "")
+		} else if (senha == "") {
 			console.log("Digite uma senha.");
-		else {
+		} else {
 			// fazer o login aqui ?
 			$.ajax({
 				url: '/login',
