@@ -1,10 +1,19 @@
 $(function() {
 	// https://www.w3resource.com/javascript/form/email-validation.php
 	const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-	
-	$("#login-email").on("input", () => {
-		console.log('input clicado;')
-	})
+	const limparErrosDe = [
+		"#login-email",
+		"#login-senha",
+		"#registro-nome",
+		"#registro-email",
+		"#registro-senha",
+	]
+
+	for (let id of limparErrosDe) {
+		$(id).on("input", () => {
+			$(id).removeClass("is-invalid");
+		});
+	}
 
 	$("#submit-login").on("click", () => {
 		let email = $("#login-email").val().toString();
