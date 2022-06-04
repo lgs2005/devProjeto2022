@@ -30,17 +30,19 @@
 
                 <div class="d-grid">
                     <div class="slider-item" style="grid-area: 1/1;" data-slider-index="1"> 
-                        <!-- Login form    -->
+                        
+                        <!-- Login form -->
                         <div class="mb-2">
                             <label for="login-email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                            <input type="email" id="login-email" class="form-control shadow-sm" autocomplete="email" value="teste@gmail.com">
-                            <div class="invalid-feedback" id="container-erros-email">
+                            <input type="email" id="login-email" class="form-control shadow-sm" placeholder="Seu email." value="teste@gmail.com">
+                            <div class="invalid-feedback" id="login-email-erro">
                             </div>
                         </div>
                         
                         <div class="mb-2">
                             <label for="login-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                            <input type="password" id="login-senha" class="form-control shadow-sm" autocomplete="current-password" value="teste">
+                            <input type="password" id="login-senha" class="form-control shadow-sm" placeholder="Sua senha.">
+                            <div class="invalid-feedback" id="login-senha-erro"></div>
                         </div>
                         
                         <div class="d-grid col-4 mx-auto mt-4">
@@ -49,20 +51,24 @@
                     </div>
 
                     <div class="slider-item" style="grid-area: 1/1;" data-slider-index="2">
-                        <!-- Register form -->
+
+                        <!-- Registro form -->
                         <div class="mb-2">
                             <label for="registro-nome" class="form-label fs-5 mb-1 ms-2">Nome</label>
-                            <input type="text" id="registro-nome" class="form-control shadow-sm" placeholder="Seu nome de usuário">
+                            <input type="text" id="registro-nome" class="form-control shadow-sm" placeholder="Seu nome de usuário.">
+                            <div class="invalid-feedback" id="registro-nome-erro"></div>
                         </div>
 
                         <div class="mb-2">
                             <label for="registro-email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                            <input type="email" id="registro-email" class="form-control shadow-sm" autocomplete="email" placeholder="Seu email">
+                            <input type="email" id="registro-email" class="form-control shadow-sm" placeholder="Seu email.">
+                            <div class="invalid-feedback" id="registro-email-erro"></div>
                         </div>
                         
                         <div class="mb-2">
                             <label for="registro-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                            <input type="password" id="registro-senha" class="form-control shadow-sm" placeholder="Sua senha">
+                            <input type="password" id="registro-senha" class="form-control shadow-sm" placeholder="Sua senha.">
+                            <div class="invalid-feedback" id="registro-senha-erro"></div>
                         </div>
                         
                         
@@ -76,14 +82,9 @@
     </div>
 </div>
 
-<!-- problemas:
-- A validação reinicia a página; 
-- não mais.
-- tem que mostrar os erro ali sla ne -->
-
 {% endblock %}
 
 {% block script %}
 <script src="/static/js/slider.js"></script>
 <script src="/static/js/login.js"></script>
-{% endblock %}
+ {% endblock %}

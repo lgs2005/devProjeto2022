@@ -1,49 +1,53 @@
 from http.client import BAD_REQUEST
 import re
-from flask import request, redirect, render_template, flash, abort, jsonify
+from flask import request, redirect, render_template, abort, jsonify
 from flask_login import current_user, login_user, logout_user
 
 from modelos import Usuario
 from init import bcrypt, db
 
-emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
-# esse back-end ta meio nebuloso
-# nao daria pra fazer a autenticacao do usuario na mesma rota?
-# login e registrar na mesma rota
+emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
 def rota_login():
     """
     Rota para login do usuário, recebe nome, email e senha.
 
+    Foi feita uma separação entre erros que o usuário pode cometer; o
+    JavaScript ficou responsável por aqueles erros mais "genéricos":
+        -> Email vazio;
+        -> Senha vazia;
+        -> Email inválido (com base em um padrão web).
+    
+    O Python (back-end) ficou responsável por informações que só podem
+    ser validadas após o envio do formulário:
+        -> Usuário não existe (email não está no banco de dados);
+        -> Senha incorreta (usuário existe porém senha está incorreta).
+
     Template utilizado: 'login.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
 
+    if current_user.is_authenticated:
+        return redirect('/inicio')
+
     if request.method == "GET":
-        if current_user.is_authenticated:
-            return redirect('/')
-        else:
-            return render_template('login.html')
+        return render_template('login.html')
     
     elif request.method == "POST":
-        dados: dict[str, str] = request.get_json()
+        fields: dict[str, str] = request.get_json()
 
-        if (type(dados) != dict):
+        if (type(fields) != dict):
             abort(BAD_REQUEST)
         
-        if (("email" not in dados) or ("senha" not in dados)):
+        if (("email" not in fields) or ("senha" not in fields)):
             abort(BAD_REQUEST)
 
-        email = dados["email"]
-        senha = dados["senha"]
-        sucesso = False
-        erro = "none"
+        email = fields["email"]
+        senha = fields["senha"]
 
-        # acho que não é necessário validar o email e a senha aqui
-        # ja que isto já é feito durante o registro, então seria
-        # impossível fazer login com email e senha inválidos de qualquer
-        # jeito
+        sucesso: bool = False
+        erro: str = "none"
 
         usuario: Usuario = Usuario.query.filter_by(email=email).first()
 
@@ -57,7 +61,6 @@ def rota_login():
 
             login_user(usuario)
             sucesso = True
-
         return jsonify({
             'sucesso': sucesso,
             'erro': erro,
@@ -68,54 +71,64 @@ def rota_registro():
     """
     Rota para registro de um novo usuário, recebe nome, email e senha.
 
+    Foi feita uma separação entre erros que o usuário pode cometer; o
+    JavaScript ficou responsável por aqueles erros mais "genéricos":
+        -> Email vazio;
+        -> Senha vazia;
+        -> Nome de usuário vazio;
+        -> Email inválido (com base em um padrão web).
+    
+    O Python (back-end) ficou responsável por informações que só podem
+    ser validadas após o envio do formulário:
+        -> Usuário já existe (email já cadastrado no banco de dados);
+
     Template utilizado: 'login.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
+    if current_user.is_authenticated:
+        return redirect('/inicio')
+
     if request.method == "GET":
-        return redirect("/login")
+        return render_template('login.html')
 
     elif request.method == "POST":
-        dados: dict[str, str] = request.get_json()
+        fields: dict[str, str] = request.get_json()
 
-        if (type(dados) != dict):
+        if (type(fields) != dict):
             abort(BAD_REQUEST)
 
-        # se qualquer um destes não existir, será abortado
-        for campo in ["email", "senha", "nome"]:
-            if campo not in dados:
-                abort(BAD_REQUEST)
+        if (("email" not in fields) or ("senha" not in fields) or ("nome" not in fields)):
+            abort(BAD_REQUEST)
 
-        email = dados["email"]
-        senha = dados["senha"]
-        nome = dados["nome"]
-        sucesso = False
+        email = fields["email"]
+        senha = fields["senha"]
+        nome = fields["nome"]
+
+        sucesso: bool = False
         erro = "none"
+        
 
-        if (not emailPattern.fullmatch(email)):
-            erro = "E-mail inválido."
-        elif (senha == ""):
-            erro = "Senha inválida."
+        if Usuario.query.filter_by(email=email).first() != None:
+            erro = "Este usuário já existe."
+
+        elif (not emailPattern.fullmatch(email)):
+            erro = "Email inválido."
+
         else:
-            if Usuario.query.filter_by(email=email).first() != None:
-                erro = "Este usuário já existe."
-            else:
-                pwhash = bcrypt.generate_password_hash(senha) \
-                    .decode('utf-8', 'ignore')
-                    
-                novo_usuario = Usuario(
-                    nome=nome,
-                    email=email,
-                    pwhash=pwhash,
-                )
+            pwhash = bcrypt.generate_password_hash(senha) \
+                .decode('utf-8', 'ignore')
+                
+            novo_usuario = Usuario(
+                nome=nome,
+                email=email,
+                pwhash=pwhash,
+            )
 
-                db.session.add(novo_usuario)
-                db.session.commit()
+            db.session.add(novo_usuario)
+            db.session.commit()
 
-                if current_user.is_authenticated:
-                    logout_user()
-
-                login_user(novo_usuario)
-                sucesso = True
+            login_user(novo_usuario)
+            sucesso = True
         
         return jsonify({
             'sucesso': sucesso,
