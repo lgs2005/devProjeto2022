@@ -90,22 +90,6 @@ def adicionar_rotas():
         }
     }
 
-def requerir_acesso(usuario: Usuario, pagina: Pagina):
-    '''
-    Requerir acesso à uma página.
-
-    Recebe Usuario e Página.
-    Retorna "Acesso não autorizado", caso não existe um 
-    compartilhamento de páginas.
-    '''
-    if pagina.id_usuario != usuario.id:
-        compartilhamento = Compartilhamento.query \
-            .filter_by(usuario=usuario, pagina=pagina).first()
-        if compartilhamento == None:
-            abort(UNAUTHORIZED, 'Você não tem acesso a esta página.')
-    return True
-
-
 def abrir_pagina(pagina: Pagina, modo: str):
     '''
     Abrir página.
