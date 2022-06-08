@@ -25,5 +25,9 @@ def adicionar_rotas(rotas):
 adicionar_rotas(ROTAS)
 
 if __name__ == '__main__':
+    import paginas
+    print(paginas.arquivo_existe("teste"))
+    print(paginas.arquivo_existe("nao"))
+
     db.create_all()
     app.run(debug=True)

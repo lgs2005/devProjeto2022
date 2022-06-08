@@ -3,26 +3,56 @@ from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
 from flask import make_response, request, abort
 from flask_login import current_user
 
-from init import caminho_base
 from modelos import Usuario, Pagina, Compartilhamento
+from paginas import reservar_arquivo
+from rotas.utils import requer_login, validar_objeto
+from init import db
 
-
-PASTA_DE_PAGINAS = f'{caminho_base}/paginas'
-
-
-def rota_retornar_conteudo(id: int = None):
+def requerir_acesso(usuario: Usuario, pagina: Pagina):
     '''
-    Rota retornar conteúdo.
+    Requerir acesso à uma página.
 
-    Recebe id: inteiro.
-    Modo de leitura -> Read.
-    Se o usuário não tiver acesso a esta página,
-    é retornado um erro 404.
+    Recebe Usuario e Página.
+    Retorna "Acesso não autorizado", caso não existe um 
+    compartilhamento de páginas.
     '''
-    usuario = current_user
+    if pagina.id_usuario != usuario.id:
+        compartilhamento = Compartilhamento.query \
+            .filter_by(usuario=usuario, pagina=pagina).first()
+        if compartilhamento == None:
+            abort(UNAUTHORIZED, 'Você não tem acesso a esta página.')
+    return True
+
+#       #
+# ROTAS #
+#       #
+
+@requer_login
+def rota_criar_pagina():
+    dados = validar_objeto(request.get_json(), {
+        'nome': str
+    })
+
+    nome: str = dados['nome']
+    arquivo = reservar_arquivo()
+
+    if arquivo == None:
+        abort(INTERNAL_SERVER_ERROR)
+
+    nova_pagina = Pagina(nome=nome, usuario_id=current_user.id, caminho=arquivo)
+
+    db.session.add(nova_pagina)
+    db.session.commit()
+
+    return OK
+
+@requer_login
+def rota_conteudo(id: int = None):
+    '''
+    documentação FODA
+    '''
     pagina: Pagina = Pagina.query.get_or_404(id)
-
-    requerir_acesso(usuario, pagina)
+    requerir_acesso(current_user, pagina)
 
     arquivo_pagina = abrir_pagina(pagina, 'r')
     conteudo = arquivo_pagina.read()
