@@ -16,8 +16,7 @@ def rota_retornar_conteudo(id: int = None):
 
     Recebe id: inteiro.
     Modo de leitura -> Read.
-    Se o usuário não tiver acesso a esta página,
-    é retornado um erro 404.
+    Se a pagina nao existir é retornado um erro 404.
     '''
     usuario = current_user
     pagina: Pagina = Pagina.query.get_or_404(id)

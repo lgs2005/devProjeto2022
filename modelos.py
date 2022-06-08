@@ -22,7 +22,7 @@ class Usuario(db.Model, UserMixin):
 class Pagina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.Text, nullable=False)
-    caminho = db.Column(db.Text, nullable=False)
+    caminho = db.Column(db.Text, nullable=False) # .paginas/calendario
     favorito = db.Column(db.Boolean, nullable=False, default=False)
 
     id_usuario = db.Column(
