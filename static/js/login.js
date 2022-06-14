@@ -15,27 +15,36 @@ $(function() {
 			$(field).removeClass("is-invalid");
 		});
 	}
+	
+	function setErro(campo, erro) {
+		$(campo + "-erro").text(erro)
+		$(campo).toggleClass("is-invalid", true)
+	}
+
 
 	$("#submit-login").on("click", () => {
 		let email = $("#login-email").val().toString();
 		let senha = $("#login-senha").val().toString();
-
-		let emailErro = $("#login-email-erro");
-		let senhaErro = $("#login-senha-erro");
+		let erro = false
+		
+		function setErro(campo, erro) {
+			$("login-" + campo + "-erro").text(erro)
+			$(campo).toggleClass("is-invalid", true)
+			erro = true
+		}
 
 		if (email == "") {
-			emailErro.text("Preencha o campo email.");
-			$("#login-email").addClass("is-invalid");
+			setErro("email", "Preencha o campo email.");
 		} 
 		else if (!emailPattern.test(email)) {
-			emailErro.text("Email inválido.");
-			$("#login-email").addClass("is-invalid");
-		} 
+			setErro("email", "Email inválido.");
+		}
+		
 		if (senha == "") {
-			senhaErro.text("Preencha o campo senha.");
-			$("#login-senha").addClass("is-invalid");
-		} 
-		else {
+			setErro("senha", "Preencha o campo senha.");
+		}
+		
+		if (!erro) {
 			$.ajax({
 				url: '/login',
 				method: "POST",
@@ -72,28 +81,30 @@ $(function() {
 		let email = $("#registro-email").val().toString();
 		let senha = $("#registro-senha").val().toString();
 		let nome = $("#registro-nome").val().toString();
-
-		let emailErro = $("#registro-email-erro");
-		let senhaErro = $("#registro-senha-erro");
-		let nomeErro = $("#registro-nome-erro");
+		let erro = false
+		
+		function setErro(campo, erro) {
+			$("registro-" + campo + "-erro").text(erro)
+			$(campo).toggleClass("is-invalid", true)
+			erro = true
+		}
 
 		if (email == "") {
-			emailErro.text("Preencha o campo email.");
-			$("#registro-email").addClass("is-invalid");
+			setErro("email", "Preencha o campo email.");
 		}
 		else if (!emailPattern.test(email)) {
-			emailErro.text("Email inválido.");
-			$("#registro-email").addClass("is-invalid");
+			setErro("email", "Email inválido.");
 		}
+		
 		if (senha == "") {
-			senhaErro.text("Preencha o campo senha.");
-			$("#registro-senha").addClass("is-invalid");
+			setErro("senha", "Preencha o campo senha.");
 		}
+		
 		if (nome == "") {
-			nomeErro.text("Preencha o campo nome.");
-			$("#registro-nome").addClass("is-invalid");
+			setErro("nome", "Preencha o campo nome.");
 		}
-		else {
+		
+		if (!erro) {
 			$.ajax({
 				url: '/registrar',
 				method: "POST",
