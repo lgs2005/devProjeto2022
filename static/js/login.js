@@ -2,35 +2,19 @@ $(function() {
 	// https://www.w3resource.com/javascript/form/email-validation.php
 	const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	
-	const removerErros = [
-		"#login-email",
-		"#login-senha",
-		"#registro-nome",
-		"#registro-email",
-		"#registro-senha",
-	]
-
-	for (let field of removerErros) {
-		$(field).on("input", () => {
-			$(field).removeClass("is-invalid");
-		});
-	}
+	$(".form-control").on("input", function() {
+		$(this).removeClass("is-invalid");
+	});
 	
-	function setErro(campo, erro) {
-		$(campo + "-erro").text(erro)
-		$(campo).toggleClass("is-invalid", true)
-	}
-
-
-	$("#submit-login").on("click", () => {
+	$("#submit-login").on("click", function() {
 		let email = $("#login-email").val().toString();
 		let senha = $("#login-senha").val().toString();
-		let erro = false
+		let houveErro = false
 		
 		function setErro(campo, erro) {
-			$("login-" + campo + "-erro").text(erro)
-			$(campo).toggleClass("is-invalid", true)
-			erro = true
+			$("#login-" + campo + "-erro").text(erro);
+			$("#login-" + campo).addClass("is-invalid");
+			houveErro = true;
 		}
 
 		if (email == "") {
@@ -43,10 +27,10 @@ $(function() {
 		if (senha == "") {
 			setErro("senha", "Preencha o campo senha.");
 		}
-		
-		if (!erro) {
+
+		if (!houveErro) {
 			$.ajax({
-				url: '/login',
+				url: '/api/login',
 				method: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({
@@ -61,11 +45,9 @@ $(function() {
 						location.pathname = '/inicio'
 					} else {
 						if (resultado.erro == "Senha incorreta.") {
-							senhaErro.text(resultado.erro)
-							$("#login-senha").addClass("is-invalid");
+							setErro("senha", resultado.erro)
 						} else {
-							emailErro.text(resultado.erro)
-							$("#login-email").addClass("is-invalid");
+							setErro("email", resultado.erro)
 						}
 					}
 				},
@@ -77,16 +59,16 @@ $(function() {
 		}
 	})
 
-	$("#submit-registro").on("click", () => {
+	$("#submit-registro").on("click", function() {
 		let email = $("#registro-email").val().toString();
 		let senha = $("#registro-senha").val().toString();
 		let nome = $("#registro-nome").val().toString();
-		let erro = false
+		let houveErro = false
 		
 		function setErro(campo, erro) {
-			$("registro-" + campo + "-erro").text(erro)
-			$(campo).toggleClass("is-invalid", true)
-			erro = true
+			$("#registro-" + campo + "-erro").text(erro)
+			$("#registro-" + campo).toggleClass("is-invalid", true)
+			houveErro = true
 		}
 
 		if (email == "") {
@@ -104,12 +86,13 @@ $(function() {
 			setErro("nome", "Preencha o campo nome.");
 		}
 		
-		if (!erro) {
+		if (!houveErro) {
 			$.ajax({
-				url: '/registrar',
+				url: '/api/login',
 				method: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({
+					'registro': true,
 					'email': email,
 					'senha': senha,
 					'nome': nome,
@@ -121,8 +104,7 @@ $(function() {
 						// redirecionar para '/inicio'
 						location.pathname = '/inicio'
 					} else {
-						emailErro.text(resultado.erro)
-						$("#registro-email").addClass("is-invalid");
+						setErro("email", resultado.erro)
 					}
 				},
 
