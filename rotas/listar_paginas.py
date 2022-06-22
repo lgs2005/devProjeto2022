@@ -6,12 +6,9 @@ from modelos import Pagina
 
 @login_required
 def rota_listar_paginas():
-    usuario = current_user
-
-    paginas = Pagina.query.filter_by(usuario=usuario).all()
+    paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=current_user).all()
     resposta = jsonify([p.json() for p in paginas])
-    
-    resposta.headers.add("Access-Control-Allow-Origin", "*")
+
     return resposta
 
 

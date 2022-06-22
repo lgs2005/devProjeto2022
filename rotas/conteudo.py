@@ -1,6 +1,6 @@
-from http.client import GONE, OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
+from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
 
-from flask import make_response, request, abort
+from flask import request, abort
 from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
