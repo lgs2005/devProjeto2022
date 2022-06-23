@@ -11,6 +11,8 @@ emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[
 
 def rota_login():
     """
+    Rota login utilizada para renderizar o HTML.
+
     Template utilizado: 'login.html'.
     Caso o usuário já estiver logado, será redirecionado para '/inicio'.
     """
@@ -63,7 +65,7 @@ def rota_api_login():
             sucesso = True
             usuario_final = usuario
     else:
-        # se for um registro, precisamos validar informações extras
+        # se for um registro, precisamos validar informações extras, o nome do usuario
         dados = validar_objeto(dados, {
             'nome': str,
         })

@@ -6,6 +6,12 @@ from modelos import Pagina
 
 @login_required
 def rota_listar_paginas():
+    """Lista as páginas do usuário
+    da seção atual.
+
+    Returns:
+        Response: objeto json.
+    """
     paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=current_user).all()
     resposta = jsonify([p.json() for p in paginas])
 
