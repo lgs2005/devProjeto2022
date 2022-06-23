@@ -68,7 +68,7 @@ def adicionar_rotas():
             'view_func': rota_api_criar_pagina,
         },
 
-        '/api/conteudo': {
+        '/api/conteudo/<int:id>': {
             'methods': ["GET", "POST"],
             'view_func': rota_api_conteudo,
         }
