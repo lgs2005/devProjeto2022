@@ -115,12 +115,12 @@ def rota_perfil_usuario():
     Rota serve a página do usuário caso esteja logado
     """
     if current_user.is_authenticated:
-        return render_template('user.html')
+        return render_template('perfil.html')
     else:
         return redirect('/login')
 
 
-def rota_retornar_usuario() -> None:
+def rota_retornar_usuario():
     """
     Retorna o JSON de um usuário de acordo com o email
 
@@ -154,9 +154,12 @@ def adicionar_rotas():
             'view_func': rota_logout
         },
 
-        '/perfil'
+        '/perfil': {
+            "methods": ["GET"],
+            "view_func": rota_perfil_usuario
+        },
 
-        '/retornar_usuario/': {
+        '/retornar_usuario': {
             'methods': ["POST"],
             'view_func': rota_retornar_usuario
         }
