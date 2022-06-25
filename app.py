@@ -10,7 +10,7 @@ def hello_world():
 
 def adicionar_rotas(rotas):
     '''
-    Adiciona/Cadastra as rotas ao objeto app.
+    Adiciona as rotas ao objeto app.
     Quando a rota possui mais de uma opção de cadastramento,
     por exemplo 'view_func' e 'method', esta função adiciona-a 
     mesmo assim.

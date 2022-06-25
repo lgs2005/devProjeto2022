@@ -23,6 +23,7 @@ def requer_login(rota):
 
     return wrapper
 
+
 def validar_objeto(dados: any, validar: 'dict[str, type]') -> 'dict[str, any]':
     """Recebe dados em json (dict) e dicionário com chaves
     que devem estar contidas nos dados.

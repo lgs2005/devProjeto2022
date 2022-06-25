@@ -8,6 +8,7 @@ from paginas import caminho_para_pagina, reservar_arquivo
 from rotas.utils import requer_login, validar_objeto
 from init import db
 
+
 @requer_login
 def rota_api_criar_pagina():
     dados = validar_objeto(request.get_json(), {
@@ -26,6 +27,7 @@ def rota_api_criar_pagina():
     db.session.commit()
 
     return OK
+
 
 @requer_login
 def rota_api_conteudo(id: int = None):
@@ -60,6 +62,7 @@ def rota_api_conteudo(id: int = None):
             abort(NOT_FOUND)
         except OSError:
             abort(INTERNAL_SERVER_ERROR)
+
 
 def adicionar_rotas():
     return {
