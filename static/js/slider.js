@@ -19,16 +19,6 @@ $(function() {
 		});
 	}
 
-	// set --si-index for styling
-	// não entendi o porque disso, 
-	// de resto ta ok, show de bola, supimpa
-	$(".slider-item").each((_, item) => {
-		let index = $(item).attr("data-slider-index");
-		let numIndex = parseInt(index);
-
-		$(item).css("--si-index", numIndex);
-	})
-
 	// ativar o index 1 no documento inteiro assim que carregar a página
 	// index 1 -> Login
 	activateIndex($("html"), 1);

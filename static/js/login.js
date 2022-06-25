@@ -12,8 +12,8 @@ $(function() {
 		let houveErro = false
 		
 		function setErro(campo, erro) {
-			$("#login-" + campo + "-erro").text(erro);
-			$("#login-" + campo).addClass("is-invalid");
+			$(`#login-${campo}-erro`).text(erro);
+			$(`#login-${campo}`).addClass("is-invalid");
 			houveErro = true;
 		}
 
@@ -66,8 +66,8 @@ $(function() {
 		let houveErro = false
 		
 		function setErro(campo, erro) {
-			$("#registro-" + campo + "-erro").text(erro)
-			$("#registro-" + campo).toggleClass("is-invalid", true)
+			$(`#registro-${campo}-erro`).text(erro)
+			$(`#registro-${campo}`).toggleClass("is-invalid", true)
 			houveErro = true
 		}
 

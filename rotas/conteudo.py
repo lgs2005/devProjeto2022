@@ -1,12 +1,13 @@
-from http.client import GONE, OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
+from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
 
-from flask import make_response, request, abort
+from flask import request, abort
 from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
 from paginas import caminho_para_pagina, reservar_arquivo
 from rotas.utils import requer_login, validar_objeto
 from init import db
+
 
 @requer_login
 def rota_api_criar_pagina():
@@ -26,6 +27,7 @@ def rota_api_criar_pagina():
     db.session.commit()
 
     return OK
+
 
 @requer_login
 def rota_api_conteudo(id: int = None):
@@ -61,6 +63,7 @@ def rota_api_conteudo(id: int = None):
         except OSError:
             abort(INTERNAL_SERVER_ERROR)
 
+
 def adicionar_rotas():
     return {
         '/api/criar_pagina': {
@@ -68,7 +71,7 @@ def adicionar_rotas():
             'view_func': rota_api_criar_pagina,
         },
 
-        '/api/conteudo': {
+        '/api/conteudo/<int:id>': {
             'methods': ["GET", "POST"],
             'view_func': rota_api_conteudo,
         }
