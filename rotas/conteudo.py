@@ -77,7 +77,7 @@ def rota_api_conteudo(id: int = None):
 
     if request.method == "GET":
         try:
-            arquivo_pagina = open(pagina.caminho, 'r')
+            arquivo_pagina = open(caminho_para_pagina(pagina.caminho_id), 'r')
             return arquivo_pagina.read()
         except FileNotFoundError:
             abort(NOT_FOUND)
@@ -86,7 +86,7 @@ def rota_api_conteudo(id: int = None):
 
     elif request.method == "POST":
         try:
-            arquivo_pagina = open(pagina.caminho, 'w')
+            arquivo_pagina = open(caminho_para_pagina(pagina.caminho_id), 'w')
             arquivo_pagina.truncate()
             arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
             return OK
