@@ -1,6 +1,6 @@
 from functools import wraps
 from http.client import BAD_REQUEST, UNAUTHORIZED
-from flask import abort
+from flask import abort, redirect
 from flask_login import current_user
 
 
@@ -14,6 +14,19 @@ def requer_login(rota):
             abort(UNAUTHORIZED)
         
         return rota(*args, **kwargs)
+
+    return wrapper
+
+def pagina_requer_login(rota):
+    """Decorador para checar se o usuário está
+    autenticado/sessão ativa. Senão, é redirecionada para a página de login.
+    """
+    @wraps(rota)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect('/login')
+        else:
+            return rota(*args, **kwargs)
 
     return wrapper
 

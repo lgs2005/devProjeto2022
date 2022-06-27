@@ -2,6 +2,7 @@ import rotas.conteudo
 import rotas.listar_paginas
 import rotas.usuario
 import rotas.inicio
+import rotas.perfil
 
 
 ROTAS = {
@@ -9,4 +10,5 @@ ROTAS = {
     **rotas.listar_paginas.adicionar_rotas(),
     **rotas.inicio.adicionar_rotas(),
     **rotas.conteudo.adicionar_rotas(),
+    **rotas.perfil.adicionar_rotas(),
 }

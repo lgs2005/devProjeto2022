@@ -18,7 +18,7 @@ def rota_listar_paginas():
 
     return resposta
 
-
+@pagina_requer_login
 def rota_teste_barra_lateral():
     return render_template('barra_lateral.html')
 

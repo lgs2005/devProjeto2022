@@ -3,7 +3,6 @@ from init import app, db
 
 @app.route('/hello')
 def hello_world():
-    # https://www.youtube.com/watch?v=dwDns8x3Jb4
     return '<img src=\'https://media1.giphy.com/media/mf8UbIDew7e8g/200.gif\'/>' + \
         ' '.join(['<p>around the world</p>'] * 144)
 
@@ -26,4 +25,4 @@ adicionar_rotas(ROTAS)
 
 if __name__ == '__main__':
     db.create_all()
-    app.run(debug=True, )
+    app.run(debug=True)

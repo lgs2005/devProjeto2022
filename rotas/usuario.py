@@ -9,6 +9,7 @@ from rotas.utils import validar_objeto
 
 emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
+
 def rota_login():
     """
     Rota login utilizada para renderizar o HTML.
@@ -112,33 +113,7 @@ def rota_logout():
     """
     logout_user()
     return redirect('/inicio')
-
-
-def rota_perfil_usuario():
-    """
-    Rota serve a página do usuário caso esteja logado
-    """
-    if current_user.is_authenticated:
-        return render_template('perfil.html')
-    else:
-        return redirect('/login')
-
-
-def rota_retornar_usuario():
-    """
-    Retorna o JSON de um usuário de acordo com o email
-
-    TODO:
-    Talvez seja uma boa ideia verificar se o usuário está logado
-    no sistema ou não.
-    """
-
-    #HARD CODE
-    email = "teste@gmail.com"
-    user : Usuario = Usuario.query.filter_by(email=email).first()
-    u_json = user.json()
-    return jsonify(u_json)
-
+    
 
 def adicionar_rotas():
     return {
@@ -157,14 +132,4 @@ def adicionar_rotas():
             'methods': ["GET", "POST"],
             'view_func': rota_logout
         },
-
-        '/perfil': {
-            "methods": ["GET"],
-            "view_func": rota_perfil_usuario
-        },
-
-        '/retornar_usuario': {
-            'methods': ["POST"],
-            'view_func': rota_retornar_usuario
-        }
     }
