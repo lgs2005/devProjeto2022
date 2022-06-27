@@ -18,6 +18,13 @@ class Usuario(db.Model, UserMixin):
     def __str__(self) -> str:
         return f'<User {self.id}, {self.nome}, {self.email}, {self.pwhash}>'
 
+    def json(self) -> dict:
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "email": self.email
+        }
+
 
 class Pagina(db.Model):
     id = db.Column(db.Integer, primary_key=True)

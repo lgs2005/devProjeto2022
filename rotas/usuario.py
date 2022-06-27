@@ -109,12 +109,38 @@ def rota_logout():
     return redirect('/')
 
 
+def rota_perfil_usuario():
+    """
+    Rota serve a página do usuário caso esteja logado
+    """
+    if current_user.is_authenticated:
+        return render_template('perfil.html')
+    else:
+        return redirect('/login')
+
+
+def rota_retornar_usuario():
+    """
+    Retorna o JSON de um usuário de acordo com o email
+
+    TODO:
+    Talvez seja uma boa ideia verificar se o usuário está logado
+    no sistema ou não.
+    """
+
+    #HARD CODE
+    email = "teste@gmail.com"
+    user : Usuario = Usuario.query.filter_by(email=email).first()
+    u_json = user.json()
+    return jsonify(u_json)
+
+
 def adicionar_rotas():
     return {
 
         '/login': {
             'methods': ["GET"],
-            'view_func': rota_login,
+            'view_func': rota_login
         },
 
         '/api/login': {
@@ -124,6 +150,16 @@ def adicionar_rotas():
 
         '/logout': {
             'methods': ["GET", "POST"],
-            'view_func': rota_logout,
+            'view_func': rota_logout
         },
+
+        '/perfil': {
+            "methods": ["GET"],
+            "view_func": rota_perfil_usuario
+        },
+
+        '/retornar_usuario': {
+            'methods': ["POST"],
+            'view_func': rota_retornar_usuario
+        }
     }
