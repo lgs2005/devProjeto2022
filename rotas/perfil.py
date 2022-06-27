@@ -5,13 +5,15 @@ from http.client import NOT_FOUND
 from modelos import Usuario
 from rotas.utils import pagina_requer_login
 
-
+# perfil -> outros usuários
+# conta -> sua conta
 @pagina_requer_login
 def rota_perfil_usuario(user_id=None):
     """
     Rota serve a página do usuário caso esteja logado
     """
     return render_template('perfil.html', user_id=user_id)
+
 
 @pagina_requer_login
 def rota_perfil_default():
