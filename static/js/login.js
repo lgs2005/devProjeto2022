@@ -1,6 +1,6 @@
 $(function() {
 	// https://www.w3resource.com/javascript/form/email-validation.php
-	const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+	const emailPattern = /^[a-zA-Z0-9.!#$%&"*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	
 	$(".form-control").on("input", function() {
 		$(this).removeClass("is-invalid");
@@ -30,19 +30,19 @@ $(function() {
 
 		if (!houveErro) {
 			$.ajax({
-				url: '/api/login',
+				url: "/api/login",
 				method: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({
-					'email': email,
-					'senha': senha,
+					"email": email,
+					"senha": senha,
 				}),
 
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.sucesso) {
-						// redirecionar para '/inicio'
-						location.pathname = '/inicio'
+						// redirecionar para "/inicio"
+						location.pathname = "/inicio"
 					} else {
 						if (resultado.erro == "Senha incorreta.") {
 							setErro("senha", resultado.erro)
@@ -88,21 +88,21 @@ $(function() {
 		
 		if (!houveErro) {
 			$.ajax({
-				url: '/api/login',
+				url: "/api/login",
 				method: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({
-					'registro': true,
-					'email': email,
-					'senha': senha,
-					'nome': nome,
+					"registro": true,
+					"email": email,
+					"senha": senha,
+					"nome": nome,
 				}),
 
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.sucesso) {
-						// redirecionar para '/inicio'
-						location.pathname = '/inicio'
+						// redirecionar para "/inicio"
+						location.pathname = "/inicio"
 					} else {
 						setErro("email", resultado.erro)
 					}

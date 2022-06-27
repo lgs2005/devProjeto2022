@@ -5,14 +5,8 @@ from flask_login import current_user
 
 
 def requer_login(rota):
-    """Checa se o usuário está
-    autenticado (login).
-
-    Args:
-        rota (function): rota a ser tratada.
-
-    Returns:
-        decorador.
+    """Decorador para checar se o usuário está
+    autenticado/sessão ativa.
     """
     @wraps(rota)
     def wrapper(*args, **kwargs):
@@ -25,16 +19,17 @@ def requer_login(rota):
 
 
 def validar_objeto(dados: any, validar: 'dict[str, type]') -> 'dict[str, any]':
-    """Recebe dados em json (dict) e dicionário com chaves
-    que devem estar contidas nos dados.
+    """Recebe dados em json (dict) e dicionário 
+    com chaves que devem estar contidas nos dados,
+    realizando a verificação necessária.
 
     Args:
         dados (any): dados json do front-end.
-        validar (dict[str, type]): dados que devem estar presentes em <dados>.
+        validar (dict[str, type]): dados que devem estar presentes em ´dados´.
 
     Returns:
-        abort(BAD REQUEST - 400): caso inválido.
-        dict[str, any]: caso válido.
+        BAD REQUEST (cod. 400): inválido.
+        dados (any): válido.
     """
 
     if type(dados) != dict:

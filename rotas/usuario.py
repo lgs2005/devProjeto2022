@@ -24,8 +24,7 @@ def rota_login():
 
 
 def rota_api_login():
-    """
-    Rota para login e regitro de usuários.
+    """Rota para login e regitro de usuários.
     Para login, recebe email e senha.
     Para registro, recebe também o nome.
 
@@ -42,6 +41,9 @@ def rota_api_login():
 
     Caso o usuário já estiver logado, mas enviar informações de login válidas,
     sua sessão será sobrescrita.
+    
+    Returns:
+        Response (jsonify): resposta em json contendo ´sucesso´ e ´erro´ 
     """
 
     dados = validar_objeto(request.get_json(), {
@@ -104,9 +106,12 @@ def rota_api_login():
 def rota_logout():
     """
     Rota para logout do usuário.
+
+    Returns:
+        redirect -> ´/inicio´
     """
     logout_user()
-    return redirect('/')
+    return redirect('/inicio')
 
 
 def adicionar_rotas():

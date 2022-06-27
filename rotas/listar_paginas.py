@@ -1,16 +1,17 @@
 from flask import jsonify, render_template
-from flask_login import current_user, login_required
+from flask_login import current_user
 
 from modelos import Pagina
+from rotas.utils import requer_login
 
 
-@login_required
+@requer_login
 def rota_listar_paginas():
-    """Lista as páginas do usuário
-    da seção atual.
+    """Lista as páginas do usuário da 
+    sessão atual.
 
     Returns:
-        Response: objeto json.
+        Response: objeto json com as páginas.
     """
     paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=current_user).all()
     resposta = jsonify([p.json() for p in paginas])

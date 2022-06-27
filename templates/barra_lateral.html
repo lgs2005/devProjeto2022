@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 
-<!-- As mensagens de erro vão aparecer aqui em cima, deixando meio zoado o layout -->
+{% block head %}
+<link rel="stylesheet" href="../static/bootstrap_accordion.css">
+{% endblock %}
 
 {% block conteudo %}
 <div class="d-flex flex-column flex-shrink-0 p-3 position-fixed shadow" style="width: 260px; height: 100%">
@@ -11,52 +13,91 @@
 
     <!-- Os botões ainda não estão animados -->
 
-    <ul class="list-unstyled ps-0">
+    <div class="accordion" id="accordionFlushExample">
         <!-- Páginas favoritas -->
-        <li class="pb-2">
-            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaFavoritasCollapse"
-                aria-expanded="false" aria-controls="listaFavoritasCollapse">
-                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas Favoritas
-            </a>
-
-            <div class="collapse" id="listaFavoritasCollapse">
-                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasFavoritas">
-                    <!-- Paginas aqui -->
-                </ul>
+        <div class="accordion-item p-2 border-0">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#listas-favoritas" aria-expanded="false" aria-controls="listas-favoritas">
+                    Páginas Favoritas
+                </button>
+            </h2>
+            <div id="listas-favoritas" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasFavoritas">
+                        <!-- Paginas aqui -->
+                    </ul>
+                </div>
             </div>
-        </li>
+        </div>
 
         <!-- Páginas privadas -->
-        <li class="pb-2">
-            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaPrivadasCollapse"
-                aria-expanded="false" aria-controls="listaPrivadasCollapse">
-                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas Privadas
-            </a>
-
-            <div class="collapse" id="listaPrivadasCollapse">
-                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasPrivadas">
-                    <!-- Paginas aqui -->
-                </ul>
+        <div class="accordion-item p-2 border-0">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#listas-privadas" aria-expanded="false" aria-controls="listas-privadas">
+                    Páginas Privadas
+                </button>
+            </h2>
+            <div id="listas-privadas" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasPrivadas">
+                        <!-- Paginas aqui -->
+                    </ul>
+                </div>
             </div>
-        </li>
+        </div>
 
+        <!-- Páginas -->
+        <div class="accordion-item p-2 border-0">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#listas-comuns" aria-expanded="false" aria-controls="listas-comuns">
+                    Páginas
+                </button>
+            </h2>
+            <div id="listas-comuns" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasComuns">
+                        <!-- Paginas aqui -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <!-- Páginas comuns (nem favoritas nem privadas) -->
-        <li class="pb-2">
-            <a class="pb-2 text-decoration-none text-dark fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#listaComunsCollapse"
-                aria-expanded="false" aria-controls="listaComunsCollapse">
-                <i class="bx-fw bx bx-chevron-right bx-sm"></i>Páginas
-            </a>
+    <button id="exibir-form-criar-pagina" type="button" class="btn btn-primary mt-4 p-2 rounded-pill fs-5" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">Nova página</button>
+</div>
 
-            <div class="collapse" id="listaComunsCollapse">
-                <ul class="list-unstyled pt-0 ms-4 ps-2" id="listaPaginasComuns">
-                    <!-- Paginas aqui -->
-                </ul>
-            </div>   
-        </li>
-    </ul>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Insira o nome de sua nova página</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-2">
+                        <label for="nome-pagina" class="form-label fs-5 mb-1 ms-2">Nome</label>
+                        <input type="text" id="nome-pagina" class="form-control shadow-sm"
+                            placeholder="Nome da página.">
+                        <div class="invalid-feedback" id="nome-pagina-erro">
+                        </div>
+                    </div>
 
-    <button id="criar-pagina" type="button" class="btn btn-primary">+ Página</button>
+                    <div class="d-grid col-4 mx-auto mt-4">
+                        <button type="button    " id="submit-criar-pagina"
+                            class="btn btn-outline-primary rounded-pill shadow-sm">Criar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -65,4 +106,4 @@
 
 <script src="/static/js/barra_lateral.js"></script>
 
-{% endblock %}  
+{% endblock %}
