@@ -37,7 +37,7 @@ def criar_arquivo_pagina() -> Union[str, None]:
             pagina.write("{\n}")
             pagina.close()
 
-            return caminho
+            return id
         except FileExistsError:
             continue
         except OSError: 
