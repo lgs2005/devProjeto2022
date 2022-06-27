@@ -1,0 +1,92 @@
+{
+    "nome": "Untitled",
+    "conteudo": [
+        {
+            "tipo": "calendario",
+            "largura": 100,
+            "altura": 100,
+            "marginX": 50,
+            "marginY": 50,
+            "eventos": [ // lista de objetos "evento"
+                // um objeto
+                {
+                    "data": "18/02/2005",
+                    "nome": "hmm",
+                    "descricao": "adivinha"
+                    // "icone": "link"
+                    // "cor": "azul",
+                },
+
+                // outro objeto
+                {
+                    "data": "31/06/2022",
+                    "nome": "prepare-se",
+                    "descricao": "..."
+                    // "icone": "link",
+                    // "cor": "azul",
+                    // etc
+                }
+            ]
+        },
+
+        {
+            "tipo": "nota",
+            "largura": 100,
+            "altura": 100,
+            "marginX": 50,
+            "marginY": 50,
+
+            "cor": "amarelo",
+            "texto": "lemuel ta aqui explicando pra mae dele pelo telefone como instalar o remote desktop to chrome por que caralhos farias isto lemuel"
+        },
+
+        {
+            "tipo": "tabela",
+            "largura": 100,
+            "altura": 100,
+            "marginX": 50,
+            "marginY": 50,
+
+            "colunas": [
+                "coluna 1",
+                "coluna 2",
+                "coluna 3",
+                "coluna 4"
+            ],
+
+            "linhas": [
+                "linha 1",
+                "linha 2",
+                "linha 3",
+                "linha 4"
+            ],
+
+            "dados": [ // lista de listas
+                [
+                    "c1l1", // coluna 1 linha 1
+                    "c2l1", // coluna 2 linha 1
+                    "c3l1", // ...
+                    "c4l1"
+                ],
+                [
+                    "c1l2", // coluna 1 linha 2
+                    "c2l2", // ...
+                    "c3l2",
+                    "c4l2"
+                ],
+                [
+                    "c1l3",
+                    "c2l3",
+                    "c3l3",
+                    "c4l3"
+                ],
+                [
+                    "c1l4",
+                    "c2l4",
+                    "c3l4",
+                    "c4l4"
+                ]
+            ]
+        }
+    ]
+}
