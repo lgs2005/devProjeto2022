@@ -4,7 +4,6 @@ from init import app, db
 @app.route('/hello')
 def hello_world():
     """Super Mario Rapper"""
-    # https://www.youtube.com/watch?v=dwDns8x3Jb4
     return '<img src=\'https://c.tenor.com/3fnHh1WgOIwAAAAC/rapping-mario-mario.gif\'/>'
 
 
