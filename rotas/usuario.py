@@ -44,7 +44,7 @@ def rota_api_login():
     sua sessão será sobrescrita.
     
     Returns:
-        Response (jsonify): resposta em json contendo ´sucesso´ e ´erro´ 
+        Response (jsonify): resposta em json contendo sucesso e erro.
     """
 
     dados = validar_objeto(request.get_json(), {
@@ -109,7 +109,7 @@ def rota_logout():
     Rota para logout do usuário.
 
     Returns:
-        redirect -> ´/inicio´
+        redirect -> `/inicio`
     """
     logout_user()
     return redirect('/inicio')

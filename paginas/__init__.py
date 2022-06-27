@@ -8,7 +8,7 @@ THIS_DIR = dirname(__file__)
 
 def caminho_para_pagina(id: str) -> str:
     """Cria um caminho absoluto para a página
-    no formato ´[PATH]/[identificação].json´
+    no formato `[PATH]/[identificação].json`
 
     Args:
         id (str): identificação hexadecimal.

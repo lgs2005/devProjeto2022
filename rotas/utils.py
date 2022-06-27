@@ -38,7 +38,7 @@ def validar_objeto(dados: any, validar: 'dict[str, type]') -> 'dict[str, any]':
 
     Args:
         dados (any): dados json do front-end.
-        validar (dict[str, type]): dados que devem estar presentes em ´dados´.
+        validar (dict[str, type]): dados que devem estar presentes em dados.
 
     Returns:
         BAD REQUEST (cod. 400): inválido.

@@ -15,7 +15,7 @@ def rota_api_criar_pagina():
     Recebe dados em json do front end: nome da página
 
     Returns:
-        Response (jsonify): resposta em json contendo ´sucesso´ e ´erro´.
+        Response (jsonify): resposta em json contendo sucesso e erro.
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
 
     """
