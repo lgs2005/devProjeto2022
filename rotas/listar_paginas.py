@@ -2,7 +2,7 @@ from flask import jsonify, render_template
 from flask_login import current_user
 
 from modelos import Pagina
-from rotas.utils import requer_login
+from rotas.utils import requer_login, pagina_requer_login
 
 
 @requer_login

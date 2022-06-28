@@ -8,13 +8,21 @@ $(function () {
         method: 'GET',
         dataType: 'json',
         success: function (paginas) {
-            for (let pagina of paginas) {
-                lin = `<li class='mb-2 botao-pagina' data-id-pagina='${pagina.id}'>${pagina.nome}</li>`;
-    
-                if (pagina.favorito) {
-                    $('#listaPaginasFavoritas').append(lin);
-                } else {
-                    $('#listaPaginasComuns').append(lin);
+            if ($.isEmptyObject(paginas)) {
+                noPagesYet = `<li class="text-white mt-2">Nenhuma página ainda...</li>`;
+                $('#listaPaginasFavoritas').append(noPagesYet);
+                $('#listaPaginasComuns').append(noPagesYet);
+                $('#listaPaginasPrivadas').append(noPagesYet);
+            }
+            else {
+                for (let pagina of paginas) {
+                    lin = `<li class='mb-2 botao-pagina' data-id-pagina='${pagina.id}'>${pagina.nome}</li>`;
+        
+                    if (pagina.favorito) {
+                        $('#listaPaginasFavoritas').append(lin);
+                    } else {
+                        $('#listaPaginasComuns').append(lin);
+                    }
                 }
             }
         },

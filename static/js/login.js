@@ -41,8 +41,7 @@ $(function() {
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.sucesso) {
-						// redirecionar para '/'
-						location.pathname = '/'
+						location.pathname = '/inicio'
 					} else {
 						if (resultado.erro == "Senha incorreta.") {
 							setErro("senha", resultado.erro)
@@ -101,8 +100,7 @@ $(function() {
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.sucesso) {
-						// redirecionar para '/'
-						location.pathname = '/'
+						location.pathname = '/inicio'
 					} else {
 						setErro("email", resultado.erro)
 					}
