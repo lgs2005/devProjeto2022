@@ -54,7 +54,7 @@ def rota_api_perfil_usuario(user_id=None):
 
 def adicionar_rotas():
     return {
-        '/perfil/<int:id>': {
+        '/perfil/<int:user_id>': {
             'view_func': rota_perfil_usuario,
             'methods': ["GET"],
         },
@@ -64,7 +64,7 @@ def adicionar_rotas():
             'methods': ["GET"],
         },
 
-        '/api/perfil/<int:id>': {
+        '/api/perfil/<int:user_id>': {
             'view_func': rota_api_perfil_usuario,
             'methods': ["GET"],
         }

@@ -12,5 +12,5 @@ def rota_default():
 
 def adicionar_rotas():
     return {
-        '/inicio': rota_default,
+        '/': rota_default,
     }
