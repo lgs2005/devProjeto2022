@@ -10,28 +10,25 @@
     <span id="email"></span>
 </main>
 
+<form>
+    <div class="mb-2">
+        <label for="alterar-senha-antiga" class="form-label fs-5 mb-1 ms-2">Senha antiga</label>
+        <input type="text" id="alterar-senha-antiga" class="form-control shadow-sm" placeholder="Sua senha antiga.">
+        <div class="invalid-feedback" id="alterar-senha-antiga-erro"></div>
+    </div>
+    <div class="mb-2">
+        <label for="alterar-senha" class="form-label fs-5 mb-1 ms-2">Nova senha</label>
+        <input type="text" id="alterar-senha" class="form-control shadow-sm" placeholder="Sua nova senha.">
+        <div class="invalid-feedback" id="alterar-senha-erro"></div>
+    </div>
+    <div class="d-grid col-4 mx-auto mt-4">
+        <button type="button" id="submit-password" class="btn btn-outline-primary rounded-pill shadow-sm">Alterar</button>
+    </div>
+</form>
+
 {% endblock %}
 
 {% block script %}
-<script>
-    $(function() {
-        let userid = "{{ user_id }}"
-
-        $.ajax({
-            url: "/api/perfil/" + userid,
-            method: "GET",
-
-            dataType: "json",
-            success: function(dados) {
-                $("#nome").text(dados.nome);
-                $("#email").text(dados.email);
-            },
-
-            error: function(err, errstr) {
-                // TODO: avisar erro ao usuario
-                // tbm vai aqui se o usuario não tiver acesso!
-            }
-        });
-    });
-</script>
+<script src="/static/js/perfil.js" data-usuario-id="{{ user_id }}"></script>
+<script src="/static/js/alterar_senha.js"></script>
 {% endblock %}

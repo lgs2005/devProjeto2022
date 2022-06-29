@@ -114,6 +114,22 @@ def rota_logout():
     logout_user()
     return redirect('/inicio')
     
+def rota_alterar_senha():
+    dados = validar_objeto(request.get_json(), {
+        'senha': str,
+        'senha_antiga': str,
+    })
+    usuario: Usuario = current_user
+    if not bcrypt.check_password_hash(usuario.pwhash, dados['senha_antiga']):
+        return "Senha incorreta."
+    else:
+        pwhash = bcrypt.generate_password_hash(dados['senha']) \
+                    .decode('utf-8', 'ignore')
+        usuario.pwhash = pwhash
+        db.session.commit()
+        return "Ok"
+    
+
 
 def adicionar_rotas():
     return {
@@ -132,4 +148,8 @@ def adicionar_rotas():
             'methods': ["GET", "POST"],
             'view_func': rota_logout
         },
+        '/alterar_senha': {
+            'methods': ["POST"],
+            'view_func': rota_alterar_senha
+        }
     }
