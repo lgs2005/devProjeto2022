@@ -23,7 +23,7 @@ $(function() {
 			setErro("senha", "Preencha o campo nova senha.");
 		}
 		else if (senha == senhaAntiga) {
-			setErro("senha", "Não pode ser a mesma senha")
+			setErro("senha", "Não pode ser a mesma senha.")
 		}
 
 		if (!houveErro) {
