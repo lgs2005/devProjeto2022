@@ -1,36 +1,51 @@
 $(function () {
+    // limpar erros em form
     $('.form-control').on('input', function() {
 		$(this).removeClass('is-invalid');
 	});
-    
-    $.ajax({
-        url: '/listar_paginas',
-        method: 'GET',
-        dataType: 'json',
-        success: function (paginas) {
-            if ($.isEmptyObject(paginas)) {
-                noPagesYet = `<li class="text-white mt-2">Nenhuma página ainda...</li>`;
-                $('#listaPaginasFavoritas').append(noPagesYet);
-                $('#listaPaginasComuns').append(noPagesYet);
-                $('#listaPaginasPrivadas').append(noPagesYet);
-            }
-            else {
-                for (let pagina of paginas) {
-                    lin = `<li class='mb-2 botao-pagina' data-id-pagina='${pagina.id}'>${pagina.nome}</li>`;
-        
-                    if (pagina.favorito) {
-                        $('#listaPaginasFavoritas').append(lin);
-                    } else {
-                        $('#listaPaginasComuns').append(lin);
+
+    function reloadPaginas() {
+        $.ajax({
+            url: '/listar_paginas',
+            method: 'GET',
+
+            dataType: 'json',
+            success: (paginas) => {
+                let listas = [
+                    '#listaPaginasFavoritas',
+                    '#listaPaginasComuns',
+                    '#listaPaginasPrivadas',
+                ]
+
+                for (let idLista of listas) {
+                    $(idLista).children().remove()
+                }
+
+                if ($.isEmptyObject(paginas)) {
+                    for (let idLista of listas) {
+                        $(idLista).append(`<li class="text-white mt-2">Nenhuma página ainda...</li>`)
                     }
                 }
-            }
-        },
-        error: function () {
-            alert('Erro ao ler dados, verifique o backend');
-        }
-    });
+                else {
+                    for (let pagina of paginas) {
+                        lin = `<li class='mb-2 botao-pagina' data-id-pagina='${pagina.id}'>${pagina.nome}</li>`;
+            
+                        if (pagina.favorito) {
+                            $('#listaPaginasFavoritas').append(lin);
+                        } else {
+                            $('#listaPaginasComuns').append(lin);
+                        }
+                    }
+                }
+            },
 
+            error: () => {
+                alert('Erro ao ler dados, verifique o backend');
+            }
+        })
+    }
+
+    reloadPaginas();
 
     $(document).on('click', '#submit-criar-pagina', function() {
         let nomePagina = $('#nome-pagina').val().toString();
@@ -85,5 +100,5 @@ $(function () {
                 // animação RIVE de um bonequinho
             }
         })
-    })   
+    })  
 });

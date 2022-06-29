@@ -4,7 +4,7 @@ from flask import request, abort, jsonify
 from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
-from paginas import criar_arquivo_pagina
+from paginas import criar_arquivo_pagina, caminho_para_pagina
 from rotas.utils import requer_login, validar_objeto
 from init import db
 
@@ -75,9 +75,11 @@ def rota_api_conteudo(id: int = None):
         if compartilhamento == None:
             abort(UNAUTHORIZED)
 
+    camingo = caminho_para_pagina(pagina.caminho_id)
+
     if request.method == "GET":
         try:
-            arquivo_pagina = open(caminho_para_pagina(pagina.caminho_id), 'r')
+            arquivo_pagina = open(camingo, 'r')
             return arquivo_pagina.read()
         except FileNotFoundError:
             abort(NOT_FOUND)
@@ -86,9 +88,10 @@ def rota_api_conteudo(id: int = None):
 
     elif request.method == "POST":
         try:
-            arquivo_pagina = open(caminho_para_pagina(pagina.caminho_id), 'w')
+            dados = request.get_data().decode('utf-8', 'ignore')
+            arquivo_pagina = open(camingo, 'w')
             arquivo_pagina.truncate()
-            arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
+            arquivo_pagina.write(dados)
             return OK
         except FileNotFoundError:
             abort(NOT_FOUND)
