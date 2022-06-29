@@ -1,10 +1,11 @@
+from os import abort
 import re
 from flask import request, redirect, render_template, jsonify
 from flask_login import current_user, login_user, logout_user
 
 from modelos import Usuario
 from init import bcrypt, db
-from rotas.utils import validar_objeto
+from rotas.utils import api_requer_login, validar_objeto
 
 
 emailPattern = re.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
@@ -114,20 +115,29 @@ def rota_logout():
     logout_user()
     return redirect('/inicio')
     
-def rota_alterar_senha():
+@api_requer_login
+def rota_api_alterar_senha():
+    usuario: Usuario = current_user
+    erro = None
     dados = validar_objeto(request.get_json(), {
         'senha': str,
         'senha_antiga': str,
     })
-    usuario: Usuario = current_user
+
+
     if not bcrypt.check_password_hash(usuario.pwhash, dados['senha_antiga']):
-        return "Senha incorreta."
+        erro = "Senha incorreta."
     else:
         pwhash = bcrypt.generate_password_hash(dados['senha']) \
                     .decode('utf-8', 'ignore')
+
         usuario.pwhash = pwhash
         db.session.commit()
-        return "Ok"
+
+    return {
+        'ok': erro == None,
+        'erro': erro,
+    }
     
 
 
@@ -148,8 +158,9 @@ def adicionar_rotas():
             'methods': ["GET", "POST"],
             'view_func': rota_logout
         },
+
         '/alterar_senha': {
             'methods': ["POST"],
-            'view_func': rota_alterar_senha
+            'view_func': rota_api_alterar_senha
         }
     }

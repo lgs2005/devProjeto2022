@@ -4,7 +4,7 @@ from flask import abort, redirect
 from flask_login import current_user
 
 
-def requer_login(rota):
+def api_requer_login(rota):
     """Decorador para checar se o usuário está
     autenticado/sessão ativa.
     """

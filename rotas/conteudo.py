@@ -5,11 +5,11 @@ from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
 from paginas import criar_arquivo_pagina, caminho_para_pagina
-from rotas.utils import requer_login, validar_objeto
+from rotas.utils import api_requer_login, validar_objeto
 from init import db
 
 
-@requer_login
+@api_requer_login
 def rota_api_criar_pagina():
     """Rota de criação de página.
     Recebe dados em json do front end: nome da página
@@ -45,7 +45,7 @@ def rota_api_criar_pagina():
     })
 
 
-@requer_login
+@api_requer_login
 def rota_api_conteudo(id: int = None):
     """Gerencia determinada página do usuário, passando o
     id da mesma.

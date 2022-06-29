@@ -15,34 +15,41 @@ $(function() {
 			houveErro = true;
 		}
 
+		if (senhaAntiga == "") {
+			setErro("senha-antiga", "Preencha o campo senha.")
+		}
+
 		if (senha == "") {
-			setErro("senha", "Preencha o campo senha.");
-		} 
+			setErro("senha", "Preencha o campo nova senha.");
+		}
+		else if (senha == senhaAntiga) {
+			setErro("senha", "Não pode ser a mesma senha")
+		}
 
 		if (!houveErro) {
 			$.ajax({
 				url: "/alterar_senha",
 				method: "POST",
+
 				contentType: "application/json",
 				data: JSON.stringify({
                     "senha_antiga": senhaAntiga,
 					"senha": senha,
 				}),
                 
+				dataType: "json",
 				success: (resultado) => {
-                    console.log(resultado)
-					if (resultado == "Ok") {
-                        alert("senha alterad")
+					if (resultado.ok) {
+                        alert("senha alterada")
                     }
                     else {
-                        alert(resultado)
                         setErro("senha_antiga", "Senha antiga incorreta.");
                     }
 
 				},
 
 				error: () => {
-					// ERRO DO SERVIDOR.
+					alert("Ocorreu um erro, verifique o backend!")
 				}
 			});
 		}
