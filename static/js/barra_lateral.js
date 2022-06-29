@@ -30,6 +30,24 @@ $(function () {
             alert('Erro ao ler dados, verifique o backend');
         }
     });
+    
+    
+    redirecionar_app = function(resultado) {
+        if (resultado.sucesso) {
+            location.pathname = '/teste_barra_lateral'
+        }
+    }
+
+
+    renderizar_pagina = function(pagina) {
+        $('.conteudo-principal').removeClass('bg-light').addClass('bg-secondary');
+        $('#titulo-pagina').text(pagina.titulo);
+        $('#conteudo-pagina').text(pagina.conteudo);
+    }
+
+    function redirecionar_pagina(pagina) {
+
+    }
 
 
     $(document).on('click', '#submit-criar-pagina', function() {
@@ -56,13 +74,10 @@ $(function () {
                 }),
 
                 dataType: 'json',
-                success: (resultado) => {
-                    if (resultado.sucesso) {
-                        location.pathname = '/teste_barra_lateral'
-                    }
-                },
+                success: rediredionar_app,
 
                 error: function() {
+                    alert('erro')
                     // animação RIVE de um bonequinho
                 }
             })
@@ -75,15 +90,13 @@ $(function () {
             url: `api/conteudo/${parseInt($(this).attr('data-id-pagina'))}`,
             method: 'GET',
 
-            dataType: 'text',
-            success:  function (pagina) {
-                pagina = JSON.parse(pagina);
-                console.log(pagina);
-            },
+            dataType: 'json',
+            success:  renderizar_pagina,
 
             error: function() {
                 // animação RIVE de um bonequinho
             }
         })
     })   
+
 });

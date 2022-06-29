@@ -4,7 +4,7 @@ from flask import request, abort, jsonify
 from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
-from paginas import criar_arquivo_pagina
+from paginas import criar_arquivo_pagina, caminho_para_pagina
 from rotas.utils import requer_login, validar_objeto
 from init import db
 
@@ -28,10 +28,12 @@ def rota_api_criar_pagina():
     arquivo = criar_arquivo_pagina()
     sucesso = False
 
+    print(arquivo)
+
     if arquivo == None:
         abort(INTERNAL_SERVER_ERROR)
 
-    nova_pagina = Pagina(nome=nome, id_usuario=current_user.id, caminho=arquivo)
+    nova_pagina = Pagina(nome=nome, id_usuario=current_user.id, caminho_id=arquivo)
 
     db.session.add(nova_pagina)
     db.session.commit()

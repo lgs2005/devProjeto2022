@@ -17,6 +17,7 @@ def requer_login(rota):
 
     return wrapper
 
+
 def pagina_requer_login(rota):
     """Decorador para checar se o usuário está
     autenticado/sessão ativa. Senão, é redirecionada para a página de login.
