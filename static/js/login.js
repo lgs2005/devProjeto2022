@@ -12,26 +12,15 @@ const camposForm = {
 	}
 }
 
-/**
- * @param {string[]} campos
- */
 function pegarValores(...campos) {
 	return campos.map((id) => $(id).val())
 }
 
-/**
- * @param {string} campo
- * @param {string} erro
- */
 function mostrarErro(campo, erro) {
 	$(campo).toggleClass("is-invalid", true)
 	$(campo + "-erro").text(erro)
 }
 
-/**
- * @param {string} campo
- * @param {() => string | undefined} teste
- */
 function testarPara(campo, teste) {
 	erro = teste();
 	if (erro != undefined) {
@@ -42,9 +31,6 @@ function testarPara(campo, teste) {
 	}
 }
 
-/**
- * @param {string[]} campos
- */
 function camposPreenchidos(...campos) {
 	let preenchidos = true
 	for (let campo of campos) {
@@ -56,7 +42,7 @@ function camposPreenchidos(...campos) {
 	return preenchidos
 }
 
-$(function() {
+jQuery(function($) {
 
 	$(".form-control").on("input", function() {
 		$(this).removeClass("is-invalid");
@@ -73,22 +59,33 @@ $(function() {
 		});
 
 		if (!houveErro) {
-			fazerLogin(email, senha)
-			.done((resultado) => {
-				if (resultado.sucesso) {
-					location.pathname = "/"
-				} else {
-					// deve ter maneira de melhorar isso, mas não to com vontade no momento
-					if (resultado.erro == "Senha incorreta.") {
-						mostrarErro(campos.senha, resultado.erro)
+			$.ajax({
+				url: "/api/login",
+				method: "POST",
+
+				contentType: "application/json",
+				data: JSON.stringify({
+					email: email,
+					senha: senha,
+				}),
+
+				sucesso: (resultado) => {
+					if (resultado.sucesso) {
+						location.pathname = "/"
 					} else {
-						mostrarErro(campos.email, resultado.erro)
+						// deve ter maneira de melhorar isso, mas não to com vontade no momento
+						if (resultado.erro == "Senha incorreta.") {
+							mostrarErro(campos.senha, resultado.erro)
+						} else {
+							mostrarErro(campos.email, resultado.erro)
+						}
 					}
-				}
-			})
-			.fail((sts, erro) => {
-				console.log("Erro ao fazer login: " + erro)
-				mostrarErro(campos.email, "Ocorreu um erro ao fazer login, tente novamente mais tarde.")
+				},
+
+				error: (_status, erro) => {
+					console.log("Erro ao fazer login: " + erro)
+					mostrarErro(campos.email, "Ocorreu um erro ao fazer login, tente novamente mais tarde.")
+				},
 			})
 		}
 	})
@@ -104,20 +101,31 @@ $(function() {
 		});
 
 		if (!houveErro) {
-			fazerRegistro(email, senha, nome)
-			
-				.done((resultado) => {
+			$.ajax({
+				url: "/api/login",
+				method: "POST",
+
+				contentType: "application/json",
+				data: JSON.stringify({
+					email: email,
+					senha: senha,
+					nome: nome,
+					registro: true,
+				}),
+
+				success: (resultado) => {
 					if (resultado.sucesso) {
 						location.pathname = '/'
 					} else {
 						mostrarErro(campos.email, resultado.erro)
 					}
-				})
+				},
 
-				.fail((sts, erro) => {
+				error: (_status, erro) => {
 					console.log("Erro ao fazer registro: " + erro)
 					mostrarErro(campos.email, "Ocorreu um erro ao fazer registro, tente novamente mais tarde.")
-				})
+				}
+			})
 		}
 	})
 })
