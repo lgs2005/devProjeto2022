@@ -110,10 +110,11 @@ def rota_logout():
     Rota para logout do usuário.
 
     Returns:
-        redirect -> `/inicio`
+        redirect -> `/`
     """
     logout_user()
-    return redirect('/inicio')
+    return redirect('/')
+
     
 @api_requer_login
 def rota_api_alterar_senha():
