@@ -9,13 +9,16 @@ def hello_world():
 
 
 
-app.errorhandler(WerkzeugHTTPException)(lambda e: f'<img src="https://http.cat/{e.code}"/>')
+@app.errorhandler(WerkzeugHTTPException)
+def error_cat(e: WerkzeugHTTPException):
+    return f'<img src="https://http.cat/{e.code}"/>', e.code
+
 @app.errorhandler(Exception)
-def get_error_cat(e: Exception):
+def internal_error_cat(e: Exception):
     print('\n\n')
     print(e)
     print('\n\n')
-    return f'<img src="https://http.cat/500"/>'
+    return f'<img src="https://http.cat/500"/>', 500
 
 def adicionar_rotas(rotas):
     '''
