@@ -1,11 +1,21 @@
 from rotas import ROTAS
 from init import app, db
+from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 @app.route('/hello')
 def hello_world():
     """Super Mario Rapper"""
     return '<img src=\'https://c.tenor.com/3fnHh1WgOIwAAAAC/rapping-mario-mario.gif\'/>'
 
+
+
+app.errorhandler(WerkzeugHTTPException)(lambda e: f'<img src="https://http.cat/{e.code}"/>')
+@app.errorhandler(Exception)
+def get_error_cat(e: Exception):
+    print('\n\n')
+    print(e)
+    print('\n\n')
+    return f'<img src="https://http.cat/500"/>'
 
 def adicionar_rotas(rotas):
     '''

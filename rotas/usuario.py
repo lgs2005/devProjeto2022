@@ -160,7 +160,7 @@ def adicionar_rotas():
             'view_func': rota_logout
         },
 
-        '/alterar_senha': {
+        '/api/alterar_senha': {
             'methods': ["POST"],
             'view_func': rota_api_alterar_senha
         }

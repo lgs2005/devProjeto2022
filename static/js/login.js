@@ -62,14 +62,14 @@ jQuery(function($) {
 			$.ajax({
 				url: "/api/login",
 				method: "POST",
-
 				contentType: "application/json",
 				data: JSON.stringify({
 					email: email,
 					senha: senha,
 				}),
 
-				sucesso: (resultado) => {
+				dataType: "json",
+				success: (resultado) => {
 					if (resultado.sucesso) {
 						location.pathname = "/"
 					} else {
@@ -104,7 +104,6 @@ jQuery(function($) {
 			$.ajax({
 				url: "/api/login",
 				method: "POST",
-
 				contentType: "application/json",
 				data: JSON.stringify({
 					email: email,
@@ -113,6 +112,7 @@ jQuery(function($) {
 					registro: true,
 				}),
 
+				dataType: "json",
 				success: (resultado) => {
 					if (resultado.sucesso) {
 						location.pathname = '/'
@@ -124,7 +124,7 @@ jQuery(function($) {
 				error: (_status, erro) => {
 					console.log("Erro ao fazer registro: " + erro)
 					mostrarErro(campos.email, "Ocorreu um erro ao fazer registro, tente novamente mais tarde.")
-				}
+				},
 			})
 		}
 	})

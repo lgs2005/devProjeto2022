@@ -1,6 +1,6 @@
 from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
 
-from flask import request, abort, jsonify
+from flask import request, abort, jsonify, make_response
 from flask_login import current_user
 
 from modelos import Pagina, Compartilhamento
@@ -94,7 +94,7 @@ def rota_api_conteudo(id: int = None):
             arquivo_pagina = open(camingo, 'w')
             arquivo_pagina.truncate()
             arquivo_pagina.write(dados)
-            return OK
+            return None, OK
         except FileNotFoundError:
             abort(NOT_FOUND)
         except OSError:
