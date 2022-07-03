@@ -78,13 +78,4 @@ class Compartilhamento(db.Model):
 
     def __str__(self):
         return f'<Compartilhamento {self.id_usuario}, {self.id_pagina}>'
-
-
-# if __name__ == '__main__':
-#     p = Pagina(id_usuario=1, nome='teste', conteudo='',
-#                data_exclusao=0, data_criacao=0, favorito=False)
-
-#     db.session.add(p)
-#     db.session.commit()
-
-# Selecione os comentários e digite: Ctrl + ;:
+        

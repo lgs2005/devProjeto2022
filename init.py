@@ -1,12 +1,16 @@
 import os
+from typing import TYPE_CHECKING
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-caminho_base = os.path.dirname(__file__)
+if TYPE_CHECKING:
+    import db_type_proxy
+    db: db_type_proxy.SQLAlchemy
 
+caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
 
 app.config['SECRET_KEY'] = b'1b86a0bc41f04a3fa76bef86ddde883b0a641dde57afa55e4dbe761cfa08c314'

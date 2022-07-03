@@ -1,10 +1,11 @@
-from flask import jsonify, render_template
+from flask import jsonify
 from flask_login import current_user
-
+from init import app
 from modelos import Pagina
-from rotas.utils import api_requer_login, pagina_requer_login
 
+from rotas.utils import api_requer_login
 
+@app.route("/api/listar_paginas", methods=["GET"])
 @api_requer_login
 def rota_listar_paginas():
     """Lista as páginas do usuário da 
@@ -13,19 +14,9 @@ def rota_listar_paginas():
     Returns:
         Response: objeto json com as páginas.
     """
-    paginas: 'list[Pagina]' = Pagina.query.filter_by(usuario=current_user).all()
+    paginas: 'list[Pagina]' = Pagina.query \
+        .filter_by(usuario=current_user).all()
+
     resposta = jsonify([p.json() for p in paginas])
 
     return resposta
-
-
-@pagina_requer_login
-def rota_teste_barra_lateral():
-    return render_template('barra_lateral.html')
-
-
-def adicionar_rotas():
-    return {
-        '/listar_paginas': rota_listar_paginas,
-        '/teste_barra_lateral': rota_teste_barra_lateral,
-    }

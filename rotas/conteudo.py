@@ -1,14 +1,15 @@
-from http.client import OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR, NOT_FOUND
+from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
-from flask import request, abort, jsonify, make_response
+from flask import abort, jsonify, request
 from flask_login import current_user
+from init import app, db
+from modelos import Compartilhamento, Pagina
+from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from modelos import Pagina, Compartilhamento
-from paginas import criar_arquivo_pagina, caminho_para_pagina
 from rotas.utils import api_requer_login, validar_objeto
-from init import db
 
 
+@app.route('/api/criar_pagina', methods=["POST"])
 @api_requer_login
 def rota_api_criar_pagina():
     """Rota de criação de página.
@@ -33,7 +34,8 @@ def rota_api_criar_pagina():
     if arquivo == None:
         abort(INTERNAL_SERVER_ERROR)
 
-    nova_pagina = Pagina(nome=nome, id_usuario=current_user.id, caminho_id=arquivo)
+    nova_pagina = Pagina(
+        nome=nome, id_usuario=current_user.id, caminho_id=arquivo)
 
     db.session.add(nova_pagina)
     db.session.commit()
@@ -45,6 +47,7 @@ def rota_api_criar_pagina():
     })
 
 
+@app.route("/api/conteudo/<int:id>", methods=["GET", "PUT"])
 @api_requer_login
 def rota_api_conteudo(id: int = None):
     """Gerencia determinada página do usuário, passando o
@@ -58,7 +61,7 @@ def rota_api_conteudo(id: int = None):
     Returns:
         GET:
             str: leitura da página. válido
-        
+
         POST:
             OK (cod. 200): sucesso. válido
 
@@ -69,7 +72,7 @@ def rota_api_conteudo(id: int = None):
     """
 
     pagina: Pagina = Pagina.query.get_or_404(id)
-    
+
     if pagina.id_usuario != current_user.id:
         compartilhamento = Compartilhamento.query \
             .filter_by(usuario=current_user, pagina=pagina).first()
@@ -88,7 +91,7 @@ def rota_api_conteudo(id: int = None):
         except OSError:
             abort(INTERNAL_SERVER_ERROR)
 
-    elif request.method == "POST":
+    elif request.method == "PUT":
         try:
             dados = request.get_data().decode('utf-8', 'ignore')
             arquivo_pagina = open(camingo, 'w')
@@ -99,17 +102,3 @@ def rota_api_conteudo(id: int = None):
             abort(NOT_FOUND)
         except OSError:
             abort(INTERNAL_SERVER_ERROR)
-
-
-def adicionar_rotas():
-    return {
-        '/api/criar_pagina': {
-            'methods': ["POST"],
-            'view_func': rota_api_criar_pagina,
-        },
-
-        '/api/conteudo/<int:id>': {
-            'methods': ["GET", "POST"],
-            'view_func': rota_api_conteudo,
-        }
-    }

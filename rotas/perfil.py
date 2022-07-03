@@ -1,12 +1,17 @@
-from flask import redirect, render_template, jsonify, abort
-from flask_login import current_user
 from http.client import NOT_FOUND
 
+from flask import abort, jsonify, redirect, render_template
+from flask_login import current_user
+from init import app
 from modelos import Usuario
+
 from rotas.utils import pagina_requer_login
 
 # perfil -> outros usuários
 # conta -> sua conta
+
+
+@app.route("/perfil/<int:user_id>", methods=["GET"])
 @pagina_requer_login
 def rota_perfil_usuario(user_id=None):
     """
@@ -15,11 +20,13 @@ def rota_perfil_usuario(user_id=None):
     return render_template('perfil.html', user_id=user_id)
 
 
+@app.route("/perfil", methods=["GET"])
 @pagina_requer_login
 def rota_perfil_default():
     return redirect(f'/perfil/{current_user.id}')
 
 
+@app.route("/api/perfil/<int:user_id>", methods=["GET"])
 def rota_api_perfil_usuario(user_id=None):
     """
     Retorna o JSON de um usuário de acordo com o email
@@ -36,7 +43,8 @@ def rota_api_perfil_usuario(user_id=None):
         return jsonify(usuario.json())
 
 
-### código do jota
+# código do jota
+# 2022-2022 você não será esquecido
 # def rota_retornar_usuario():
 #     """
 #     Retorna o JSON de um usuário de acordo com o email
@@ -51,21 +59,3 @@ def rota_api_perfil_usuario(user_id=None):
 #     user : Usuario = Usuario.query.filter_by(email=email).first()
 #     u_json = user.json()
 #     return jsonify(u_json)
-
-def adicionar_rotas():
-    return {
-        '/perfil/<int:user_id>': {
-            'view_func': rota_perfil_usuario,
-            'methods': ["GET"],
-        },
-
-        '/perfil': {
-            'view_func': rota_perfil_default,
-            'methods': ["GET"],
-        },
-
-        '/api/perfil/<int:user_id>': {
-            'view_func': rota_api_perfil_usuario,
-            'methods': ["GET"],
-        }
-    }
