@@ -9,4 +9,8 @@ def rota_default():
     Rota default, usuário deve estar autenticado, senão
     é redirecionado para `/login`
     """
-    return render_template('barra_lateral.html') if current_user.is_authenticated else redirect('/login')
+    if current_user.is_authenticated:
+        return render_template('inicio.html')
+    else:
+        return redirect('/login')
+        

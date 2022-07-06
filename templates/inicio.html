@@ -1,19 +1,196 @@
 {% extends "layout.html" %}
+ 
+{% block head %}
+<link rel="stylesheet" href="../static/accordion.css">
+<link rel="stylesheet" href="../static/side_bar.css">
+{% endblock %}
 
 {% block conteudo %}
+<!-- Definição de símbolos dessa página 
+Instruções em: https://developer.mozilla.org/pt-BR/docs/Web/SVG/Element/symbol
+-->
 
-    <main>
-        <div class="container">
-            <div class="row justify-content-center align-middle">
-                <div class="col">
-                    <h2>Welcome to <b>OnTrack Pages</b></h2>
-                    <p><a href="/perfil">Perfil</a></p>
-                    <p><a href='/logout'>Sair</a></p>
-                    <p><a href="/listar_paginas">Operação listar</a></p>
-                    <p><a href="/teste_barra_lateral">Teste barra lateral</a></p>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="heart-fill" viewBox="0 0 16 16">
+        <title>Coração preenchido</title>
+        
+        <path fill-rule="evenodd"
+        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+    </symbol>
+
+    <symbol id="lock-fill" viewBox="0 0 16 16">
+        <title>Cadeado preenchido</title>
+
+        <path
+        d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+    </symbol>
+
+    <symbol id="journal-text" viewBox="0 0 16 16">
+        <title>Caderno comum</title>
+
+        <path
+        d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+        <path
+        d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+        <path
+        d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
+    </symbol>
+
+    <symbol id="plus-sign" viewBox="0 0 16 16">
+        <title>Sinal adição</title>
+        
+        <path fill-rule="evenodd" 
+        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+    </svg>
+    </symbol>
+</svg>
+
+
+<main>
+    <div class="side-bar d-flex flex-column flex-shrink-0 text-white" style="width: 260px;">
+        <!-- informaçoes do usuario -->
+        <div class="d-flex align-items-center text-white mt-2 mb-2 p-4">
+            <img src="https://www.w3schools.com/howto/img_avatar.png" width="48px" height="48px" class="rounded-circle me-3"> 
+
+            <strong> <a href="/perfil" style="text-decoration:none">Minha Conta</a></strong>
+        </div>
+
+        <div class="accordion mt-1" id="accordionFlushExample">
+            <article>
+                <!-- Páginas favoritas -->
+                <div class="accordion-item border-0 bg-transparent mb-2">
+                    <h2 class="accordion-header border-0" id="flush-headingOne">
+                        <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#listas-favoritas" aria-expanded="false"
+                            aria-controls="listas-favoritas">
+                            
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-heart-fill me-2" ><use xlink:href="#heart-fill"/></svg>
+
+                            Páginas Favoritas
+                        </button>
+                    </h2>
+
+                    <div id="listas-favoritas" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled ms-3" id="listaPaginasFavoritas">
+                                <!-- Paginas aqui -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <!-- Páginas privadas -->
+                <div class="accordion-item border-0 bg-transparent mb-2">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#listas-privadas" aria-expanded="false"
+                            aria-controls="listas-privadas">
+
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-lock-fill me-2" ><use xlink:href="#lock-fill"/></svg>
+
+                            Páginas Privadas
+                        </button>
+                    </h2>
+
+                    <div id="listas-privadas" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled ms-3" id="listaPaginasPrivadas">
+                                <!-- Paginas aqui -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <!-- Páginas comuns-->
+                <div class="accordion-item border-0 bg-transparent mb-2">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed rounded-4 bg-transparent text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#listas-comuns" aria-expanded="false"
+                            aria-controls="listas-comuns">
+
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-journal-text me-2" ><use xlink:href="#journal-text"/></svg>
+
+                            Páginas
+
+                        </button>
+                    </h2>
+
+                    <div id="listas-comuns" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled ms-3" id="listaPaginasComuns">
+                                <!-- Paginas aqui -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="d-grid p-4">
+            <button id="exibir-form-criar-pagina" type="button"
+                class="new-page-button btn btn-primary btn-lg rounded-pill text-start" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+
+                <svg width="24" height="24" fill="currentColor" class="bi bi-plus-lg mb-1" ><use xlink:href="#plus-sign"/></svg>
+
+                Nova Nota
+            </button>
+        </div>
+    </div> 
+    
+    <div class="conteudo-principal bg-light p-5">
+        <div class="container bg-light shadow-lg rounded-5">
+            <div id="titulo-pagina"></div>
+            <div id="conteudo-pagina"></div>
+        </div>
+    </div>
+    
+    <section>
+        <!-- Pop up adicionar página -->
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Insira o nome de sua nova página</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-2">
+                                <label for="nome-pagina" class="form-label fs-5 mb-1 ms-2">Nome</label>
+                                <input type="text" id="nome-pagina" class="form-control shadow-sm"
+                                    placeholder="Nome da página.">
+                                <div class="invalid-feedback" id="nome-pagina-erro">
+                                </div>
+                            </div>
+
+                            <div class="d-grid col-4 mx-auto mt-4">
+                                <button type="button" id="submit-criar-pagina"
+                                    class="btn btn-outline-primary rounded-pill shadow-sm">Criar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </section>
+</main>
+{% endblock %}
+
+
+{% block script %}
+
+<script src="/static/js/form_utils.js"></script>
+<script src="/static/js/barra_lateral.js"></script>
 
 {% endblock %}

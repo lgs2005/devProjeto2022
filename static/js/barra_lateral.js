@@ -1,12 +1,7 @@
-$(function () {
-    // limpar erros em form
-    $('.form-control').on('input', function() {
-		$(this).removeClass('is-invalid');
-	});
-
-    function reloadPaginas() {
+jQuery(function($) {
+    function recarregarPaginas() {
         $.ajax({
-            url: '/listar_paginas',
+            url: '/api/listar_paginas',
             method: 'GET',
 
             dataType: 'json',
@@ -45,33 +40,25 @@ $(function () {
         })
     }
 
-    reloadPaginas();
+    aplicarLimpaDeErros()
+    recarregarPaginas();
 
-    $(document).on('click', '#submit-criar-pagina', function() {
-        let nomePagina = $('#nome-pagina').val().toString();
-        let houveErro = false
-
-        function setErro(campo, erro) {
-			$(`#nome-${campo}-erro`).text(erro);
-			$(`#nome-${campo}`).addClass('is-invalid');
-			houveErro = true;
-		}
-
-        if (nomePagina == '') {
-			setErro('pagina', 'Preencha o campo nome.');
-		} 
+    $('#submit-criar-pagina').on('click', function() {
+        let [nomePagina] = pegarValores('#nome-pagina');
+        let houveErro = !camposPreenchidos('#nome-pagina');
 
         if (!houveErro) {
             $.ajax({
                 url: 'api/criar_pagina',
                 method: 'POST',
+
                 contentType: 'application/json',
                 data: JSON.stringify({
                     'nome': nomePagina,
                 }),
 
                 dataType: 'json',
-                success: rediredionar_app,
+                success: () => recarregarPaginas(),
 
                 error: function() {
                     alert('erro')
@@ -79,16 +66,19 @@ $(function () {
                 }
             })
         }
-    })  
+    });
 
 
     $(document).on('click', '.botao-pagina', function() {
         $.ajax({
-            url: `api/conteudo/${parseInt($(this).attr('data-id-pagina'))}`,
+            url: `api/conteudo/${$(this).attr('data-id-pagina')}`,
             method: 'GET',
 
             dataType: 'json',
-            success:  renderizar_pagina,
+            success:  (conteudo) => {
+
+                $('#conteudo-pagina').text(JSON.stringify(conteudo))
+            },
 
             error: function() {
                 // animação RIVE de um bonequinho

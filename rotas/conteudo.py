@@ -97,7 +97,7 @@ def rota_api_conteudo(id: int = None):
             arquivo_pagina = open(camingo, 'w')
             arquivo_pagina.truncate()
             arquivo_pagina.write(dados)
-            return None, OK
+            return '<img src="https://http.cat/200"/>', OK
         except FileNotFoundError:
             abort(NOT_FOUND)
         except OSError:
