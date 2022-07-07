@@ -80,25 +80,21 @@ def rota_api_conteudo(id: int = None):
         if compartilhamento == None:
             abort(UNAUTHORIZED)
 
-    camingo = caminho_para_pagina(pagina.caminho_id)
+    caminho = caminho_para_pagina(pagina.caminho_id)
 
-    if request.method == "GET":
-        try:
-            arquivo_pagina = open(camingo, 'r')
+    try:
+        arquivo_pagina = open(
+            caminho_para_pagina(pagina.caminho_id),
+            'r' if request.method == "GET" else 'w'
+        )
+
+        if request.method == "GET":
             return arquivo_pagina.read()
-        except FileNotFoundError:
-            abort(NOT_FOUND)
-        except OSError:
-            abort(INTERNAL_SERVER_ERROR)
-
-    elif request.method == "PUT":
-        try:
-            dados = request.get_data().decode('utf-8', 'ignore')
-            arquivo_pagina = open(camingo, 'w')
+        else:
             arquivo_pagina.truncate()
             arquivo_pagina.write(dados)
             return '<img src="https://http.cat/200"/>', OK
-        except FileNotFoundError:
-            abort(NOT_FOUND)
-        except OSError:
-            abort(INTERNAL_SERVER_ERROR)
+    except FileNotFoundError:
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
