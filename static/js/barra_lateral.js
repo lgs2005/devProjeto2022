@@ -76,8 +76,9 @@ jQuery(function($) {
 
             dataType: 'json',
             success:  (conteudo) => {
-
-                $('#conteudo-pagina').text(JSON.stringify(conteudo))
+                htmlComXSS = marked.parse(conteudo.markdown)
+                htmlSemXSS = DOMPurify.sanitize(htmlComXSS)
+                $('#conteudo-pagina').html(htmlSemXSS)
             },
 
             error: function() {
