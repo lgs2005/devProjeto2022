@@ -92,7 +92,7 @@ def rota_api_conteudo(id: int = None):
             return arquivo_pagina.read()
         else:
             arquivo_pagina.truncate()
-            arquivo_pagina.write(dados)
+            arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
             return '<img src="https://http.cat/200"/>', OK
     except FileNotFoundError:
         abort(NOT_FOUND)
