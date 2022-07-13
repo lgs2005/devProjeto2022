@@ -22,6 +22,7 @@ $(function() {
 		if (senha == "") {
 			setErro("senha", "Preencha o campo nova senha.");
 		}
+
 		else if (senha == senhaAntiga) {
 			setErro("senha", "Não pode ser a mesma senha.")
 		}
@@ -39,11 +40,12 @@ $(function() {
                 
 				dataType: "json",
 				success: (resultado) => {
+					console.log(resultado)
 					if (resultado.ok) {
                         alert("senha alterada")
                     }
                     else {
-                        setErro("senha_antiga", "Senha antiga incorreta.");
+                        setErro("senha-antiga", "Senha antiga incorreta.");
                     }
 
 				},
