@@ -1,15 +1,17 @@
+import os
+
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
 from flask_login import current_user
 from init import app, db
-from modelos import Compartilhamento, Pagina
+from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
 from rotas.utils import api_requer_login, validar_objeto
 
 
-@app.route('/api/criar_pagina', methods=["POST"])
+@app.route('/api/criar-pagina', methods=["POST"])
 @api_requer_login
 def rota_api_criar_pagina():
     """Rota de criação de página.
@@ -73,14 +75,8 @@ def rota_api_conteudo(id: int = None):
 
     pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if pagina.id_usuario != current_user.id:
-        compartilhamento = Compartilhamento.query \
-            .filter_by(usuario=current_user, pagina=pagina).first()
-
-        if compartilhamento == None:
-            abort(UNAUTHORIZED)
-
-    caminho = caminho_para_pagina(pagina.caminho_id)
+    if not pagina.existe_compartilhamento(current_user):
+        abort(UNAUTHORIZED)
 
     try:
         arquivo_pagina = open(
@@ -94,6 +90,27 @@ def rota_api_conteudo(id: int = None):
             arquivo_pagina.truncate()
             arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
             return '<img src="https://http.cat/200"/>', OK
+    except FileNotFoundError:
+        abort(NOT_FOUND)
+    except OSError:
+        abort(INTERNAL_SERVER_ERROR)
+
+
+@app.route("/api/deletar/pagina/<int:id>", methods=['DELETE'])
+def deletar_pagina(id:int):
+    pagina: Pagina = Pagina.query.get_or_404(id)
+
+    usuario: Usuario = Usuario.query.filter_by(id=1)
+
+    if not pagina.existe_compartilhamento(usuario):
+        abort(UNAUTHORIZED)
+
+    try:
+        os.remove(caminho_para_pagina(pagina.caminho_id))
+        Pagina.query.filter_by(pagina=pagina).delete()
+
+        return "Everything OK!"
+
     except FileNotFoundError:
         abort(NOT_FOUND)
     except OSError:
