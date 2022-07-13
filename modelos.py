@@ -56,6 +56,13 @@ class Pagina(db.Model):
             "favorito": self.favorito
         }
 
+    def existe_compartilhamento(self, usuario: 'Usuario') -> bool:
+        if self.id_usuario != usuario.id:
+            compartilhamento = Compartilhamento.query \
+                .filter_by(usuario=usuario, id_pagina=self.id).first()
+
+            return compartilhamento == None
+
     def __str__(self):
         return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.excluir_em}, {self.data_criacao}, {self.favorito}>'
 
