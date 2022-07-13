@@ -76,9 +76,17 @@ jQuery(function($) {
 
             dataType: 'json',
             success:  (conteudo) => {
-                htmlComXSS = marked.parse(conteudo.markdown)
-                htmlSemXSS = DOMPurify.sanitize(htmlComXSS)
-                $('#conteudo-pagina').html(htmlSemXSS)
+                /** @type {string} */
+                let markdown = conteudo.markdown
+                markdown = markdown
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+
+                console.log(markdown)
+
+                let conteudohtml = DOMPurify.sanitize(marked.parse(markdown), {USE_PROFILES: {html: true}})
+                $('#conteudo-pagina').html(conteudohtml)
             },
 
             error: function() {

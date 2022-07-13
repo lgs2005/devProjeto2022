@@ -2,7 +2,8 @@
     "typeAcquisition": {
         "include": [
             "jquery",
-            "https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+            "marked",
+            "dompurify"
         ]
     }
 }
