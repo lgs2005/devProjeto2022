@@ -1,7 +1,13 @@
 jQuery(function($) {
+    function listItemWrapper(pagina) {
+        let listItem = `<a href="#" class="botao-pagina list-group-item list-group-item-action" 
+            data-id-pagina="${pagina.id}">${pagina.nome}</a>`;
+        return listItem;
+    }
+
     function recarregarPaginas() {
         $.ajax({
-            url: '/api/listar_paginas',
+            url: '/api/listar-paginas',
             method: 'GET',
 
             dataType: 'json',
@@ -10,28 +16,19 @@ jQuery(function($) {
                     '#listaPaginasFavoritas',
                     '#listaPaginasComuns',
                     '#listaPaginasPrivadas',
-                ]
+                ];
 
                 for (let idLista of listas) {
                     $(idLista).children().remove()
-                }
+                };
 
-                if ($.isEmptyObject(paginas)) {
-                    for (let idLista of listas) {
-                        $(idLista).append(`<li class="text-white mt-2">Nenhuma página ainda...</li>`)
-                    }
-                }
-                else {
-                    for (let pagina of paginas) {
-                        lin = `<li class='mb-2 botao-pagina' data-id-pagina='${pagina.id}'>${pagina.nome}</li>`;
-            
-                        if (pagina.favorito) {
-                            $('#listaPaginasFavoritas').append(lin);
-                        } else {
-                            $('#listaPaginasComuns').append(lin);
-                        }
-                    }
-                }
+                for (let pagina of paginas) {            
+                    if (pagina.favorito) {
+                        $('#listaPaginasFavoritas').append(listItemWrapper(pagina));
+                    } else {
+                        $('#listaPaginasComuns').append(listItemWrapper(pagina));
+                    };
+                };
             },
 
             error: () => {
@@ -49,7 +46,7 @@ jQuery(function($) {
 
         if (!houveErro) {
             $.ajax({
-                url: 'api/criar_pagina',
+                url: 'api/criar-pagina',
                 method: 'POST',
 
                 contentType: 'application/json',
