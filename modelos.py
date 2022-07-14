@@ -61,7 +61,9 @@ class Pagina(db.Model):
             compartilhamento = Compartilhamento.query \
                 .filter_by(usuario=usuario, id_pagina=self.id).first()
 
-            return compartilhamento == None
+            if compartilhamento == None:
+                return False
+        return True
 
     def __str__(self):
         return f'<Pagina {self.id}, {self.id_usuario}, {self.nome}, {self.excluir_em}, {self.data_criacao}, {self.favorito}>'

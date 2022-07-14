@@ -21,6 +21,9 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
+def catimg(code):
+    return f'<img src="https://http.cat/{code}"/>'
+
 # login_manager.login_message = u"Por favor, entre na sua conta para acessar esta página."
 # login_manager.login_message_category = "info"
 # login_manager.login_view = 'rota_login'

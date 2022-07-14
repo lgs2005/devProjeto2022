@@ -1,31 +1,19 @@
-$(function() {
-    // limpar erros em form
-    $('.form-control').on('input', function() {
-		$(this).removeClass('is-invalid');
-	});
+const campos = {
+	senha: "#alterar-senha",
+	senhaAntiga: "#alterar-senha-antiga",
+}
+
+jQuery(function($) {
+	aplicarLimpaDeErros()
 
 	$("#submit-password").on("click", function() {
-        let senhaAntiga = $("#alterar-senha-antiga").val().toString();
-		let senha = $("#alterar-senha").val().toString();
-		let houveErro = false
+		let [senha, senhaAntiga] = pegarValores(campos.senha, campos.senhaAntiga);
 
-		function setErro(campo, erro) {
-			$(`#alterar-${campo}-erro`).text(erro);
-			$(`#alterar-${campo}`).addClass("is-invalid");
-			houveErro = true;
-		}
-
-		if (senhaAntiga == "") {
-			setErro("senha-antiga", "Preencha o campo senha.")
-		}
-
-		if (senha == "") {
-			setErro("senha", "Preencha o campo nova senha.");
-		}
-
-		else if (senha == senhaAntiga) {
-			setErro("senha", "Não pode ser a mesma senha.")
-		}
+		let houveErro = !camposPreenchidos(campos.senha, campos.senhaAntiga)
+		|| testarPara(campos.senha, () => {
+			if (senha == senhaAntiga)
+				return "Não pode ser a mesma senha.";
+		});
 
 		if (!houveErro) {
 			$.ajax({
@@ -45,7 +33,7 @@ $(function() {
                         alert("senha alterada")
                     }
                     else {
-                        setErro("senha-antiga", "Senha antiga incorreta.");
+                        mostrarErro(campos.senhaAntiga, "Senha incorreta.");
                     }
 
 				},

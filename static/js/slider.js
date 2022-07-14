@@ -1,4 +1,4 @@
-$(function() {
+jQuery(function($) {
 	function activateIndex(parent, index) {
 		$(parent).find(".slider-button").each((_, button) => {
 			let buttonIndex = $(button).attr("data-slider-index");

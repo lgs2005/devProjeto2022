@@ -13,11 +13,8 @@ const camposForm = {
 }
 
 jQuery(function($) {
+	aplicarLimpaDeErros();
 
-	$(".form-control").on("input", function() {
-		$(this).removeClass("is-invalid");
-	});
-	
 	$("#submit-login").on("click", function() {
 		let campos = camposForm.login
 		let [email, senha] = pegarValores(campos.email, campos.senha)

@@ -4,7 +4,7 @@ from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
 from flask_login import current_user
-from init import app, db
+from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
@@ -89,7 +89,7 @@ def rota_api_conteudo(id: int = None):
         else:
             arquivo_pagina.truncate()
             arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
-            return '<img src="https://http.cat/200"/>', OK
+            return catimg(OK), OK
     except FileNotFoundError:
         abort(NOT_FOUND)
     except OSError:
@@ -109,7 +109,7 @@ def deletar_pagina(id:int):
         os.remove(caminho_para_pagina(pagina.caminho_id))
         Pagina.query.filter_by(pagina=pagina).delete()
 
-        return "Everything OK!"
+        return catimg(OK), OK
 
     except FileNotFoundError:
         abort(NOT_FOUND)
