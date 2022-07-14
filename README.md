@@ -1,7 +1,9 @@
 # Desenvolvimento de Projeto 2022
 
-bibliotecas:
-flask
-flask-sqlalchemy
-flask-login
-flask-bcrypt
+Biblitecas:
+ - Flask
+ - Flask-SQLAlchemy
+ - Flask-Login
+ - Flask-Bcrypt
+
+Para instalar: `install.py`
