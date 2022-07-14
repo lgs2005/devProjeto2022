@@ -9,10 +9,11 @@
 <div class="d-flex">
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <h1 class="display-3 mb-5 lh-1 fw-semibold text-center font-roboto">Welcome to <br> OnTrack Pages</h2>
+            <header>
+                <h1 class="display-3 mb-5 lh-1 fw-semibold text-center">Welcome to <br> OnTrack Pages</h2>
+            </header>
     
             <div class="col-md-4 slider-control">
-
                 <div class="container">
 					<div class="row p-2 justify-content-center">
                         <div class="col ps-0 pe-0 mb-3">
@@ -35,19 +36,25 @@
                         <form>
                             <div class="mb-2">
                                 <label for="login-email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                                <input type="email" id="login-email" class="form-control shadow-sm" placeholder="Seu email." value="teste@gmail.com">
+                                <input type="email" id="login-email" class="form-control shadow-sm" placeholder="Email" value="teste@gmail.com">
                                 <div class="invalid-feedback" id="login-email-erro">
                                 </div>
                             </div>
                             
                             <div class="mb-2">
                                 <label for="login-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                                <input type="password" id="login-senha" class="form-control shadow-sm" placeholder="Sua senha.">
-                                <div class="invalid-feedback" id="login-senha-erro"></div>
+                                <div class="input-group">
+                                    <input type="password" id="login-senha" class="form-control shadow-sm" placeholder="Senha">
+                                    <!-- ICON -->
+                                    <button class="btn btn-outline-secondary rounded-end" type="button">
+                                        <svg width="20" height="20" fill="currentColor" class="bi bi-eye-fill" ><use xlink:href="#eye-fill"/></svg>
+                                    </button>
+                                    <div class="invalid-feedback" id="login-senha-erro"></div>
+                                </div>
                             </div>
                             
-                            <div class="d-grid col-4 mx-auto mt-4">
-                                <button type="button" id="submit-login" class="btn btn-outline-primary rounded-pill shadow-sm">Login</button>
+                            <div class="d-flex my-4 text-center justify-content-center">
+                                <button type="button" id="submit-login" class="btn-submit btn btn-outline-primary px-5 rounded-pill shadow-sm">ENTRAR</button>
                             </div>
                         </form>
                     </div>
@@ -58,23 +65,29 @@
                         <form>
                             <div class="mb-2">
                                 <label for="registro-nome" class="form-label fs-5 mb-1 ms-2">Nome</label>
-                                <input type="text" id="registro-nome" class="form-control shadow-sm" placeholder="Seu nome de usuário.">
+                                <input type="text" id="registro-nome" class="form-control shadow-sm" placeholder="Nome">
                                 <div class="invalid-feedback" id="registro-nome-erro"></div>
                             </div>
                             <div class="mb-2">
                                 <label for="registro-email" class="form-label fs-5 mb-1 ms-2">Email</label>
-                                <input type="email" id="registro-email" class="form-control shadow-sm" placeholder="Seu email.">
+                                <input type="email" id="registro-email" class="form-control shadow-sm" placeholder="Email">
                                 <div class="invalid-feedback" id="registro-email-erro"></div>
                             </div>
                             
                             <div class="mb-2">
                                 <label for="registro-senha" class="form-label fs-5 mb-1 ms-2">Senha</label>
-                                <input type="password" id="registro-senha" class="form-control shadow-sm" placeholder="Sua senha.">
-                                <div class="invalid-feedback" id="registro-senha-erro"></div>
-                            </div>
+                                <div class="input-group">
+                                    <input type="password" id="registro-senha" class="form-control shadow-sm" placeholder="Senha">
+                                    <!-- ICON -->
+                                    <button class="btn btn-outline-secondary rounded-end" type="button">
+                                        <svg width="20" height="20" fill="currentColor" class="bi bi-eye-fill" ><use xlink:href="#eye-fill"/></svg>
+                                    </button>
+                                    <div class="invalid-feedback" id="registro-senha-erro"></div>
+                                </div>
+                            </div>                
                             
-                            <div class="d-grid col-4 mx-auto mt-4">
-                                <button type="button" id="submit-registro" class="btn btn-outline-primary rounded-pill shadow-sm">Registrar</button>
+                            <div class="d-flex my-4 text-center justify-content-center">
+                                <button type="button" id="submit-registro" class="btn-submit btn btn-outline-primary px-5 rounded-pill shadow-sm">REGISTRAR</button>
                             </div>
                         </form>
                     </div>
