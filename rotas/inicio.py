@@ -10,7 +10,7 @@ def rota_default():
     é redirecionado para `/login`
     """
     if current_user.is_authenticated:
-        return render_template('inicio.html')
+        return render_template('inicio.html', user=current_user)
     else:
         return redirect('/login')
         
