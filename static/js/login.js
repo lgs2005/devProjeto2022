@@ -22,7 +22,7 @@ jQuery(function($) {
 		let houveErro = !camposPreenchidos(campos.email, campos.senha)
 		|| testarPara(campos.email, () => {
 			if (!emailPattern.test(email))
-				return "Email inválido"
+				return "Email inválido."
 		});
 
 		if (!houveErro) {
@@ -93,6 +93,18 @@ jQuery(function($) {
 					mostrarErro(campos.email, "Ocorreu um erro ao fazer registro, tente novamente mais tarde.")
 				},
 			})
+		}
+	})
+
+	$("#visibility-toggle-login").on("click", function() {
+		let campoSenha = $(camposForm.login.senha);
+
+		if (campoSenha.attr("type") === "password") {
+			campoSenha.attr("type", "text");
+			$("#login-eye-icon").attr("xlink:href", "#eye-slash-fill");
+		} else {
+			campoSenha.attr("type", "password");
+			$("#login-eye-icon").attr("xlink:href", "#eye-fill");
 		}
 	})
 })
