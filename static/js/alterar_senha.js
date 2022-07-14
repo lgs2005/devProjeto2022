@@ -17,7 +17,7 @@ jQuery(function($) {
 
 		if (!houveErro) {
 			$.ajax({
-				url: "/api/alterar_senha",
+				url: "/api/alterar-senha",
 				method: "POST",
 
 				contentType: "application/json",

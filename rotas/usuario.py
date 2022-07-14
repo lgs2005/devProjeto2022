@@ -120,7 +120,7 @@ def rota_logout():
     return redirect('/')
 
 
-@app.route("/api/alterar_senha", methods=["POST"])
+@app.route("/api/alterar-senha", methods=["POST"])
 @api_requer_login
 def rota_api_alterar_senha():
     usuario: Usuario = current_user

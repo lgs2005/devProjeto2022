@@ -5,7 +5,7 @@ from modelos import Pagina
 
 from rotas.utils import api_requer_login
 
-@app.route("/api/listar_paginas", methods=["GET"])
+@app.route("/api/listar-paginas", methods=["GET"])
 @api_requer_login
 def rota_listar_paginas():
     """Lista as páginas do usuário da 
