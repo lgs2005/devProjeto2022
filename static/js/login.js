@@ -107,4 +107,16 @@ jQuery(function($) {
 			$("#login-eye-icon").attr("xlink:href", "#eye-fill");
 		}
 	})
+
+	$("#visibility-toggle-register").on("click", function() {
+		let campoSenha = $(camposForm.registro.senha);
+
+		if (campoSenha.attr("type") === "password") {
+			campoSenha.attr("type", "text");
+			$("#register-eye-icon").attr("xlink:href", "#eye-slash-fill");
+		} else {
+			campoSenha.attr("type", "password");
+			$("#register-eye-icon").attr("xlink:href", "#eye-fill");
+		}
+	})
 })
