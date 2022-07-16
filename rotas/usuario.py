@@ -65,9 +65,9 @@ def rota_api_login():
             email=dados['email']).first()
 
         if usuario == None:
-            erro = "Este usuário não existe."
+            erro = "Este usuário não existe"
         elif not bcrypt.check_password_hash(usuario.pwhash, dados['senha']):
-            erro = "Senha incorreta."
+            erro = "Senha incorreta"
         else:
             sucesso = True
             usuario_final = usuario
@@ -78,9 +78,9 @@ def rota_api_login():
         })
 
         if Usuario.query.filter_by(email=dados['email']).first() != None:
-            erro = "Este usuário já existe."
+            erro = "Este usuário já existe"
         elif (not emailPattern.fullmatch(dados['email'])):
-            erro = "Email inválido."
+            erro = "Email inválido"
         else:
             pwhash = bcrypt.generate_password_hash(dados['senha']) \
                 .decode('utf-8', 'ignore')
@@ -130,7 +130,7 @@ def rota_api_alterar_senha():
     })
 
     if not bcrypt.check_password_hash(current_user.pwhash, dados['senha_antiga']):
-        erro = "Senha incorreta."
+        erro = "Senha incorreta"
     else:
         nova_pwhash = bcrypt.generate_password_hash(dados['senha']) \
             .decode('utf-8', 'ignore')
