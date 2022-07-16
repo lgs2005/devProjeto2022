@@ -26,8 +26,8 @@
                                 <div class="input-group">
                                     <input type="text" id="alterar-senha-atual" class="form-control shadow-sm" placeholder="Sua senha atual">
                                     <!-- ICON -->
-                                    <button class="btn btn-outline-secondary rounded-end" type="button" id="visibility-toggle-alterar-senha-atual">
-                                        <svg width="20" height="20" fill="currentColor"><use xlink:href="#eye-fill" id="senha-atual-eye-icon"/></svg>
+                                    <button class="btn btn-outline-secondary rounded-end visibility-toggle" type="button" id="alterar-senha-atual-input">
+                                        <svg width="20" height="20" fill="currentColor"><use class="visibility-toggle-icon" xlink:href="#eye-fill"/></svg>
                                     </button>
                                     <div class="invalid-feedback" id="alterar-senha-atual-erro"></div>
                                 </div>
@@ -38,8 +38,8 @@
                                 <div class="input-group">
                                     <input type="text" id="senha-nova" class="form-control shadow-sm" placeholder="Sua nova senha">
                                     <!-- ICON -->
-                                    <button class="btn btn-outline-secondary rounded-end" type="button" id="visibility-toggle-senha-nova">
-                                        <svg width="20" height="20" fill="currentColor"><use xlink:href="#eye-fill" id="senha-nova-eye-icon"/></svg>
+                                    <button class="btn btn-outline-secondary rounded-end visibility-toggle" type="button" id="senha-nova-input">
+                                        <svg width="20" height="20" fill="currentColor"><use class="visibility-toggle-icon" xlink:href="#eye-fill"/></svg>
                                     </button>
                                     <div class="invalid-feedback" id="senha-nova-erro"></div>
                                 </div>
@@ -60,6 +60,7 @@
 {% block script %}
 <script src="/static/js/form_utils.js"></script>
 <script src="/static/js/alterar_senha.js"></script>
+<script src="/static/js/alterar_visibilidade_campo.js"></script>
 {% endblock %}
 
 <!-- <form>

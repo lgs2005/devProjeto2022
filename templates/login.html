@@ -46,8 +46,8 @@
                                 <div class="input-group">
                                     <input type="password" id="login-senha" class="form-control shadow-sm" placeholder="Senha">
                                     <!-- ICON -->
-                                    <button class="btn btn-outline-secondary rounded-end" type="button" id="visibility-toggle-login">
-                                        <svg width="20" height="20" fill="currentColor"><use xlink:href="#eye-fill" id="login-eye-icon"/></svg>
+                                    <button class="btn btn-outline-secondary rounded-end visibility-toggle" type="button" id="login-senha-input">
+                                        <svg width="20" height="20" fill="currentColor"><use class="visibility-toggle-icon" xlink:href="#eye-fill"/></svg>
                                     </button>
                                     <div class="invalid-feedback" id="login-senha-erro"></div>
                                 </div>
@@ -78,8 +78,8 @@
                                 <div class="input-group">
                                     <input type="password" id="registro-senha" class="form-control shadow-sm" placeholder="Senha">
                                     <!-- ICON -->
-                                    <button class="btn btn-outline-secondary rounded-end" type="button" id="visibility-toggle-register">
-                                        <svg width="20" height="20" fill="currentColor"><use xlink:href="#eye-fill" id="register-eye-icon"/></svg>
+                                    <button class="btn btn-outline-secondary rounded-end visibility-toggle" type="button" id="registro-senha-input">
+                                        <svg width="20" height="20" fill="currentColor"><use class="visibility-toggle-icon" xlink:href="#eye-fill"/></svg>
                                     </button>
                                     <div class="invalid-feedback" id="registro-senha-erro"></div>
                                 </div>
@@ -102,4 +102,5 @@
 <script src="/static/js/slider.js"></script>
 <script src="/static/js/form_utils.js"></script>
 <script src="/static/js/login.js"></script>
+<script src="/static/js/alterar_visibilidade_campo.js"></script>
  {% endblock %}
