@@ -94,7 +94,7 @@ jQuery(function($) {
 				},
 			})
 		}
-	})
+	});
 
 	$("#visibility-toggle-login").on("click", function() {
 		let campoSenha = $(camposForm.login.senha);
@@ -106,7 +106,7 @@ jQuery(function($) {
 			campoSenha.attr("type", "password");
 			$("#login-eye-icon").attr("xlink:href", "#eye-fill");
 		}
-	})
+	});
 
 	$("#visibility-toggle-register").on("click", function() {
 		let campoSenha = $(camposForm.registro.senha);
@@ -118,5 +118,5 @@ jQuery(function($) {
 			campoSenha.attr("type", "password");
 			$("#register-eye-icon").attr("xlink:href", "#eye-fill");
 		}
-	})
+	});
 })

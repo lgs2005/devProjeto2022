@@ -1,18 +1,18 @@
-const campos = {
-	senha: "#alterar-senha",
-	senhaAntiga: "#alterar-senha-antiga",
+const camposForm = {
+	senhaAtual: "#alterar-senha-atual",
+	senha: "#senha-nova",
 }
 
 jQuery(function($) {
 	aplicarLimpaDeErros()
+	
+	$("#submit-alterar").on("click", function() {
+		let [senha, senhaAtual] = pegarValores(camposForm.senha, camposForm.senhaAtual);
 
-	$("#submit-password").on("click", function() {
-		let [senha, senhaAntiga] = pegarValores(campos.senha, campos.senhaAntiga);
-
-		let houveErro = !camposPreenchidos(campos.senha, campos.senhaAntiga)
-		|| testarPara(campos.senha, () => {
-			if (senha == senhaAntiga)
-				return "Não pode ser a mesma senha.";
+		let houveErro = !camposPreenchidos(camposForm.senha, camposForm.senhaAtual)
+		|| testarPara(camposForm.senha, () => {
+			if (senha == senhaAtual)
+				return "As senhas não podem ser as mesmas";
 		});
 
 		if (!houveErro) {
@@ -22,26 +22,47 @@ jQuery(function($) {
 
 				contentType: "application/json",
 				data: JSON.stringify({
-                    "senha_antiga": senhaAntiga,
+					"senha_antiga": senhaAtual,
 					"senha": senha,
 				}),
-                
+				
 				dataType: "json",
 				success: (resultado) => {
-					console.log(resultado)
 					if (resultado.ok) {
-                        alert("senha alterada")
-                    }
-                    else {
-                        mostrarErro(campos.senhaAntiga, "Senha incorreta.");
-                    }
-
+						location.pathname = '/'
+					} else {
+						mostrarErro(camposForm.senhaAtual, "Senha incorreta");
+					};
 				},
 
 				error: () => {
-					alert("Ocorreu um erro, verifique o backend!")
+					alert('erro')
 				}
 			});
 		}
-    })
+	});
+
+	$("#visibility-toggle-alterar-senha-atual").on("click", function() {
+		let campoSenha = $(camposForm.senhaAtual);
+
+		if (campoSenha.attr("type") === "password") {
+			campoSenha.attr("type", "text");
+			$("#senha-atual-eye-icon").attr("xlink:href", "#eye-slash-fill");
+		} else {
+			campoSenha.attr("type", "password");
+			$("#senha-atual-eye-icon").attr("xlink:href", "#eye-fill");
+		}
+	});
+
+	$("#visibility-toggle-senha-nova").on("click", function() {
+		let campoSenha = $(camposForm.senha);
+
+		if (campoSenha.attr("type") === "password") {
+			campoSenha.attr("type", "text");
+			$("#senha-nova-eye-icon").attr("xlink:href", "#eye-slash-fill");
+		} else {
+			campoSenha.attr("type", "password");
+			$("#senha-nova-eye-icon").attr("xlink:href", "#eye-fill");
+		}
+	});
 })
