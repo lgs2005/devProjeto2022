@@ -123,20 +123,19 @@ def rota_logout():
 @app.route("/api/alterar-senha", methods=["POST"])
 @api_requer_login
 def rota_api_alterar_senha():
-    usuario: Usuario = current_user
     erro = None
     dados = validar_objeto(request.get_json(), {
         'senha': str,
         'senha_antiga': str,
     })
 
-    if not bcrypt.check_password_hash(usuario.pwhash, dados['senha_antiga']):
+    if not bcrypt.check_password_hash(current_user.pwhash, dados['senha_antiga']):
         erro = "Senha incorreta."
     else:
-        pwhash = bcrypt.generate_password_hash(dados['senha']) \
+        nova_pwhash = bcrypt.generate_password_hash(dados['senha']) \
             .decode('utf-8', 'ignore')
 
-        usuario.pwhash = pwhash
+        current_user.pwhash = nova_pwhash
         db.session.commit()
 
     return {
