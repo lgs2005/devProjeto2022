@@ -55,10 +55,13 @@ jQuery(function($) {
                 }),
 
                 dataType: 'json',
-                success: () => recarregarPaginas(),
+                success: function() {
+                    recarregarPaginas();
+                    $("#exampleModal").modal('hide');
+                },
 
                 error: function() {
-                    alert('erro')
+                    mostrarErro("#nome-pagina", "Não foi possível criar a página.");
                     // animação RIVE de um bonequinho
                 }
             })
