@@ -4,6 +4,8 @@ jQuery(function($) {
 		let inputIcon = $(this).find(".visibility-toggle-icon");
 		let input = $(`#${buttonId.replace('-input', '')}`);
 		
+		// ...
+		// sem palavras
 		input.attr('type') === 'text'?
 			(
 				inputIcon.attr("xlink:href", "#eye-slash-fill"),
