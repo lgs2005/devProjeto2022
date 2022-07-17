@@ -128,13 +128,13 @@ def rota_api_alterar_senha():
     erro = None
     dados = validar_objeto(request.get_json(), {
         'senha': str,
-        'senha_antiga': str,
+        'novaSenha': str,
     })
 
-    if not bcrypt.check_password_hash(current_user.pwhash, dados['senha_antiga']):
+    if not bcrypt.check_password_hash(current_user.pwhash, dados['senha']):
         erro = "Senha incorreta"
     else:
-        nova_pwhash = bcrypt.generate_password_hash(dados['senha']) \
+        nova_pwhash = bcrypt.generate_password_hash(dados['novaSenha']) \
             .decode('utf-8', 'ignore')
 
         current_user.pwhash = nova_pwhash
@@ -143,5 +143,6 @@ def rota_api_alterar_senha():
     return {
         'ok': erro == None,
         'erro': erro,
+        'errtarget': "senha", # só temos erros aqui, então...
     }
-    
+        
