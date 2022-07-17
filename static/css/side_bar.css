@@ -1,53 +1,13 @@
-body {
-    min-height: 100vh;
-}
-
-main {
-    display: flex;
-    flex-wrap: nowrap;
-    height: 100vh;
-    max-height: 100vh;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-.conteudo-principal {
-    width: 100%;
-    height: 100vh;
-
-    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+article { /* Favoritas | Privadas | Demais */
+    background-color: #0F2D49;
 }
 
 .side-bar {
     background-color: #051727;
 }
-
-.page-list-name  {
-    color: white;
-}
-
-article {
-    background-color: #0F2D49;
-}
-
 .list-group {
     max-height: 170px;
 
-    overflow:hidden; 
-    overflow-y:scroll;
-}
-
-/* Scrollbar para lista de páginas. Não disponível no Firefox ou Edge*/
-::-webkit-scrollbar {
-    width: 10px;
-}
-::-webkit-scrollbar-track {
-    background:#0F2D49;
-}
-::-webkit-scrollbar-thumb {
-    background:#ffffff;
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #ececec; 
+    overflow: hidden; 
+    overflow-y: scroll;
 }

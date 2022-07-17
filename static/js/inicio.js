@@ -72,18 +72,25 @@ jQuery(function($) {
             method: 'GET',
 
             dataType: 'json',
-            success:  (conteudo) => {
+            success:  (pagina) => {
                 /** @type {string} */
-                let markdown = conteudo.markdown
-                markdown = markdown
+                let conteudo = pagina.conteudo
+                conteudo = conteudo
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                
+                let titulo = pagina.titulo
+                titulo = titulo
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
 
-                console.log(markdown)
+                let tituloHTML = DOMPurify.sanitize(marked.parse(titulo), {USE_PROFILES: {html: true}})
+                $('.titulo-pagina').html(tituloHTML)
 
-                let conteudohtml = DOMPurify.sanitize(marked.parse(markdown), {USE_PROFILES: {html: true}})
-                $('#conteudo-pagina').html(conteudohtml)
+                let conteudoHTML = DOMPurify.sanitize(marked.parse(conteudo), {USE_PROFILES: {html: true}})
+                $('.conteudo-pagina').html(conteudoHTML)
             },
 
             error: function() {
