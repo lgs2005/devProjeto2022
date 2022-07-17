@@ -1,17 +1,17 @@
 const camposForm = {
-	senhaAtual: "#alterar-senha-atual",
-	senha: "#senha-nova",
+	senha: "#alterar-senha-atual",
+	novaSenha: "#senha-nova",
 }
 
 jQuery(function($) {
 	aplicarLimpaDeErros()
 	
 	$("#submit-alterar").on("click", function() {
-		let [senha, senhaAtual] = pegarValores(camposForm.senha, camposForm.senhaAtual);
+		let [senha, novaSenha] = pegarValores(camposForm.senha, camposForm.novaSenha);
 
-		let houveErro = !camposPreenchidos(camposForm.senha, camposForm.senhaAtual)
-		|| testarPara(camposForm.senha, () => {
-			if (senha == senhaAtual)
+		let houveErro = !camposPreenchidos(camposForm.senha, camposForm.novaSenha)
+		|| testarPara(camposForm.novaSenha, () => {
+			if (novaSenha == senha)
 				return "As senhas não podem ser as mesmas";
 		});
 
@@ -22,21 +22,24 @@ jQuery(function($) {
 
 				contentType: "application/json",
 				data: JSON.stringify({
-					"senha_antiga": senhaAtual,
 					"senha": senha,
+					"novaSenha": novaSenha,
 				}),
 				
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.ok) {
-						location.pathname = '/'
+						// TODO: mostrar algo dizendo que a senha foi alterada
+						// fds vai de alert msm
+						alert("Senha alterada.");
+						location.reload();
 					} else {
-						mostrarErro(camposForm.senhaAtual, "Senha incorreta");
+						mostrarErro(camposForm[resultado.errtarget], resultado.erro);
 					};
 				},
 
 				error: () => {
-					alert('erro')
+					mostrarErro(camposForm.senha, "Ocorreu um erro. Tente novamente mais tarde.")
 				}
 			});
 		}
