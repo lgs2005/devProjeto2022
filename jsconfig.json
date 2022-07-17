@@ -3,7 +3,8 @@
         "include": [
             "jquery",
             "marked",
-            "dompurify"
+            "dompurify",
+            "bootstrap"
         ]
     }
 }
