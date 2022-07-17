@@ -34,7 +34,10 @@ def criar_arquivo_pagina() -> Union[str, None]:
         
         try:
             pagina = open(caminho, 'x')
-            pagina.write("{\n}")
+            pagina.write("""{
+    "titulo": "Sem titulo",
+    "conteudo": "..." 
+}""")
             pagina.close()
 
             return id
