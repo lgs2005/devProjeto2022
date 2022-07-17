@@ -40,12 +40,7 @@ jQuery(function($) {
 					if (resultado.sucesso) {
 						location.pathname = "/"
 					} else {
-						// deve ter maneira de melhorar isso, mas não to com vontade no momento
-						if (resultado.erro == "Senha incorreta.") {
-							mostrarErro(campos.senha, resultado.erro)
-						} else {
-							mostrarErro(campos.email, resultado.erro)
-						}
+						mostrarErro(campos[resultado.errtarget], resultado.erro)
 					}
 				},
 
@@ -84,7 +79,7 @@ jQuery(function($) {
 					if (resultado.sucesso) {
 						location.pathname = '/'
 					} else {
-						mostrarErro(campos.email, resultado.erro)
+						mostrarErro(campos[resultado.errtarget], resultado.erro)
 					}
 				},
 

@@ -58,6 +58,7 @@ def rota_api_login():
     sucesso = False
     usuario_final = None
     erro = None
+    errtarget = None;
 
     # se não for especificado, é False
     if not dados.get('registro', False):
@@ -65,9 +66,9 @@ def rota_api_login():
             email=dados['email']).first()
 
         if usuario == None:
-            erro = "Este usuário não existe"
+            erro, errtarget = "Este usuário não existe", "email"
         elif not bcrypt.check_password_hash(usuario.pwhash, dados['senha']):
-            erro = "Senha incorreta"
+            erro, errtarget = "Senha incorreta", "senha"
         else:
             sucesso = True
             usuario_final = usuario
@@ -78,9 +79,9 @@ def rota_api_login():
         })
 
         if Usuario.query.filter_by(email=dados['email']).first() != None:
-            erro = "Este usuário já existe"
+            erro, errtarget = "Este usuário já existe", "email"
         elif (not emailPattern.fullmatch(dados['email'])):
-            erro = "Email inválido"
+            erro, errtarget = "Email inválido", "email"
         else:
             pwhash = bcrypt.generate_password_hash(dados['senha']) \
                 .decode('utf-8', 'ignore')
@@ -105,6 +106,7 @@ def rota_api_login():
     return jsonify({
         'sucesso': sucesso,
         'erro': erro,
+        'errtarget': errtarget,
     })
 
 
