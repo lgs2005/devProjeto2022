@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
@@ -96,22 +97,32 @@ def rota_api_conteudo(id: int = None):
         abort(INTERNAL_SERVER_ERROR)
 
 
-@app.route("/api/deletar/pagina/<int:id>", methods=['DELETE'])
+@app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
 def deletar_pagina(id:int):
     pagina: Pagina = Pagina.query.get_or_404(id)
-
     usuario: Usuario = Usuario.query.filter_by(id=1)
 
     if not pagina.existe_compartilhamento(usuario):
         abort(UNAUTHORIZED)
 
-    try:
-        os.remove(caminho_para_pagina(pagina.caminho_id))
-        Pagina.query.filter_by(pagina=pagina).delete()
+    pagina.excluir_em = datetime.utcnow() + timedelta(days=30)
+    db.session.commit()
 
-        return catimg(OK), OK
+    return catimg(OK), OK
 
-    except FileNotFoundError:
-        abort(NOT_FOUND)
-    except OSError:
-        abort(INTERNAL_SERVER_ERROR)
+# ok eu não tenho certeza quando isso deveria acontecer
+# então porenquanto essa função fica aqui mesmo
+def limpar_paginas_excluidas():
+    paginas_para_excluir = Pagina.query\
+        .filter(Pagina.excluir_em != None)\
+        .filter(Pagina.excluir_em > datetime.utcnow())\
+        .all()
+
+    for pagina in paginas_para_excluir:
+        try:
+            os.remove(caminho_para_pagina(pagina.caminho_id))
+            Pagina.query.filter_by(pagina=pagina).delete()
+        except FileNotFoundError:
+            pass
+        except OSError:
+            pass
