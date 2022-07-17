@@ -65,6 +65,15 @@ jQuery(function($) {
         }
     });
 
+    function safeMarkdown(markdown) {
+        let escapedText = markdown
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+        
+        let html = marked.parse(escapedText);
+        return DOMPurify.sanitize(html, {USE_PROFILES: {html: true}})
+    }
 
     $(document).on('click', '.botao-pagina', function() {
         $.ajax({
@@ -72,25 +81,9 @@ jQuery(function($) {
             method: 'GET',
 
             dataType: 'json',
-            success:  (pagina) => {
-                /** @type {string} */
-                let conteudo = pagina.conteudo
-                conteudo = conteudo
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-                
-                let titulo = pagina.titulo
-                titulo = titulo
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-
-                let tituloHTML = DOMPurify.sanitize(marked.parse(titulo), {USE_PROFILES: {html: true}})
-                $('.titulo-pagina').html(tituloHTML)
-
-                let conteudoHTML = DOMPurify.sanitize(marked.parse(conteudo), {USE_PROFILES: {html: true}})
-                $('.conteudo-pagina').html(conteudoHTML)
+            success:  (pagina) => {        
+                $('.titulo-pagina').html(safeMarkdown(pagina.titulo))
+                $('.conteudo-pagina').html(safeMarkdown(pagina.conteudo))
             },
 
             error: function() {
