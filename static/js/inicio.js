@@ -3,7 +3,7 @@ let paginaSelecionada = 0
 jQuery(function($) {
     function listItemWrapper(pagina) {
         let listItem = `<a href="#" class="botao-pagina list-group-item list-group-item-action" 
-            data-id-pagina="${pagina.id}">${pagina.nome}</a>`;
+            data-id-pagina="${pagina.id}"><span class="overflow-ellipsis">${pagina.nome}</span></a>`;
         return listItem;
     }
 
