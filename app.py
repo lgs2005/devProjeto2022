@@ -6,7 +6,7 @@ import modelos
 
 # imports para registrar as rotas
 import rotas.conteudo
-import rotas.inicio
+import rotas.paginas
 import rotas.listar_paginas
 import rotas.perfil
 import rotas.usuario

@@ -1,3 +1,5 @@
+let paginaSelecionada = 0
+
 jQuery(function($) {
     function listItemWrapper(pagina) {
         let listItem = `<a href="#" class="botao-pagina list-group-item list-group-item-action" 
@@ -79,19 +81,28 @@ jQuery(function($) {
     }
 
     $(document).on('click', '.botao-pagina', function() {
+        let idPagina = $(this).attr("data-id-pagina")
+
         $.ajax({
-            url: `api/conteudo/${$(this).attr('data-id-pagina')}`,
+            url: `api/conteudo/${idPagina}`,
             method: 'GET',
 
             dataType: 'json',
-            success:  (pagina) => {        
-                $('.titulo-pagina').html(safeMarkdown(pagina.titulo))
-                $('.conteudo-pagina').html(safeMarkdown(pagina.conteudo))
+            success:  (pagina) => {
+                paginaSelecionada = idPagina;
+                $("#conteudo-principal").removeClass("invisible")
+                $('#titulo-pagina').text(pagina.titulo);
+                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown))
             },
 
             error: function() {
                 // animação RIVE de um bonequinho
             }
         })
-    })  
+    });
+
+    $("#botao-editar-pagina").on("click", function() {
+        console.log(paginaSelecionada)
+        location.pathname = "/editar/" + paginaSelecionada;
+    });
 });

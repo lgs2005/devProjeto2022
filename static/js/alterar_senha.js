@@ -32,7 +32,6 @@ jQuery(function($) {
 						// TODO: mostrar algo dizendo que a senha foi alterada
 						// fds vai de alert msm
 						alert("Senha alterada.");
-						location.reload();
 					} else {
 						mostrarErro(camposForm[resultado.errtarget], resultado.erro);
 					};

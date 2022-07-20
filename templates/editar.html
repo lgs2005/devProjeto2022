@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block conteudo %}
+<main>
+	<div class="d-flex flex-row p-3 pb-5" style="height: 100vh;">
+		<div class="w-50" style="overflow-y: auto;">
+			<div class="bg-light shadow-lg rounded-5 p-5 m-3" style="overflow-wrap: anywhere;">
+				<h1 id="titulo-pagina"></h1>
+				<div id="preview"></div>
+			</div>
+		</div>
+		<div class="w-50 rounded-5 m-3 flex-column d-flex">
+			<textarea id="editor" class="form-control d-flex flex-grow-1"></textarea>
+			<div class="d-flex flex-row align-items-center">
+				<div class="btn-group p-3">
+					<button id="botao-salvar-edicoes" type="button" class="btn btn-primary" style="max-width: 100px;">Salvar</button>
+					<button id="botao-voltar-edicoes" type="button" class="btn btn-success" style="max-width: 100px;">Voltar</button> 
+				</div>
+				<div id="status-salvar" class="fw-lighter fst-italic">
+					Mudanças salvas
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+<script>
+	function safeMarkdown(markdown) {
+        let escapedText = markdown
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+        
+        let html = marked.parse(escapedText);
+        return DOMPurify.sanitize(html, {USE_PROFILES: {html: true}})
+    }
+
+	jQuery(function($) {
+		let idPagina = "{{ pagina_id }}";
+		let editor = $("#editor");
+		let preview = $("#preview");
+		let tituloHeader = $("#titulo-pagina");
+		let botaoSalvar = $("#botao-salvar-edicoes");
+		let botaoVoltar = $("#botao-voltar-edicoes");
+		let statusSalvar = $("#status-salvar")
+
+		let titulo = "";
+		let hasChanges = false;
+
+		function postChanges() {
+			statusSalvar.removeClass("fst-italic").text("Salvando...");
+			let markdown = editor.val();
+
+			return $.ajax({
+				method: "PUT",
+				url: "/api/conteudo/" + idPagina,
+
+				contentType: "appplication/json",
+				data: JSON.stringify({
+					titulo: titulo,
+					markdown: markdown,
+				}),
+			})
+			.then(() => {
+				statusSalvar.addClass("fst-italic").text("Mudanças salvas.");
+			});
+		}
+
+		function updatePreview() {
+			tituloHeader.text(titulo)
+			preview.html(safeMarkdown($(editor).val()));
+		}
+
+		editor.on("input", function() {
+			hasChanges = true;
+		});
+
+		botaoVoltar.on("click", function() {
+			postChanges()
+				.then(() => location.pathname = "/");
+		});
+
+		botaoSalvar.on("click", function() {
+			postChanges();
+		})
+
+		setInterval(() => {
+			if (hasChanges) {
+				updatePreview();
+				hasChanges = false;
+			}
+		}, 1000);
+
+		$.ajax({
+			method: "GET",
+			url: "/api/conteudo/" + idPagina,
+		
+			dataType: "json",
+			success: (pagina) => {
+				titulo = pagina.titulo;
+				editor.val(pagina.markdown);
+				updatePreview();
+			},
+
+			error: () => {
+				alert("Erro");
+			}
+		})
+	})
+</script>
+{% endblock %}
