@@ -3,7 +3,7 @@ let paginaSelecionada = 0
 jQuery(function($) {
     function listItemWrapper(pagina) {
         let listItem = `<a href="#" class="botao-pagina list-group-item list-group-item-action" 
-            data-id-pagina="${pagina.id}">${pagina.nome}</a>`;
+            data-id-pagina="${pagina.id}"><span class="overflow-ellipsis">${pagina.nome}</span></a>`;
         return listItem;
     }
 
@@ -91,8 +91,8 @@ jQuery(function($) {
             success:  (pagina) => {
                 paginaSelecionada = idPagina;
                 $("#conteudo-principal").removeClass("invisible")
-                $('#titulo-pagina').text(pagina.titulo);
-                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown))
+                $('#titulo-pagina').text(pagina.markdown.titulo);
+                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown.conteudo))
             },
 
             error: function() {
