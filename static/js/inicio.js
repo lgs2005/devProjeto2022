@@ -91,8 +91,8 @@ jQuery(function($) {
             success:  (pagina) => {
                 paginaSelecionada = idPagina;
                 $("#conteudo-principal").removeClass("invisible")
-                $('#titulo-pagina').text(pagina.titulo);
-                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown))
+                $('#titulo-pagina').text(pagina.markdown.titulo);
+                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown.conteudo))
             },
 
             error: function() {
