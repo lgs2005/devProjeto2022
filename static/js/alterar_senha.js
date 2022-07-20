@@ -29,9 +29,7 @@ jQuery(function($) {
 				dataType: "json",
 				success: (resultado) => {
 					if (resultado.ok) {
-						// TODO: mostrar algo dizendo que a senha foi alterada
-						// fds vai de alert msm
-						alert("Senha alterada.");
+						alert("Senha alterada com sucesso.");
 					} else {
 						mostrarErro(camposForm[resultado.errtarget], resultado.erro);
 					};

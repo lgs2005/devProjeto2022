@@ -100,14 +100,13 @@ def rota_api_conteudo(id: int = None):
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
 def deletar_pagina(id:int):
     pagina: Pagina = Pagina.query.get_or_404(id)
-    usuario: Usuario = Usuario.query.filter_by(id=1)
 
-    if not pagina.existe_compartilhamento(usuario):
+    if not pagina.existe_compartilhamento(current_user):
         abort(UNAUTHORIZED)
 
     pagina.excluir_em = datetime.utcnow() + timedelta(days=30)
     db.session.commit()
-
+    
     return catimg(OK), OK
 
 # ok eu não tenho certeza quando isso deveria acontecer

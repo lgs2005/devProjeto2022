@@ -57,7 +57,7 @@
 
 		function postChanges() {
 			statusSalvar.removeClass("fst-italic").text("Salvando...");
-			let markdown = editor.val();
+			let conteudo = editor.val();
 
 			return $.ajax({
 				method: "PUT",
@@ -65,8 +65,10 @@
 
 				contentType: "appplication/json",
 				data: JSON.stringify({
-					titulo: titulo,
-					markdown: markdown,
+					markdown: {
+						titulo: titulo,
+						conteudo: conteudo,
+					}
 				}),
 			})
 			.then(() => {
@@ -105,8 +107,8 @@
 		
 			dataType: "json",
 			success: (pagina) => {
-				titulo = pagina.titulo;
-				editor.val(pagina.markdown);
+				titulo = pagina.markdown.titulo;
+				editor.val(pagina.markdown.conteudo);
 				updatePreview();
 			},
 

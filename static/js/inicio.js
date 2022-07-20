@@ -91,8 +91,8 @@ jQuery(function($) {
             success:  (pagina) => {
                 paginaSelecionada = idPagina;
                 $("#conteudo-principal").removeClass("invisible")
-                $('#titulo-pagina').text(pagina.titulo);
-                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown))
+                $('#titulo-pagina').text(pagina.markdown.titulo);
+                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown.conteudo))
             },
 
             error: function() {
@@ -105,4 +105,21 @@ jQuery(function($) {
         console.log(paginaSelecionada)
         location.pathname = "/editar/" + paginaSelecionada;
     });
+
+    $("#botao-excluir-pagina").on("click", function() {
+        $.ajax({
+            url: "api/excluir/pagina/" + paginaSelecionada,
+            method: 'DELETE',
+
+            success:  (pagina) => {
+                recarregarPaginas()
+            },
+
+            error: function() {
+                alert("Não foi possível excluir a página.")
+            }
+        })
+    });
 });
+
+
