@@ -17,3 +17,4 @@ def rota_default():
 @app.route("/editar/<int:id>", methods=["GET"])
 def rota_editar(id:int=None):
     return render_template("editar.html", pagina_id=id)
+

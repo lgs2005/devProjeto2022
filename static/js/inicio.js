@@ -105,4 +105,21 @@ jQuery(function($) {
         console.log(paginaSelecionada)
         location.pathname = "/editar/" + paginaSelecionada;
     });
+
+    $("#botao-excluir-pagina").on("click", function() {
+        $.ajax({
+            url: "api/excluir/pagina/" + paginaSelecionada,
+            method: 'DELETE',
+
+            success:  (pagina) => {
+                recarregarPaginas()
+            },
+
+            error: function() {
+                alert("Não foi possível excluir a página.")
+            }
+        })
+    });
 });
+
+
