@@ -1,8 +1,5 @@
 .conteudo-pagina { /* Título da Página + Conteúdo da Página */
 	height: 80%;
-	
-	overflow: hidden; 
-	overflow-y: auto;
 }
 .conteudo-principal {
 	width: 100%;
