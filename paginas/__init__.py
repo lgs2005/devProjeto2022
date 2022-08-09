@@ -1,6 +1,7 @@
 from os.path import dirname
 from typing import Union
 from uuid import uuid4
+import json
 
 
 THIS_DIR = dirname(__file__)
@@ -19,7 +20,7 @@ def caminho_para_pagina(id: str) -> str:
     return f"{THIS_DIR}/{id}.json"
 
 
-def criar_arquivo_pagina() -> Union[str, None]:
+def criar_arquivo_pagina(titulo: str = "Sem título") -> Union[str, None]:
     """Cria uma página em json.
     A identificação de cada página no diretório 
     `páginas` é feita com código hexadecimal.
@@ -34,12 +35,13 @@ def criar_arquivo_pagina() -> Union[str, None]:
         
         try:
             pagina = open(caminho, 'x')
-            pagina.write("""{
-"markdown": {
-    "titulo": "Sem titulo",
-    "conteudo": "..." 
-}
-}""")
+            markdown = json.dumps({
+                "markdown": {
+                    "titulo": titulo,
+                    "conteudo": "escreva aqui" 
+                }
+            })
+            pagina.write(markdown)
             pagina.close()
 
             return id

@@ -29,7 +29,7 @@ def rota_api_criar_pagina():
     })
 
     nome: str = dados['nome']
-    arquivo = criar_arquivo_pagina()
+    arquivo = criar_arquivo_pagina(nome)
     sucesso = False
 
     print(arquivo)
