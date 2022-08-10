@@ -5,6 +5,7 @@ from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
 from flask_login import current_user
+from sqlalchemy import null
 from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
@@ -104,7 +105,7 @@ def deletar_pagina(id:int):
     if not pagina.existe_compartilhamento(current_user):
         abort(UNAUTHORIZED)
 
-    pagina.excluir_em = datetime.utcnow() + timedelta(days=30)
+    pagina.excluir_em = datetime.utcnow() + timedelta(seconds=10)
     db.session.commit()
     
     return catimg(OK), OK
@@ -114,14 +115,43 @@ def deletar_pagina(id:int):
 def limpar_paginas_excluidas():
     paginas_para_excluir = Pagina.query\
         .filter(Pagina.excluir_em != None)\
-        .filter(Pagina.excluir_em > datetime.utcnow())\
+        .filter(Pagina.excluir_em <= datetime.utcnow())\
         .all()
 
+    print(paginas_para_excluir)
+
     for pagina in paginas_para_excluir:
-        try:
-            os.remove(caminho_para_pagina(pagina.caminho_id))
-            Pagina.query.filter_by(pagina=pagina).delete()
-        except FileNotFoundError:
-            pass
-        except OSError:
-            pass
+        deletar_pagina_definitivamente(pagina)
+
+def deletar_pagina_definitivamente(pagina: Pagina):
+    try:
+        os.remove(caminho_para_pagina(pagina.caminho_id))
+        Pagina.query.filter_by(id=pagina.id).delete()
+        db.session.commit()
+    except FileNotFoundError:
+        pass
+    except OSError:
+        pass
+
+@app.route("/api/deletar/pagina/<int:id>", methods=['DELETE'])
+def rota_deletar_pagina_definitivamente(id:int):
+    pagina: Pagina = Pagina.query.get_or_404(id)
+
+    if not pagina.existe_compartilhamento(current_user):
+        abort(UNAUTHORIZED)
+
+    deletar_pagina_definitivamente(pagina)
+    
+    return catimg(OK), OK
+
+@app.route("/api/recuperar/pagina/<int:id>", methods=['POST'])
+def recuperar_pagina(id:int):
+    pagina: Pagina = Pagina.query.get_or_404(id)
+
+    if not pagina.existe_compartilhamento(current_user):
+        abort(UNAUTHORIZED)
+
+    pagina.excluir_em = None
+    db.session.commit()
+    
+    return catimg(OK), OK

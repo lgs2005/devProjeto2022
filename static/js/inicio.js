@@ -18,15 +18,18 @@ jQuery(function($) {
                     '#listaPaginasFavoritas',
                     '#listaPaginasComuns',
                     '#listaPaginasPrivadas',
+                    '#listaPaginasExcluidas',
                 ];
 
                 for (let idLista of listas) {
                     $(idLista).children().remove()
                 };
 
-                for (let pagina of paginas) {            
+                for (let pagina of paginas) {                    
                     if (pagina.favorito) {
                         $('#listaPaginasFavoritas').append(listItemWrapper(pagina));
+                    } else if (pagina.excluir_em != null) {
+                        $('#listaPaginasExcluidas').append(listItemWrapper(pagina));
                     } else {
                         $('#listaPaginasComuns').append(listItemWrapper(pagina));
                     };
@@ -81,6 +84,16 @@ jQuery(function($) {
     }
 
     $(document).on('click', '.botao-pagina', function() {
+        console.log($(this).parent().attr('id'));
+
+        if ($(this).parent().attr('id') == 'listaPaginasExcluidas') {
+            $('#botoes-lixeira').removeClass('d-none')
+            $('#botoes-normal').addClass('d-none')
+        } else {
+            $('#botoes-lixeira').addClass('d-none')
+            $('#botoes-normal').removeClass('d-none')
+        }
+
         let idPagina = $(this).attr("data-id-pagina")
 
         $.ajax({
@@ -120,6 +133,37 @@ jQuery(function($) {
             }
         })
     });
+
+    $("#botao-deletar-pagina").on("click", function() {
+        $.ajax({
+            url: "/api/deletar/pagina/" + paginaSelecionada,
+            method: 'DELETE',
+
+            success:  (pagina) => {
+                recarregarPaginas()
+            },
+
+            error: function() {
+                alert("Não foi possível deletar a página definitivamente.")
+            }
+        })
+    });
+
+    $("#botao-recuperar-pagina").on("click", function() {
+        $.ajax({
+            url: "api/recuperar/pagina/" + paginaSelecionada,
+            method: 'POST', 
+
+            success:  (pagina) => {
+                recarregarPaginas()
+            },
+
+            error: function() {
+                alert("Não foi possível recuperar a página.")
+            }
+        })
+    });
+
 });
 
 
