@@ -71,21 +71,29 @@
         </div>
     </div> 
     
-    <div id="conteudo-principal" class="d-flex flex-column w-100 h-100 bg-light p-2 overflow-auto invisible">
-        <div class="flex-row">
-            <div class="btn-group p-3">
-                <button id="botao-editar-pagina" type="button" class="btn btn-primary" style="max-width: 100px;">Editar</button>
-                <button id="botao-excluir-pagina" type="button" class="btn btn-danger" style="max-width: 100px;">Excluir</button> 
-            </div>
-        </div>
-        <div class="flex-grow-1 bg-light shadow-lg rounded-5 m-3">
-            <div class="titulo-pagina text-wrap m-5">
-                <h1 id="titulo-pagina"></h1>
-            </div>
+    <div id="conteudo-principal" class="d-flex flex-column w-100 h-100 bg-light p-2 overflow-auto">
+        <div class="d-flex flex-row">
+			<div class="flex-grow-1">
+				<div class="shadow-lg rounded-5 p-5 m-3" style="overflow-wrap: anywhere;">
+					<h1 id="titulo-pagina"></h1>
+					<div id="preview"></div>
+				</div>
+			</div>
+			<div class="flex-grow-1 rounded-5 m-3 flex-column d-flex">
+				<textarea id="editor" class="form-control d-flex flex-grow-1"></textarea>
+				
+				<div class="d-flex flex-row align-items-center">
+					<div class="btn-group p-3">
+						<button id="botao-salvar-edicoes" type="button" class="btn btn-primary" style="max-width: 100px;">Salvar</button>
+						<button id="botao-voltar-edicoes" type="button" class="btn btn-success" style="max-width: 100px;">Voltar</button> 
+					</div>
 
-            <div class="conteudo-pagina mx-5 p-1 pb-5" style="overflow-wrap: anywhere;">
-            </div>
-        </div>
+					<div id="status-salvar" class="fw-lighter fst-italic">
+						Mudanças salvas
+					</div>
+				</div>
+			</div>
+		</div>
     </div>
     
     <section>

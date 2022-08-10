@@ -13,8 +13,3 @@ def rota_default():
         return render_template('inicio.html', user=current_user)
     else:
         return redirect('/login')
-
-@app.route("/editar/<int:id>", methods=["GET"])
-def rota_editar(id:int=None):
-    return render_template("editar.html", pagina_id=id)
-

@@ -43,7 +43,7 @@ jQuery(function($) {
     recarregarPaginas();
 
     $('#submit-criar-pagina').on('click', function() {
-        let [nomePagina] = pegarValores('#nome-pagina');
+        let [ nomePagina ] = pegarValores('#nome-pagina');
         let houveErro = !camposPreenchidos('#nome-pagina');
 
         if (!houveErro) {
@@ -81,29 +81,90 @@ jQuery(function($) {
     }
 
     $(document).on('click', '.botao-pagina', function() {
-        let idPagina = $(this).attr("data-id-pagina")
+        let idPagina = $(this).attr("data-id-pagina");
+		let editor = $("#editor");
+		let preview = $("#preview");
+		let tituloHeader = $("#titulo-pagina");
+		let botaoSalvar = $("#botao-salvar-edicoes");
+		let botaoVoltar = $("#botao-voltar-edicoes");
+		let statusSalvar = $("#status-salvar");
+		
+		console.log(editor)
+
+		let titulo = "";
+		let hasChanges = false;
+
+		function safeMarkdown(markdown) {
+			let escapedText = markdown
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+		
+			let html = marked.parse(escapedText);
+			return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
+		}	
+		
+		function updatePreview() {
+			tituloHeader.text(titulo)
+			preview.html(safeMarkdown($(editor).val()));
+		}
+	
+		editor.on("input", function () {
+			hasChanges = true;
+		});
+	
+		botaoVoltar.on("click", function () {
+			postChanges()
+				.then(() => location.pathname = "/");
+		});
+	
+		botaoSalvar.on("click", function () {
+			postChanges();
+		})
+	
+		setInterval(() => {
+			if (hasChanges) {
+				updatePreview();
+				hasChanges = false;
+			}
+		}, 1000);
+
+		function postChanges() {
+			statusSalvar.removeClass("fst-italic").text("Salvando...");
+			let conteudo = editor.val();
+	
+			return $.ajax({
+				method: "PUT",
+				url: "/api/conteudo/" + idPagina,
+	
+				contentType: "application/json",
+				data: JSON.stringify({
+					markdown: {
+						titulo: titulo,
+						conteudo: conteudo,
+					}
+				}),
+			})
+				.then(() => {
+					statusSalvar.addClass("fst-italic").text("Mudanças salvas.");
+				});
+		}
 
         $.ajax({
-            url: `api/conteudo/${idPagina}`,
-            method: 'GET',
-
-            dataType: 'json',
-            success:  (pagina) => {
-                paginaSelecionada = idPagina;
-                $("#conteudo-principal").removeClass("invisible")
-                $('#titulo-pagina').text(pagina.markdown.titulo);
-                $('.conteudo-pagina').html(safeMarkdown(pagina.markdown.conteudo))
-            },
-
-            error: function() {
-                // animação RIVE de um bonequinho
-            }
-        })
-    });
-
-    $("#botao-editar-pagina").on("click", function() {
-        console.log(paginaSelecionada)
-        location.pathname = "/editar/" + paginaSelecionada;
+			method: "GET",
+			url: "/api/conteudo/" + idPagina,
+	
+			dataType: "json",
+			success: (pagina) => {
+				titulo = pagina.markdown.titulo;
+				editor.val(pagina.markdown.conteudo);
+				updatePreview();
+			},
+	
+			error: () => {
+				alert("Erro");
+			}
+		})
     });
 
     $("#botao-excluir-pagina").on("click", function() {
@@ -111,7 +172,7 @@ jQuery(function($) {
             url: "api/excluir/pagina/" + paginaSelecionada,
             method: 'DELETE',
 
-            success:  (pagina) => {
+            success:  () => {
                 recarregarPaginas()
             },
 
@@ -121,5 +182,3 @@ jQuery(function($) {
         })
     });
 });
-
-
