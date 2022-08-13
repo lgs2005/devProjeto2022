@@ -1,81 +1,177 @@
-import styled from 'styled-components'
+import styled from "styled-components"
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+import axios from "axios";
+
+import Button from '@mui/material/Button';
+import CheckBox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+
 
 export default function Login() {
-	return (
-		<div>
-			<Main>
-				<Header>
-					<h1>Welcome to <br />OnTrack Pages</h1>
-				</Header>
-				
-				<Form>
-					<InputGroup>
-						<label htmlFor="login-email">
-							Email
-						</label>
-	
-						<Input id="login-email" type="email" />
-					</InputGroup>
-					
-					<InputGroup>
-						<label htmlFor="login-senha">
-							Senha
-						</label>
-						<Input id="login-senha" type="password" />
-					</InputGroup>
 
-					<ButtonGroup>
-						<Button type="submit">ENTRAR</Button>
-					</ButtonGroup>
-				</Form>
-			</Main>
-		</div>
+	interface InterfaceFormData {
+		email: string,
+		password: string
+	};
+
+	const [showPassword, setShowPassword] = useState(false);
+
+	const [fields, setFields] = useState<InterfaceFormData>({
+		email: "",
+		password: "",
+	});
+
+	const onSubmit: SubmitHandler<InterfaceFormData> = async (formData) => {
+		const response = await axios.post("http://localhost:5000/api/login", JSON.stringify({
+			email: "email@gmail.com",
+			senha: "senha",
+			nome: "nome",
+			registro: true,
+		}), {
+			headers: {
+				'content-type': 'application/json'
+			}
+		})
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const { register, formState: { errors }, handleSubmit } = useForm<InterfaceFormData>();
+
+	return (
+		<Main>
+			<Header>
+				<h1>Welcome to <br />OnTrack Pages</h1>
+			</Header>
+
+			<SliderButtonGroup>
+				<div style={{ display: 'grid' }}>
+					<SliderButton data-slider-index="1">Login</SliderButton>
+				</div>
+
+				<div style={{ display: 'grid' }}>
+					<SliderButton data-slider-index="2">Registrar</SliderButton>
+				</div>
+			</SliderButtonGroup>
+
+			<form>
+				<Grid
+					container
+					display="flex"
+					flexDirection="column"
+					flexWrap="wrap"
+					minWidth="25vw">
+					<Grid
+						item
+						xs={12}>
+						<TextField
+							variant="outlined"
+							label="Email"
+							margin="normal"
+							sx={{
+								width: "100%"
+							}}
+
+							id="login-email"
+							type="email"
+
+							{...register("email", { required: true })}
+							aria-invalid={errors.email ? true : false}
+							error={errors.email ? true : false}
+							helperText={errors.email ? 'Preencha o campo' : ''}
+
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, email: e.target.value }) }} />
+
+						<TextField
+							variant="outlined"
+							label="Senha"
+							margin="normal"
+							sx={{
+								width: "100%"
+							}}
+
+							id="login-senha"
+							type={showPassword? "text" : "password"}
+
+							{...register("password", { required: true })}
+							aria-invalid={errors.password ? true : false}
+							error={errors.password ? true : false}
+							helperText={errors.password ? 'Preencha o campo' : ''}
+
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, password: e.target.value }) }} />
+
+						<Grid
+							item
+							display="flex"
+							justifyContent="flex-end">
+							<Typography
+								margin="auto 0">Mostrar senha</Typography>
+							<CheckBox size="small" name="password-show" onChange={() => setShowPassword(!showPassword)} />
+						</Grid>
+
+						<Grid
+							container
+							justifyContent="center"
+							direction="row"
+							alignItems="center"
+							marginTop="2em">
+							<Button
+								type="submit"
+								variant="outlined"
+								sx={{
+									minWidth: 180,
+									borderRadius: 50
+								}}>
+								ENTRAR</Button>
+						</Grid>
+					</Grid>
+				</Grid>
+			</form>
+		</Main>
 	)
 }
 
+
 const Main = styled.div`
 	display: flex;
-	justify-content: center;
 	align-content: center;
 
 	flex-direction: column;
 	flex-wrap: wrap;
 	height: 100vh;
+
+	margin-top: 14vh;
 `;
-
-const Form = styled.form`
-	display: flex;
-	flex-direction: column;
-
-	min-width: 26vw;
-`;
-
-const InputGroup = styled.div`
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 12px;
-`;
-
-const Input = styled.input`
-	min-height: 28px;
-	border-radius: 6px;
-
-	border: 1px solid gray;
-`
 
 const Header = styled.div`
 	text-align: center;
+	margin-bottom: 2em;
 `;
 
-const Button = styled.button`
+const SliderButton = styled.button`
+	background-color: transparent;
+	text-decoration: none;
 	text-align: center;
-	margin-top: 12px;
-	padding: 6px 48px;
+	border: 0;
+	flex-grow: 1;
+	height: 34px;
+	min-width: 10vh;
 
-	border-radius: 500px;
+	cursor: pointer;
 `;
 
-const ButtonGroup = styled.div`
+const SliderButtonGroup = styled.div`
 	display: flex;
-	justify-content: center;
+	flex-direction: row;
+	justify-content: space-around;
+	
+	margin-bottom: 2em;
 `;
