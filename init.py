@@ -5,6 +5,7 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 if TYPE_CHECKING:
     import db_type_proxy
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
 
 caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
+cors = CORS(app, origins=['*'])
 
 app.config['SECRET_KEY'] = b'1b86a0bc41f04a3fa76bef86ddde883b0a641dde57afa55e4dbe761cfa08c314'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_base}/test.db'
