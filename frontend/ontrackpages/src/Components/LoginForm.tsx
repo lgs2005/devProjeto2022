@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import CheckBox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
@@ -23,7 +24,9 @@ export default function LoginForm() {
 		passwordErrorHint: string
 	};
 
-	const { isAuthenticated, login } = useContext(AuthContext)
+	const navigate = useNavigate();
+		
+	const { isAuthenticated, loginUser } = useContext(AuthContext);
 
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -38,10 +41,14 @@ export default function LoginForm() {
 	});
 
 	const onSubmit: SubmitHandler<InterfaceFields> = async (formData) => {
-		const response = login({ ...formData });
+		const response = loginUser({ ...formData });
 
 		if (response.sucesso) {
-			
+			navigate('/', { replace: true })
+		} else {
+			response.data.errtarget === 'email' ?
+				setFieldsErrors({ ...fieldsError, emailErrorHint: response.data.erro }) :
+				setFieldsErrors({ ...fieldsError, passwordErrorHint: response.data.erro })
 		}
 	};
 

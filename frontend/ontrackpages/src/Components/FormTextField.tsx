@@ -2,9 +2,27 @@ import TextField from '@mui/material/TextField';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
-export default function FormTextField({ label, type, useFormRegisterReturn, ariaInvalid, error, helperText, handleChange } : 
-	{ label: string, type: string, useFormRegisterReturn: UseFormRegisterReturn, ariaInvalid: boolean, error: boolean, helperText: string, handleChange: React.ChangeEventHandler<HTMLInputElement> }) {
-	
+
+type Props = { 
+	label: string, 
+	type: string, 
+	useFormRegisterReturn: UseFormRegisterReturn, 
+	ariaInvalid: boolean, 
+	error: boolean, 
+	helperText: string, 
+	handleChange: React.ChangeEventHandler<HTMLInputElement> 
+};
+
+export default function FormTextField({ 
+		label, 
+		type, 
+		useFormRegisterReturn, 
+		ariaInvalid,
+		error, 
+		helperText, 
+		handleChange 
+	}: Props) {
+
 	return (
 		<TextField
 			variant='outlined'

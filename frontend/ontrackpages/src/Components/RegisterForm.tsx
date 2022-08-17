@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import CheckBox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import mainApi from '../api/user';
+import { AuthContext } from '../Contexts/auth'; 
 
 import ButtonPill from './ButtonPill';
 import FormTextField from './FormTextField';
@@ -13,53 +14,47 @@ import FormTextField from './FormTextField';
 
 export default function RegisterForm() {
 
-	interface InterfaceFormData {
+	interface InterfaceFields {
 		name: string,
 		email: string,
 		password: string
 	};
 
 	interface InterfaceFieldsErrors {
-		emailHintError: string,
-		passwordHintError: string
+		emailErrorHint: string,
+		passwordErrorHint: string
 	};
+
+	const navigate = useNavigate();
+
+	const { isAuthenticated, registerUser, user } = useContext(AuthContext);
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const [fields, setFields] = useState<InterfaceFormData>({
+	const [fields, setFields] = useState<InterfaceFields>({
 		name: '',
 		email: '',
 		password: ''
 	});
 
 	const [fieldsError, setFieldsErrors] = useState<InterfaceFieldsErrors>({
-		emailHintError: '',
-		passwordHintError: ''
+		emailErrorHint: '',
+		passwordErrorHint: ''
 	});
 
-	const onSubmit: SubmitHandler<InterfaceFormData> = async (formData) => {
-		const response = await mainApi.post('/api/login', JSON.stringify({
-			email: formData.email,
-			senha: formData.password,
-			nome: formData.name,
-			registro: true
-		}))
-			.then((response) => {
-				if (response.data.sucesso) {
-					console.log('Redirecionar para a página principal da aplicação')
-				} else {
-					response.data.errtarget === 'email' ?
-						setFieldsErrors({ ...fieldsError, emailHintError: response.data.erro }) :
-						setFieldsErrors({ ...fieldsError, passwordHintError: response.data.erro })
-				}
+	const onSubmit: SubmitHandler<InterfaceFields> = async (formData) => {
+		const response = registerUser({ ...formData });
 
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		if (response.sucesso) {
+			navigate('/', { replace: true })
+		} else {
+			response.data.errtarget === 'email' ?
+				setFieldsErrors({ ...fieldsError, emailErrorHint: response.data.erro }) :
+				setFieldsErrors({ ...fieldsError, passwordErrorHint: response.data.erro })
+		}
 	};
 
-	const { register, formState: { errors }, handleSubmit } = useForm<InterfaceFormData>();
+	const { register, formState: { errors }, handleSubmit } = useForm<InterfaceFields>();
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
@@ -70,10 +65,10 @@ export default function RegisterForm() {
 				ariaInvalid={errors.email ? true : false}
 				error={
 					errors.email ? true : false ||
-						fieldsError.emailHintError ? true : false}
+						fieldsError.emailErrorHint ? true : false}
 				helperText={
-					fieldsError.emailHintError ?
-						fieldsError.emailHintError :
+					fieldsError.emailErrorHint ?
+						fieldsError.emailErrorHint :
 						errors.email ? 'Preencha o campo' : ''}
 				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, email: e.target.value }) }} />
 
@@ -93,10 +88,10 @@ export default function RegisterForm() {
 				ariaInvalid={errors.password ? true : false}
 				error={
 					errors.password ? true : false ||
-						fieldsError.passwordHintError ? true : false}
+						fieldsError.passwordErrorHint ? true : false}
 				helperText={
-					fieldsError.passwordHintError ?
-						fieldsError.passwordHintError :
+					fieldsError.passwordErrorHint ?
+						fieldsError.passwordErrorHint :
 						errors.password ? 'Preencha o campo' : ''}
 				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, password: e.target.value }) }} />
 

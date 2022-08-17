@@ -16,9 +16,7 @@ export default function AppRouter() {
 		password: ''
 	});
 
-	const navigate = useNavigate();
-
-	const login = (data: { email: string, password: string }) => {
+	const loginUser = (data: { email: string, password: string }) => {
 		const response = mainApi.post('/api/auth/login', JSON.stringify({
 			...data
 		}))
@@ -26,12 +24,12 @@ export default function AppRouter() {
 			.catch((e) => e)
 	};
 	
-	const register = (data: { name: string, email: string, password: string }) => {
+	const registerUser = (data: { name: string, email: string, password: string }) => {
 		const response = mainApi.post('/api/auth/register', JSON.stringify({
 			...data
 		}))
 			.then((response) => response)
-			.catch((e) => e)
+			.catch((e) => console.log(e))
 	};
 
 	function logout() {
@@ -43,9 +41,9 @@ export default function AppRouter() {
 			<AuthContext.Provider value={{
 					isAuthenticated: !!user,
 					user,
-					login,
-					register,
-					logout
+					loginUser,
+					registerUser,
+					logoutUser: logout
 				}}>
 				<Routes>
 					<Route path="/" element={<AppPage />} />
