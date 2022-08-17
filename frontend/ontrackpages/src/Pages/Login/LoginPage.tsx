@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import LoginForm from '../../Components/LoginForm';
@@ -25,6 +24,8 @@ export default function Login() {
 			<ToggleButtonGroup
 				color='primary'
 				size='small'
+				exclusive={true}
+				value={currentForm}
 				sx={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -42,7 +43,7 @@ export default function Login() {
 				</ToggleButton>
 
 				<ToggleButton
-					value='cadastrar'
+					value='register'
 					sx={{
 						flexGrow: 1,
 						maxWidth: 140
@@ -52,14 +53,16 @@ export default function Login() {
 				</ToggleButton>
 			</ToggleButtonGroup>
 			
+		
 			<Grid
 				container
 				justifyContent='center'>
 				<Grid
 					display='grid'
-					gridTemplateColumns='minmax(120px, 480px)'
+					maxWidth='1024px'
+					gridTemplateColumns='1fr 1fr'
 					sx={{
-						transform: currentForm === 'register' ? 'translate(-100%)' : 'translateX(0)',
+						transform: currentForm === 'register' ? 'translate(-25%)' : 'translate(25%)',
 						transition: 'transform ease 300ms'
 					}}>
 					<Grid

@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { createGlobalStyle } from 'styled-components';
 
-import Login from './Routes/Login/LoginPage';
-import App from './Routes/App/AppPage';
+import AppRouter from './Routes/AppRouter';
+
 
 const GlobalStyle = createGlobalStyle`
 	* {
@@ -20,20 +19,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
 	<React.StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<App />} />
-				<Route path="/login" element={<Login />} />
-				<Route
-					path="*"
-					element={
-						<main style={{textAlign: 'center'}}>
-							<p>404</p>
-						</main>
-					}
-				/>
-			</Routes>
-		</BrowserRouter>
+		<AppRouter />
 		<GlobalStyle />
 	</React.StrictMode>
 );

@@ -110,6 +110,82 @@ def rota_api_login():
     })
 
 
+@app.route("/api/auth/login", methods=['POST'])
+def auth_login():
+	dados = validar_objeto(request.get_json(), {
+		'email': str,
+		'senha': str,
+	})
+
+	sucesso = False
+	erro = None
+	errtarget = None
+
+	usuario: Usuario = Usuario.query.filter_by(
+		email=dados['email']).first()
+
+	if usuario == None:
+		erro, errtarget = "Este usuário não existe", "email"
+	elif not bcrypt.check_password_hash(usuario.pwhash, dados['senha']):
+		erro, errtarget = "Senha incorreta", "senha"
+	else:
+		sucesso = True
+	
+	if sucesso and usuario != None:
+		if current_user.is_authenticated:
+			logout_user()
+		login_user(usuario)
+
+	return jsonify({
+		'sucesso': sucesso,
+		'erro': erro,
+		'errtarget': errtarget,
+	})
+
+
+@app.route("/api/auth/register", methods=['POST'])
+def auth_register():
+	dados = validar_objeto(request.get_json(), {
+        'email': str,
+        'senha': str,
+		'nome': str
+    })
+
+	sucesso = False
+	erro = None
+	errtarget = None
+
+	if Usuario.query.filter_by(email=dados['email']).first() != None:
+		erro, errtarget = "Este usuário já existe", "email"
+	elif (not emailPattern.fullmatch(dados['email'])):
+		erro, errtarget = "Email inválido", "email"
+	else:
+		pwhash = bcrypt.generate_password_hash(dados['senha']) \
+			.decode('utf-8', 'ignore')
+
+		novo_usuario = Usuario(
+			nome=dados['nome'],
+			email=dados['email'],
+			pwhash=pwhash,
+		)
+
+		db.session.add(novo_usuario)
+		db.session.commit()
+
+		sucesso = True
+
+	if sucesso and novo_usuario != None:
+		if current_user.is_authenticated:
+			logout_user()
+		login_user(novo_usuario)
+
+	return jsonify({
+		'sucesso': sucesso,
+		'erro': erro,
+		'errtarget': errtarget,
+	})
+
+
 @app.route("/logout", methods=["GET"])
 def rota_logout():
     """
