@@ -114,10 +114,10 @@ def rota_api_login():
 def auth_login():
 	dados = validar_objeto(request.get_json(), {
 		'email': str,
-		'senha': str,
+		'password': str,
 	})
 
-	sucesso = False
+	sucess = False
 	erro = None
 	errtarget = None
 
@@ -126,20 +126,20 @@ def auth_login():
 
 	if usuario == None:
 		erro, errtarget = "Este usuário não existe", "email"
-	elif not bcrypt.check_password_hash(usuario.pwhash, dados['senha']):
-		erro, errtarget = "Senha incorreta", "senha"
+	elif not bcrypt.check_password_hash(usuario.pwhash, dados['password']):
+		erro, errtarget = "Senha incorreta", "password"
 	else:
-		sucesso = True
+		sucess = True
 	
-	if sucesso and usuario != None:
+	if sucess and usuario != None:
 		if current_user.is_authenticated:
 			logout_user()
 		login_user(usuario)
 
 	return jsonify({
-		'sucesso': sucesso,
-		'erro': erro,
-		'errtarget': errtarget,
+		'sucess': sucess,
+		'error': erro,
+		'err_target': errtarget,
 	})
 
 
