@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 
 
-export default function _404() {
+export default function NOT_FOUND() {
 	return (
 		<Grid
 			container
