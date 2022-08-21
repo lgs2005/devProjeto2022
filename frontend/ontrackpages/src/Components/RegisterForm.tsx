@@ -1,15 +1,19 @@
-import { useState, useContext } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
 
 import CheckBox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Collapse from '@mui/material/Collapse';
+import GenericErrorAlert from '../Components/GenericError'
 
-import { AuthContext } from '../Contexts/auth'; 
+import { AuthContext } from '../Contexts/AuthContextProvider';
+
+import { createRegisterSession } from '../api/user';
 
 import ButtonPill from './ButtonPill';
 import FormTextField from './FormTextField';
+
+import validateFormFields from '../utils/form_utils';
 
 
 export default function RegisterForm() {
@@ -20,80 +24,99 @@ export default function RegisterForm() {
 		password: string
 	};
 
-	interface InterfaceFieldsErrors {
-		emailErrorHint: string,
-		passwordErrorHint: string
-	};
-
-	const navigate = useNavigate();
-
-	const { isAuthenticated, registerUser, user } = useContext(AuthContext);
-
-	const [showPassword, setShowPassword] = useState(false);
-
-	const [fields, setFields] = useState<InterfaceFields>({
+	const initialValues: InterfaceFields = {
 		name: '',
 		email: '',
 		password: ''
-	});
+	};
 
-	const [fieldsError, setFieldsErrors] = useState<InterfaceFieldsErrors>({
-		emailErrorHint: '',
-		passwordErrorHint: ''
-	});
+	const { setUser, navigate } = useContext(AuthContext);
 
-	const onSubmit: SubmitHandler<InterfaceFields> = async (formData) => {
-		const response = registerUser({ ...formData });
+	const [showPassword, setShowPassword] = useState(false);
 
-		if (response.sucesso) {
-			navigate('/', { replace: true })
+	const [showGenericError, setShowGenericError] = useState(false);
+
+	const [fields, setFields] = useState(initialValues);
+
+	const [fieldsErrors, setFieldsErrors] = useState(initialValues);
+
+	useEffect(() => (
+		setFieldsErrors({ ...fieldsErrors, email: '' })
+	), [fields.email]);
+
+	useEffect(() => (
+		setFieldsErrors({ ...fieldsErrors, password: '' })
+	), [fields.password]);
+
+	useEffect(() => (
+		setFieldsErrors({ ...fieldsErrors, name: '' })
+	), [fields.name]);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const areFieldsFilled = validateFormFields(fields);
+
+		if (areFieldsFilled) {
+			await createRegisterSession({ ...fields })
+				.then((response) => {
+					if (response.data.sucess) {
+						setUser({ ...fields });
+						navigate('/');
+					} else {
+						setFieldsErrors({
+							...fieldsErrors,
+							[response.data.err_target]: response.data.error
+						})
+					}
+				})
+				.catch((err) => setShowGenericError(true)
+				);
 		} else {
-			response.data.errtarget === 'email' ?
-				setFieldsErrors({ ...fieldsError, emailErrorHint: response.data.erro }) :
-				setFieldsErrors({ ...fieldsError, passwordErrorHint: response.data.erro })
+			setFieldsErrors({
+				email: !!fields.email ? '' : 'Preencha o campo',
+				name: !!fields.name ? '' : 'Preencha o campo',
+				password: !!fields.password ? '' : 'Preencha o campo',
+			})
 		}
 	};
 
-	const { register, formState: { errors }, handleSubmit } = useForm<InterfaceFields>();
-
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
+		<form onSubmit={handleSubmit}>
+			<Collapse
+				in={!!showGenericError}
+				sx={{
+					paddingBottom: 2
+				}}>
+				<GenericErrorAlert severity='error' handleIconOnClickButton={() => setShowGenericError(false)} message='Sem conexão com o servidor.' />
+			</Collapse>
+
 			<FormTextField
 				label='Email'
 				type='email'
-				useFormRegisterReturn={register('email', { required: true })}
-				ariaInvalid={errors.email ? true : false}
-				error={
-					errors.email ? true : false ||
-						fieldsError.emailErrorHint ? true : false}
-				helperText={
-					fieldsError.emailErrorHint ?
-						fieldsError.emailErrorHint :
-						errors.email ? 'Preencha o campo' : ''}
-				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, email: e.target.value }) }} />
+				error={!!fieldsErrors.email}
+				helperText={fieldsErrors.email ?? ''}
+
+				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					setFields({ ...fields, email: e.target.value })
+				}} />
 
 			<FormTextField
 				label='Nome'
 				type='text'
-				useFormRegisterReturn={register('name', { required: true })}
-				ariaInvalid={errors.name ? true : false}
-				error={errors.name ? true : false}
-				helperText={errors.name ? 'Preencha o campo' : ''}
-				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, name: e.target.value }) }} />
+				error={!!fieldsErrors.name}
+				helperText={fieldsErrors.name ?? ''}
+				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					setFields({ ...fields, name: e.target.value })
+				}} />
 
 			<FormTextField
 				label='Senha'
 				type={showPassword ? 'text' : 'password'}
-				useFormRegisterReturn={register('password', { required: true })}
-				ariaInvalid={errors.password ? true : false}
-				error={
-					errors.password ? true : false ||
-						fieldsError.passwordErrorHint ? true : false}
-				helperText={
-					fieldsError.passwordErrorHint ?
-						fieldsError.passwordErrorHint :
-						errors.password ? 'Preencha o campo' : ''}
-				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFields({ ...fields, password: e.target.value }) }} />
+				error={!!fieldsErrors.password}
+				helperText={fieldsErrors.password ?? ''}
+				handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					setFields({ ...fields, password: e.target.value })
+				}} />
 
 			<Grid
 				container
