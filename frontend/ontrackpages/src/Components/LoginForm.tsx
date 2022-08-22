@@ -13,6 +13,7 @@ import FormTextField from './FormTextField';
 import GenericErrorAlert from './GenericError';
 import validateFormFields from '../utils/form_utils'
 import { createLoginSession } from '../api/user';
+import { CircularProgress } from '@mui/material';
 
 
 export default function LoginForm() {
@@ -28,6 +29,8 @@ export default function LoginForm() {
 	};
 
 	const { setUser, navigate } = useContext(AuthContext);
+
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -111,7 +114,10 @@ export default function LoginForm() {
 				container
 				justifyContent='center'
 				marginTop='1.2em'>
-				<ButtonPill buttonText='entrar' buttonType='submit' />
+				<ButtonPill 
+					text={isLoading? <CircularProgress /> : 'ENTRAR'} 
+					type='submit' 
+					handleOnClick={validateFormFields(fields)? setIsLoading(true) : setIsLoading(false)}/>
 			</Grid>
 		</form>
 	)

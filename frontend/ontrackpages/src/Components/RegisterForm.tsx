@@ -134,7 +134,7 @@ export default function RegisterForm() {
 				container
 				justifyContent='center'
 				marginTop='1.2em'>
-				<ButtonPill buttonText='cadastrar' buttonType='submit' />
+				<ButtonPill text='CADASTRAR' type='submit' />
 			</Grid>
 		</form>
 	)
