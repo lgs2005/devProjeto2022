@@ -1,15 +1,12 @@
-import React from 'react'; 
-
 import Button from '@mui/material/Button';
 
 
 type TypeButtonPill = {
 	type: 'button' | 'reset' | 'submit' | undefined,
 	text: string | JSX.Element,
-	handleOnClick: () => void
 };
 
-export default function ButtonPill({ type, text, handleOnClick } : TypeButtonPill) {
+export default function ButtonPill({ type, text } : TypeButtonPill) {
 	return (
 		<Button
 			type={type}
@@ -17,8 +14,7 @@ export default function ButtonPill({ type, text, handleOnClick } : TypeButtonPil
 			sx={{
 				minWidth: 180,
 				borderRadius: 50
-			}}
-			onClick={handleOnClick}>
+			}}>
 			{text}</Button>
 	)
 }

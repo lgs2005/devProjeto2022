@@ -66,18 +66,20 @@ export default function RegisterForm() {
 						setFieldsErrors({
 							...fieldsErrors,
 							[response.data.err_target]: response.data.error
-						})
-					}
+						});
+					};
 				})
-				.catch((err) => setShowGenericError(true)
-				);
+				.catch((err) => {
+					console.log(err);
+					setShowGenericError(true);
+				});
 		} else {
 			setFieldsErrors({
 				email: !!fields.email ? '' : 'Preencha o campo',
 				name: !!fields.name ? '' : 'Preencha o campo',
 				password: !!fields.password ? '' : 'Preencha o campo',
-			})
-		}
+			});
+		};
 	};
 
 	return (
@@ -134,7 +136,9 @@ export default function RegisterForm() {
 				container
 				justifyContent='center'
 				marginTop='1.2em'>
-				<ButtonPill text='CADASTRAR' type='submit' />
+				<ButtonPill 
+					text='CADASTRAR' 
+					type='submit' />
 			</Grid>
 		</form>
 	)

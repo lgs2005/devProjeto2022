@@ -4,16 +4,16 @@ import CheckBox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
+import GenericErrorAlert from '../Components/GenericError'
 
 import { AuthContext } from '../Contexts/AuthContextProvider';
+
+import { createLoginSession } from '../api/user';
 
 import ButtonPill from './ButtonPill';
 import FormTextField from './FormTextField';
 
-import GenericErrorAlert from './GenericError';
 import validateFormFields from '../utils/form_utils'
-import { createLoginSession } from '../api/user';
-import { CircularProgress } from '@mui/material';
 
 
 export default function LoginForm() {
@@ -30,8 +30,6 @@ export default function LoginForm() {
 
 	const { setUser, navigate } = useContext(AuthContext);
 
-	const [isLoading, setIsLoading] = useState(false);
-
 	const [showPassword, setShowPassword] = useState(false);
 
 	const [showGenericError, setShowGenericError] = useState(false);
@@ -42,11 +40,11 @@ export default function LoginForm() {
 
 	useEffect(() => (
 		setFieldsErrors({ ...fieldsErrors, email: '' })
-	), [fields.email])
+	), [fields.email]);
 
 	useEffect(() => (
 		setFieldsErrors({ ...fieldsErrors, password: '' })
-	), [fields.password])
+	), [fields.password]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -62,16 +60,19 @@ export default function LoginForm() {
 						setFieldsErrors({
 							...fieldsErrors,
 							[response.data.err_target]: response.data.error
-						})
-					}
+						});
+					};
 				})
-				.catch((err) => setShowGenericError(true));
+				.catch((err) => {
+					console.log(err);
+					setShowGenericError(true);
+				});
 		} else {
 			setFieldsErrors({
 				email: !!fields.email ? '' : 'Preencha o campo',
 				password: !!fields.password ? '' : 'Preencha o campo',
-			})
-		}
+			});
+		};
 	};
 
 	return (
@@ -115,9 +116,8 @@ export default function LoginForm() {
 				justifyContent='center'
 				marginTop='1.2em'>
 				<ButtonPill 
-					text={isLoading? <CircularProgress /> : 'ENTRAR'} 
-					type='submit' 
-					handleOnClick={validateFormFields(fields)? setIsLoading(true) : setIsLoading(false)}/>
+					text='ENTRAR'
+					type='submit' />
 			</Grid>
 		</form>
 	)
