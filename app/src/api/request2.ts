@@ -72,6 +72,4 @@ export class Request2 {
 	with(change: (req: RequestOptions) => RequestOptions) {
 		return new Request2(change(this.opts.clone()));
 	}
-
-	
 }
