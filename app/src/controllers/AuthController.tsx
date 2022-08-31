@@ -1,4 +1,5 @@
 import { createContext, PropsWithChildren, useState } from "react";
+import { User } from "../api/api";
 
 interface GlobalController<T> {
 	value: T,
@@ -21,10 +22,4 @@ function createGlobalVariableContextProvider<T>(init: T) {
 	return [context, ContextProvider] as [typeof context, typeof ContextProvider];
 }
 
-type User = {
-	token: string,
-	name: string,
-	email: string,
-}
-
-export const [AuthContext, AuthController] = createGlobalVariableContextProvider<User | null>(null);
+export const [AuthControllerContext, AuthController] = createGlobalVariableContextProvider<User | null>(null);

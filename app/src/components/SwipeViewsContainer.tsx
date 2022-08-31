@@ -11,7 +11,7 @@ export default function SwipeViewsContainer(props: PropsWithChildren<{ currentIn
 					key={index}
 					children={child}
 					style={{
-						transform: offset === 0 ? 'translateX(0)' : `translateX(calc(100% * ${offset}))`,
+						transform: offset === 0 ? 'none' : `translateX(calc(100% * ${offset}))`,
 						pointerEvents: offset === 0 ? 'inherit' : 'none',
 						opacity: offset === 0 ? 1 : 0,
 					}}

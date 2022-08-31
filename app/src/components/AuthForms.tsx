@@ -1,5 +1,7 @@
-import { Button, ButtonProps, Stack, TextField, TextFieldProps } from "@mui/material";
+import { Alert, Backdrop, BackdropProps, Button, ButtonProps, CircularProgress, Collapse, Stack, TextField, TextFieldProps, Typography } from "@mui/material";
+import { useContext, useState } from "react";
 import { api } from "../api/api";
+import { AuthControllerContext } from "../controllers/AuthController";
 import useFormData from "../lib/useFormData";
 import PasswordField from "./PasswordField";
 
@@ -21,59 +23,107 @@ const submitButtonStyle: ButtonProps = {
 	},
 };
 
+function SFormBackdrop(props: BackdropProps) {
+	return <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} {...props}>
+		<CircularProgress />
+		<Typography
+			variant="h4"
+			sx={{ mx: 2 }}>
+			Aguarde...
+		</Typography>
+	</Backdrop>
+}
+
+function SFormError(props: {onClose: () => void, message: string | null}) {
+	return <Collapse
+		in={props.message != null}>
+		<Alert
+			severity="error"
+			onClose={props.onClose}>
+			{props.message}
+		</Alert>
+	</Collapse>
+}
+
+function errorProps(error: string | null, setError: (err: null) => void): Partial<TextFieldProps> {
+	return {
+		error: error != null,
+		helperText: error,
+		onChange: () => setError(null),
+	};
+}
+
 type LoginFormData = {
 	email: string,
 	password: string,
 }
 
-type RegisterFormData = {
-	name: string,
-	email: string,
-	password: string,
-}
-
 export function LoginForm() {
+	const userController = useContext(AuthControllerContext)
 	const [data,, onFieldChange] = useFormData<LoginFormData>({
 		email: '',
 		password: '',
 	});
-
-	const onSubmitForm: React.FormEventHandler<HTMLFormElement> = (e) => {
+	
+	const [processing, setProcessing] = useState(false);
+	const [serverError, setServerError] = useState<string | null>(null);
+	const [emailError, setEmailError] = useState<string | null>(null);
+	const [passwordError, setPasswordError] = useState<string | null>(null);
+	
+	const onSubmitForm: React.FormEventHandler<HTMLFormElement> = async (e) => {
 		e.preventDefault();
+		setProcessing(true);
 
-		api.login(data).then(
+		await api.login(data).then(
 			res => {
-
+				if (res.ok) {
+					userController.setValue(res.value);
+				} else if (res.error === 'baduser') {
+					setEmailError('Este usuário não existe.');
+				} else if (res.error === 'badpassword') {
+					setPasswordError('Senha incorreta.');
+				} else {
+					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
 			},
 
 			err => {
-
+				setServerError('Não foi possível fazer login, tente novamente mais tarde.');
 			}
 		);
+
+		setProcessing(false);
 	}
 
 	return <>
+		<SFormBackdrop open={processing} />
 		<form onSubmit={onSubmitForm} onChange={onFieldChange}>
 			<Stack
 				alignItems='center'>
 
 				<TextField
-					label='Email'
 					name='email'
 					type='email'
-					required
 					value={data.email}
 					autoComplete='username'
-					{...textFieldStyle}
-				/>
-				<PasswordField
-					label='Senha'
-					name='password'
 					required
+					
+					label='Email'
+					{...errorProps(emailError, setEmailError)}
+					{...textFieldStyle}
+					/>
+
+				<PasswordField
+					name='password'
 					value={data.password}
 					autoComplete='current-password'
+					required
+					
+					label='Senha'
+					{...errorProps(passwordError, setPasswordError)}
 					{...textFieldStyle}
-				/>
+					/>
+
 				<Button
 					type='submit'
 					{...submitButtonStyle}>
@@ -82,60 +132,89 @@ export function LoginForm() {
 
 			</Stack>
 		</form>
+		<SFormError message={serverError} onClose={() => setServerError(null)} />
 	</>
 }
 
+type RegisterFormData = {
+	name: string,
+	email: string,
+	password: string,
+}
+
 export function RegisterForm() {
+	const userController = useContext(AuthControllerContext);
 	const [data,, onFieldChange] = useFormData<RegisterFormData>({
 		name: '',
 		email: '',
 		password: '',
 	});
 
-	const onSubmitForm: React.FormEventHandler = (e) => {
+	const [processing, setProcessing] = useState(false);
+	const [serverError, setServerError] = useState<string | null>(null);
+	const [emailError, setEmailError] = useState<string | null>(null);
+	
+	const onSubmitForm: React.FormEventHandler = async (e) => {
 		e.preventDefault();
+		setProcessing(true);
 
-		api.register(data).then(
+		await api.register(data).then(
 			res => {
-
+				if (res.ok) {
+					userController.setValue(res.value);
+				} else if (res.error === 'bademail') {
+					setEmailError('Um usuário com este email já existe.')
+				} else {
+					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
 			},
 
 			err => {
-
+				setServerError('Não foi possível fazer login, tente novamente mais tarde.');
 			}
 		);
+
+		setProcessing(false);
 	}
 
 	return <>
+		<SFormBackdrop open={processing} />
 		<form onSubmit={onSubmitForm} onChange={onFieldChange}>
 			<Stack
 				alignItems='center'>
 
 				<TextField
-					label='Nome'
 					name='name'
 					type='text'
-					required
 					value={data.name}
+					required
+
+					label='Nome'
 					{...textFieldStyle}
 				/>
+
 				<TextField
-					label='Email'
 					name='email'
 					type='email'
-					required
 					value={data.email}
 					autoComplete='username'
+					required
+
+					label='Email'
+					{...errorProps(emailError, setEmailError)}
 					{...textFieldStyle}
 				/>
+
 				<PasswordField
-					label='Senha'
 					name='password'
-					required
 					value={data.password}
 					autoComplete='current-password'
+					required
+
+					label='Senha'
 					{...textFieldStyle}
 				/>
+
 				<Button
 					type='submit'
 					{...submitButtonStyle}>
@@ -144,5 +223,6 @@ export function RegisterForm() {
 
 			</Stack>
 		</form>
+		<SFormError message={serverError} onClose={() => setServerError(null)} />
 	</>
 }

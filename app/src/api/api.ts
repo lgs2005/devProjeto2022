@@ -5,8 +5,8 @@ const base = new Request2('http://localhost:5000/api')
 type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
 
 type LoginError = 'baduser' | 'badpassword';
-type RegisterError = 'baduser' | 'bademail';
-type User = {
+type RegisterError = 'bademail';
+export type User = {
 	name: string,
 	email: string,
 };
