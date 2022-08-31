@@ -1,7 +1,6 @@
 import { Container, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react"
-import LoginForm from "./LoginForm";
-import Registerform from "./RegisterForm";
+import { LoginForm, RegisterForm } from "./AuthForms";
 import SwipeViewsContainer from "./SwipeViewsContainer";
 
 export default function AuthPage() {
@@ -23,12 +22,12 @@ export default function AuthPage() {
 				variant='fullWidth'
 				sx={{my: 2}}>
 				<Tab label='Login' value={0} />
-				<Tab label='Register' value={1} />
+				<Tab label='Cadastrar' value={1} />
 			</Tabs>
 
 			<SwipeViewsContainer currentIndex={currentTab}>
 				<LoginForm />
-				<Registerform />
+				<RegisterForm />
 			</SwipeViewsContainer>
 
 		</Container>

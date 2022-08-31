@@ -23,7 +23,8 @@ export default function SwipeViewsContainer(props: PropsWithChildren<{ currentIn
 
 const SContainer = styled('div')`
 	display: grid;
-	* {
+	overflow-x: hidden;
+	> div {
 		grid-area: 1/1;
 		transition: opacity ease 300ms, transform ease 300ms;
 	}
