@@ -1,7 +1,7 @@
 from functools import wraps
 from http.client import BAD_REQUEST, UNAUTHORIZED
 
-from flask import abort, redirect
+from flask import abort, redirect, jsonify
 from flask_login import current_user
 
 
@@ -55,3 +55,15 @@ def validar_objeto(dados: any, validar: 'dict[str, type]') -> 'dict[str, any]':
             abort(BAD_REQUEST)
 
     return dados
+
+def response_ok(value):
+    return jsonify({
+        'ok': True,
+        'value': value,
+    })
+
+def response_err(error):
+    return jsonify({
+        'ok': False,
+        'error': error,
+    })

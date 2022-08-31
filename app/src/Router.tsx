@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import AuthPage from "./components/AuthPage";
-import { AuthContext } from "./controllers/AuthController";
+import { AuthControllerContext } from "./controllers/AuthController";
 
-export default function Router() {
-	const user = useContext(AuthContext);
+export default function Main() {
+	const userController = useContext(AuthControllerContext);
 
-	if (user.value == null) {
+	if (userController.value == null) {
 		return <AuthPage />
 	}
 
 	return <>
-
+		Yoooooo
 	</>;
 }

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
-cors = CORS(app, origins=['*'])
+cors = CORS(app)
 
 app.config['SECRET_KEY'] = b'1b86a0bc41f04a3fa76bef86ddde883b0a641dde57afa55e4dbe761cfa08c314'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_base}/test.db'

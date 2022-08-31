@@ -78,9 +78,9 @@ export function LoginForm() {
 			res => {
 				if (res.ok) {
 					userController.setValue(res.value);
-				} else if (res.error === 'baduser') {
+				} else if (res.error === 'no-such-user') {
 					setEmailError('Este usuário não existe.');
-				} else if (res.error === 'badpassword') {
+				} else if (res.error === 'wrong-password') {
 					setPasswordError('Senha incorreta.');
 				} else {
 					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
@@ -162,7 +162,7 @@ export function RegisterForm() {
 			res => {
 				if (res.ok) {
 					userController.setValue(res.value);
-				} else if (res.error === 'bademail') {
+				} else if (res.error === 'already-exists') {
 					setEmailError('Um usuário com este email já existe.')
 				} else {
 					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
