@@ -1,9 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 
+import { Grid, Typography, Collapse } from '@mui/material/';
+
 import CheckBox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Collapse from '@mui/material/Collapse';
 import GenericErrorAlert from '../Components/GenericError'
 
 import { AuthContext } from '../Contexts/AuthContextProvider';
