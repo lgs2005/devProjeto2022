@@ -1,12 +1,10 @@
 from flask import jsonify
-from flask_login import current_user
+from flask_jwt_extended import jwt_required, current_user
 from init import app
 from modelos import Pagina
 
-from rotas.utils import requer_login
-
 @app.route("/api/listar-paginas", methods=["GET"])
-@requer_login
+@jwt_required()
 def rota_listar_paginas():
     """Lista as páginas do usuário da 
     sessão atual.

@@ -4,16 +4,16 @@ import os
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
-from flask_login import current_user
+from flask_jwt_extended import jwt_required, current_user
 from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from rotas.utils import requer_login, validar_objeto
+from rotas.utils import validar_objeto
 
 
 @app.route('/api/criar-pagina', methods=["POST"])
-@requer_login
+@jwt_required()
 def rota_api_criar_pagina():
     """Rota de criação de página.
     Recebe dados em json do front end: nome da página
@@ -51,7 +51,7 @@ def rota_api_criar_pagina():
 
 
 @app.route("/api/conteudo/<int:id>", methods=["GET", "PUT"])
-@requer_login
+@jwt_required()
 def rota_api_conteudo(id: int = None):
     """Gerencia determinada página do usuário, passando o
     id da mesma.

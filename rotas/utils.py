@@ -1,22 +1,6 @@
-from functools import wraps
 from http.client import BAD_REQUEST, UNAUTHORIZED
 
 from flask import abort, jsonify
-from flask_login import current_user
-
-
-def requer_login(rota):
-    """Decorador para checar se o usuário está
-    autenticado/sessão ativa.
-    """
-    @wraps(rota)
-    def wrapper(*args, **kwargs):
-        if not current_user.is_authenticated:
-            abort(UNAUTHORIZED)
-
-        return rota(*args, **kwargs)
-
-    return wrapper
 
 
 def validar_objeto(dados: any, validar: 'dict[str, type]') -> 'dict[str, any]':

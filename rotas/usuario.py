@@ -1,12 +1,12 @@
 from http.client import OK
 import re
 
-from flask import request, jsonify
-from flask_login import current_user, login_user, logout_user
+from flask import request, jsonify, make_response
+from flask_jwt_extended import create_access_token, jwt_required, current_user, set_access_cookies, unset_jwt_cookies
 from init import app, bcrypt, catimg, db
 from modelos import Usuario
 
-from rotas.utils import requer_login, response_err, response_ok, validar_objeto
+from rotas.utils import response_err, response_ok, validar_objeto
 
 emailPattern = re.compile(
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
@@ -27,12 +27,10 @@ def rota_login():
         return response_err('wrong-password')
 
     else:
-        if current_user.is_authenticated:
-            logout_user()
-
-        login_user(usuario)
-
-        return response_ok(usuario.json())
+        response = response_ok(usuario.json()) 
+        token = create_access_token(identity=usuario)
+        set_access_cookies(response, token)
+        return response
 
 
 @app.route('/api/auth/register', methods=['POST'])
@@ -62,28 +60,27 @@ def rota_registro():
         db.session.add(usuario)
         db.session.commit()
 
-        if current_user.is_authenticated:
-            logout_user()
-
-        login_user(usuario)
-
-        return response_ok(usuario.json())
+        response = response_ok(usuario.json()) 
+        token = create_access_token(identity=usuario)
+        set_access_cookies(response, token)
+        return response
 
 
 @app.route('/api/auth/logout', methods=['POST'])
 def rota_logout():
-    logout_user()
-    return catimg(OK), OK
+    response = make_response(catimg(OK), OK)
+    unset_jwt_cookies(response)
+    return response
 
 
 @app.route('/api/auth/user', methods=['GET'])
-@requer_login
+@jwt_required()
 def rota_usuario():
     return jsonify(current_user.json())
 
 
 @app.route("/api/alterar-senha", methods=["POST"])
-@requer_login
+@jwt_required()
 def rota_api_alterar_senha():
     erro = None
     dados = validar_objeto(request.get_json(), {

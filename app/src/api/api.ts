@@ -1,6 +1,8 @@
 import { Request2 } from "./request2";
 
-const base = new Request2('http://localhost:5000')
+const base = new Request2('http://localhost:5000').with(
+	r => r.includeCredentials()
+)
 
 type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
 

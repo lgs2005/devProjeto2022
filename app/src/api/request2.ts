@@ -2,6 +2,7 @@ export class RequestOptions {
 	url: URL
 	body?: string
 	contentType?: string
+	credentials?: RequestCredentials
 
 	constructor(url: URL) {
 		this.url = url
@@ -23,6 +24,11 @@ export class RequestOptions {
 	json(data: any) {
 		this.body = JSON.stringify(data);
 		this.contentType = 'application/json';
+		return this;
+	}
+
+	includeCredentials() {
+		this.credentials = 'include'
 		return this;
 	}
 }
@@ -49,6 +55,7 @@ export class Request2 {
 		let res = await fetch(this.opts.url, {
 			method: method,
 			body: this.opts.body,
+			credentials: this.opts.credentials,
 			headers: {
 				'Content-Type': this.opts.contentType ?? 'text/plain'
 			},
