@@ -1,32 +1,17 @@
-from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
-from init import app, catimg, db
+from init import app, db
+from flask import send_from_directory
 
 # para registrar na base de dados
 import modelos
 
 # imports para registrar as rotas
 import rotas.conteudo
-import rotas.paginas
 import rotas.listar_paginas
-import rotas.perfil
 import rotas.usuario
 
-@app.route('/hello')
-def hello_world():
-    """Super Mario Rapper"""
-    return '<img src=\'https://c.tenor.com/3fnHh1WgOIwAAAAC/rapping-mario-mario.gif\'/>'
-
-
-@app.errorhandler(WerkzeugHTTPException)
-def error_cat(e: WerkzeugHTTPException):
-    return catimg(e.code), e.code
-
-
-@app.errorhandler(Exception)
-def internal_error_cat(e: Exception):
-    print(f'\n\n{e}\n\n')
-    return catimg(500), 500
-
+@app.route('/', methods=['GET'])
+def rota_react():
+    return send_from_directory('static', 'index.html')
 
 if __name__ == '__main__':
     db.create_all()
