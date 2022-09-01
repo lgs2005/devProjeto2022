@@ -30,4 +30,15 @@ export namespace api {
 	
 		return req.fetch<Result<User, RegisterError>>('POST');
 	}
+
+	export function getUser() {
+		let req = base.with(r => r
+			.path('/api/auth/user')
+		);
+
+		return req.fetch<User, User | null>('GET', {
+			ok: user => user,
+			401: () => null,
+		});
+	}
 }

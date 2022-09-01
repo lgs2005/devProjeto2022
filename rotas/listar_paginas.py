@@ -3,10 +3,10 @@ from flask_login import current_user
 from init import app
 from modelos import Pagina
 
-from rotas.utils import api_requer_login
+from rotas.utils import requer_login
 
 @app.route("/api/listar-paginas", methods=["GET"])
-@api_requer_login
+@requer_login
 def rota_listar_paginas():
     """Lista as páginas do usuário da 
     sessão atual.

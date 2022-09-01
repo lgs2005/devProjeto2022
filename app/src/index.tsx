@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Main from './Router';
+import Main from './Main';
 import { AuthController } from './controllers/AuthController';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 

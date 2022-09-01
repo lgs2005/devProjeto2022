@@ -20,9 +20,9 @@ class Usuario(db.Model, UserMixin):
 
     def json(self) -> dict:
         return {
-            "id": self.id,
-            "nome": self.nome,
-            "email": self.email
+            'id': self.id,
+            'name': self.nome,
+            'email': self.email,
         }
 
 

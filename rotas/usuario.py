@@ -1,12 +1,12 @@
 from http.client import OK
 import re
 
-from flask import request
+from flask import request, jsonify
 from flask_login import current_user, login_user, logout_user
 from init import app, bcrypt, catimg, db
 from modelos import Usuario
 
-from rotas.utils import api_requer_login, response_err, response_ok, validar_objeto
+from rotas.utils import requer_login, response_err, response_ok, validar_objeto
 
 emailPattern = re.compile(
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
@@ -32,10 +32,7 @@ def rota_login():
 
         login_user(usuario)
 
-        return response_ok({
-            'name': usuario.nome,
-            'email': usuario.email,
-        })
+        return response_ok(usuario.json())
 
 
 @app.route('/api/auth/register', methods=['POST'])
@@ -70,10 +67,7 @@ def rota_registro():
 
         login_user(usuario)
 
-        return response_ok({
-            'name': usuario.nome,
-            'email': usuario.email,
-        })
+        return response_ok(usuario.json())
 
 
 @app.route('/api/auth/logout', methods=['POST'])
@@ -82,8 +76,14 @@ def rota_logout():
     return catimg(OK), OK
 
 
+@app.route('/api/auth/user', methods=['GET'])
+@requer_login
+def rota_usuario():
+    return jsonify(current_user.json())
+
+
 @app.route("/api/alterar-senha", methods=["POST"])
-@api_requer_login
+@requer_login
 def rota_api_alterar_senha():
     erro = None
     dados = validar_objeto(request.get_json(), {
@@ -105,4 +105,3 @@ def rota_api_alterar_senha():
         'erro': erro,
         'errtarget': "senha", # só temos erros aqui, então...
     }
-        
