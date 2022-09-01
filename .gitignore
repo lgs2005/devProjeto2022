@@ -5,3 +5,6 @@ paginas/*
 !paginas/__init__.py
 
 .vscode/settings.json
+
+.frontend/ontrackpages/node_modules
+frontend/ontrackpages/node_modules/
