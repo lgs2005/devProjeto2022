@@ -1,9 +1,10 @@
 # Desenvolvimento de Projeto 2022
 
 Biblitecas:
- - Flask
- - Flask-SQLAlchemy
- - Flask-Login
- - Flask-Bcrypt
+ - flask
+ - flask-SQLAlchemy
+ - flask-jwt-extended
+ - flask-bcrypt
+ - flask-cors
 
 Para instalar: `install.py`
