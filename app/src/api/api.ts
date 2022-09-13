@@ -1,8 +1,14 @@
 import { Request2 } from "./request2";
 
-const base = new Request2('http://localhost:5000').with(
-	r => r.includeCredentials()
-)
+// CORS diferencia entre localhost e 127.0.0.1
+// se usar o ip errado não serão enviados os cookies de autenticação
+// solução: usar outra coisa
+// TODO: ^^^^^^
+const base = new Request2('http://127.0.0.1:5000')
+.with(r => r
+	.setCredentials('include')
+	.setMode('cors')
+);
 
 type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
 
@@ -36,6 +42,7 @@ export namespace api {
 	export function getUser() {
 		let req = base.with(r => r
 			.path('/api/auth/user')
+			.setCredentials('include')
 		);
 
 		return req.fetch<User, User | null>('GET', {

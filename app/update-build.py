@@ -1,11 +1,8 @@
 import os
 import shutil
 
-def build():
+def update_build():
 	os.chdir(os.path.dirname(__file__))
-
-	# if os.system('npm run build') != 0:
-	# 	return
 
 	if os.path.exists('./../static'):
 		shutil.rmtree('./../static')
@@ -15,4 +12,4 @@ def build():
 
 
 if __name__ == '__main__':
-	build()
+	update_build()

@@ -3,7 +3,7 @@ from init import app, db, jwt
 from flask import send_from_directory
 from flask_jwt_extended import get_jwt, create_access_token, set_access_cookies, get_current_user
 
-# para registrar na base de dados
+# import para registrar a base de dados
 import modelos
 
 # imports para registrar as rotas
@@ -32,6 +32,7 @@ def refresh_jwt(response):
         if min_exp_time > timestamp:
             new_token = create_access_token(identity=get_current_user())
             set_access_cookies(response, new_token)
+
         return response
     except (RuntimeError, KeyError):
         return response
@@ -40,6 +41,7 @@ def refresh_jwt(response):
 @app.route('/', methods=['GET'])
 def rota_react():
     return send_from_directory('static', 'index.html')
+
 
 if __name__ == '__main__':
     db.create_all()

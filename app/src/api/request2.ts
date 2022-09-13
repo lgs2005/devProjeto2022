@@ -3,6 +3,7 @@ export class RequestOptions {
 	body?: string
 	contentType?: string
 	credentials?: RequestCredentials
+	mode?: RequestMode
 
 	constructor(url: URL) {
 		this.url = url
@@ -27,8 +28,13 @@ export class RequestOptions {
 		return this;
 	}
 
-	includeCredentials() {
-		this.credentials = 'include'
+	setCredentials(credentials: RequestCredentials) {
+		this.credentials = credentials
+		return this;
+	}
+
+	setMode(mode: RequestMode) {
+		this.mode = mode;
 		return this;
 	}
 }
@@ -56,6 +62,7 @@ export class Request2 {
 			method: method,
 			body: this.opts.body,
 			credentials: this.opts.credentials,
+			mode: this.opts.mode,
 			headers: {
 				'Content-Type': this.opts.contentType ?? 'text/plain'
 			},
