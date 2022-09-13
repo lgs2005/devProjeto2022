@@ -8,3 +8,5 @@ paginas/*
 
 static/
 !app/public/static
+
+frontend/
