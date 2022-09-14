@@ -3,3 +3,6 @@ test.db
 
 paginas/*
 !paginas/__init__.py
+
+app/*
+frontend/*
