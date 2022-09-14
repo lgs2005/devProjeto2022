@@ -1,7 +1,37 @@
 import { Container, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react"
-import { LoginForm, RegisterForm } from "./AuthForms";
+import { FormSubmitHandler } from "../lib/useFormSchema";
+import { LoginForm, RegisterForm, RegisterFormData } from "./AuthForms";
 import SwipeViewsContainer from "./SwipeViewsContainer";
+import { api } from "../api/api";
+
+
+// const [processing, setProcessing] = useState(false);
+// 	const [serverError, setServerError] = useState<string | null>(null);
+// 	const [emailError, setEmailError] = useState<string | null>(null);
+	
+	const onSubmitForm: FormSubmitHandler<RegisterFormData> = async (data, setError) => {
+		//setProcessing(true);
+
+		await api.register(data).then(
+			res => {
+				if (res.ok) {
+					// userController.setValue(res.value);
+				} else if (res.error === 'already-exists') {
+					setError('email', 'Um usuário com este email já existe');
+				} else {
+					//setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
+			},
+
+			err => {
+				//setServerError('Não foi possível fazer login, tente novamente mais tarde.');
+			}
+		);
+
+		// setProcessing(false);
+	}
+
 
 export default function AuthPage() {
 	const [currentTab, setCurrentTab] = useState(0);
@@ -27,7 +57,7 @@ export default function AuthPage() {
 
 			<SwipeViewsContainer currentIndex={currentTab}>
 				<LoginForm />
-				<RegisterForm />
+				<RegisterForm onSubmit={onSubmitForm} />
 			</SwipeViewsContainer>
 
 		</Container>

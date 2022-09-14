@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { api } from "../api/api";
 import { AuthControllerContext } from "../controllers/AuthController";
 import useFormData from "../lib/useFormData";
+import useFormSchema, { FormSubmitHandler } from "../lib/useFormSchema";
 import PasswordField from "./PasswordField";
 
 const textFieldStyle: TextFieldProps = {
@@ -136,82 +137,83 @@ export function LoginForm() {
 	</>
 }
 
-type RegisterFormData = {
+export type RegisterFormData = {
 	name: string,
 	email: string,
 	password: string,
 }
 
-export function RegisterForm() {
+// const [processing, setProcessing] = useState(false);
+// 	const [serverError, setServerError] = useState<string | null>(null);
+// 	const [emailError, setEmailError] = useState<string | null>(null);
+	
+// 	const onSubmitForm: React.FormEventHandler = async (e) => {
+// 		e.preventDefault();
+// 		setProcessing(true);
+
+// 		await api.register(data).then(
+// 			res => {
+// 				if (res.ok) {
+// 					userController.setValue(res.value);
+// 				} else if (res.error === 'already-exists') {
+// 					setEmailError('Um usuário com este email já existe.')
+// 				} else {
+// 					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+// 				}
+// 			},
+
+// 			err => {
+// 				setServerError('Não foi possível fazer login, tente novamente mais tarde.');
+// 			}
+// 		);
+
+// 		setProcessing(false);
+// 	}
+
+export function RegisterForm(props: { onSubmit: FormSubmitHandler<RegisterFormData> }) {
 	const userController = useContext(AuthControllerContext);
-	const [data,, onFieldChange] = useFormData<RegisterFormData>({
+	const [data, setFieldData, errors, setFieldError, onFieldChange, wrapSubmitHandler] = useFormSchema<RegisterFormData>({
 		name: '',
 		email: '',
 		password: '',
 	});
 
-	const [processing, setProcessing] = useState(false);
-	const [serverError, setServerError] = useState<string | null>(null);
-	const [emailError, setEmailError] = useState<string | null>(null);
-	
-	const onSubmitForm: React.FormEventHandler = async (e) => {
-		e.preventDefault();
-		setProcessing(true);
-
-		await api.register(data).then(
-			res => {
-				if (res.ok) {
-					userController.setValue(res.value);
-				} else if (res.error === 'already-exists') {
-					setEmailError('Um usuário com este email já existe.')
-				} else {
-					setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
-				}
-			},
-
-			err => {
-				setServerError('Não foi possível fazer login, tente novamente mais tarde.');
-			}
-		);
-
-		setProcessing(false);
-	}
-
 	return <>
-		<SFormBackdrop open={processing} />
-		<form onSubmit={onSubmitForm} onChange={onFieldChange}>
+		<form onSubmit={wrapSubmitHandler(props.onSubmit)} onChange={onFieldChange}>
 			<Stack
 				alignItems='center'>
 
 				<TextField
+					label='Nome'
 					name='name'
 					type='text'
 					value={data.name}
 					required
 
-					label='Nome'
 					{...textFieldStyle}
 				/>
 
 				<TextField
+					label='Email'
 					name='email'
 					type='email'
 					value={data.email}
 					autoComplete='username'
 					required
 
-					label='Email'
-					{...errorProps(emailError, setEmailError)}
+					error={errors.email != null}
+					helperText={errors.email}
+
 					{...textFieldStyle}
 				/>
 
 				<PasswordField
+					label='Senha'
 					name='password'
 					value={data.password}
 					autoComplete='current-password'
 					required
 
-					label='Senha'
 					{...textFieldStyle}
 				/>
 
@@ -223,6 +225,5 @@ export function RegisterForm() {
 
 			</Stack>
 		</form>
-		<SFormError message={serverError} onClose={() => setServerError(null)} />
 	</>
 }

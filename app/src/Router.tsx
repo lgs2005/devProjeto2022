@@ -4,7 +4,7 @@ import { api } from "./api/api";
 import AuthPage from "./components/AuthPage";
 import { AuthControllerContext } from "./controllers/AuthController";
 
-export default function Main() {
+export default function Router() {
 	const userController = useContext(AuthControllerContext);
 	const [loading, setLoading] = useState(true);
 
