@@ -19,7 +19,7 @@ function createGlobalVariableContextProvider<T>(init: T) {
 		return <context.Provider value={controller} children={children} />
 	}
 
-	return [context, ContextProvider] as [typeof context, typeof ContextProvider];
+	return [context, ContextProvider] as const;
 }
 
 export const [AuthControllerContext, AuthController] = createGlobalVariableContextProvider<User | null>(null);

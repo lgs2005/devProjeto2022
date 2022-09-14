@@ -1,40 +1,59 @@
-import { Container, Tab, Tabs, Typography } from "@mui/material";
-import { useState } from "react"
+import { Alert, Backdrop, CircularProgress, Collapse, Container, Tab, Tabs, Typography } from "@mui/material";
+import { useState, useContext } from "react"
 import { FormSubmitHandler } from "../lib/useFormSchema";
-import { LoginForm, RegisterForm, RegisterFormData } from "./AuthForms";
+import { LoginForm, LoginFormData, RegisterForm, RegisterFormData } from "./AuthForms";
 import SwipeViewsContainer from "./SwipeViewsContainer";
 import { api } from "../api/api";
-
-
-// const [processing, setProcessing] = useState(false);
-// 	const [serverError, setServerError] = useState<string | null>(null);
-// 	const [emailError, setEmailError] = useState<string | null>(null);
-	
-	const onSubmitForm: FormSubmitHandler<RegisterFormData> = async (data, setError) => {
-		//setProcessing(true);
-
-		await api.register(data).then(
-			res => {
-				if (res.ok) {
-					// userController.setValue(res.value);
-				} else if (res.error === 'already-exists') {
-					setError('email', 'Um usuário com este email já existe');
-				} else {
-					//setServerError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
-				}
-			},
-
-			err => {
-				//setServerError('Não foi possível fazer login, tente novamente mais tarde.');
-			}
-		);
-
-		// setProcessing(false);
-	}
+import { AuthControllerContext } from "../controllers/AuthController";
 
 
 export default function AuthPage() {
 	const [currentTab, setCurrentTab] = useState(0);
+	const [isFetching, setIsFetching] = useState(false);
+	const [globalError, setGlobalError] = useState<string | null>(null);
+	const userController = useContext(AuthControllerContext);
+
+	const submitRegisterForm: FormSubmitHandler<RegisterFormData> = async (data, setError) => {
+		setIsFetching(true);
+		await api.register(data).then(
+			res => {
+				if (res.ok) {
+					userController.setValue(res.value);
+				} else if (res.error === 'already-exists') {
+					setError('email', 'Um usuário com este email já existe');
+				} else {
+					setGlobalError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
+			},
+
+			_ => {
+				setGlobalError('Não foi possível fazer login, tente novamente mais tarde.');
+			}
+		);
+		setIsFetching(false);
+	}
+
+	const submitLoginForm: FormSubmitHandler<LoginFormData> = async (data, setError) => {
+		setIsFetching(true);
+		await api.login(data).then(
+			res => {
+				if (res.ok) {
+					userController.setValue(res.value);
+				} else if (res.error === 'no-such-user') {
+					setError('email', 'Este usuário não existe.');
+				} else if (res.error === 'wrong-password') {
+					setError('password', 'Senha incorreta.');
+				} else {
+					setGlobalError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
+			},
+
+			_ => {
+				setGlobalError('Não foi possível fazer login, tente novamente mais tarde.');
+			}
+		);
+		setIsFetching(false);
+	}
 
 	return <>
 		<Container maxWidth='sm'>
@@ -56,10 +75,26 @@ export default function AuthPage() {
 			</Tabs>
 
 			<SwipeViewsContainer currentIndex={currentTab}>
-				<LoginForm />
-				<RegisterForm onSubmit={onSubmitForm} />
+				<LoginForm onSubmit={submitLoginForm} />
+				<RegisterForm onSubmit={submitRegisterForm} />
 			</SwipeViewsContainer>
 
+			<Collapse in={globalError != null}>
+				<Alert
+					severity='error'
+					onClose={ () => setGlobalError(null) }>
+					{globalError}
+				</Alert>
+			</Collapse>
+
+			<Backdrop open={isFetching}>
+				<CircularProgress />
+				<Typography
+					variant='h4'
+					sx={{ mx: 2 }}>
+					Aguarde...
+				</Typography>
+			</Backdrop>
 		</Container>
 	</>
 }
