@@ -1,8 +1,11 @@
-import { Backdrop, CircularProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { api } from "./api/api";
-import AuthPage from "./components/AuthPage";
+
+import { Backdrop, CircularProgress } from "@mui/material";
+
 import { AuthControllerContext } from "./controllers/AuthController";
+import AuthPage from "./components/AuthPage";
+import Sidebar from "./components/Sidebar";
+import { api } from "./api/api";
 
 export default function Router() {
 	const userController = useContext(AuthControllerContext);
@@ -27,6 +30,6 @@ export default function Router() {
 	}
 
 	return <>
-		Yoooooo
+		<Sidebar />
 	</>;
 }
