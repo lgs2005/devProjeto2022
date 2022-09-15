@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Router from './Router';
-import { AuthController } from './controllers/AuthController';
+import { AuthController } from './controllers/globals';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 
 const appRoot = document.getElementById('react-app-root')!;

@@ -1,53 +1,54 @@
-import { Request2 } from "./request2";
+const BASE_URL = 'http://127.0.0.1:5000';
+const TOKEN_UPDATE_HEADER = 'X-OTP-Update-Bearer-Token';
+const TOKEN_STORAGE_KEY = 'otp-bread-token';
 
-// CORS diferencia entre localhost e 127.0.0.1
-// se usar o ip errado não serão enviados os cookies de autenticação
-// solução: usar outra coisa
-// TODO: ^^^^^^
-const base = new Request2('http://127.0.0.1:5000')
-.with(r => r
-	.setCredentials('include')
-	.setMode('cors')
-);
+export type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
 
-type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
+export type FetchHandlers<T, R> = {
+	[code: number]: (res: Response) => R,
+	ok: (data: T) => R,
+}
 
-type LoginError = 'no-such-user' | 'wrong-password';
-type RegisterError = 'already-exists';
+export async function fetch2<T, R=T>(
+	path: string,
+	method: 'GET' | 'POST' | 'PUT' | 'PATCH',
+	data?: any,
+	handlers?: FetchHandlers<T, R>
+) {
+	let url = BASE_URL + path;
+	let options: RequestInit = {};
+	let token = sessionStorage.getItem(TOKEN_STORAGE_KEY);
 
-export type User = {
-	name: string,
-	email: string,
-};
+	options.method = method;
+	options.headers = {};
 
-export namespace api {
-	export function login(data: {email: string, password: string}) {
-		let req = base.with(r => r
-			.path('/api/auth/login')
-			.json(data)
-		);
-	
-		return req.fetch<Result<User, LoginError>>('POST');
-	}
-	
-	export function register(data: {name: string, email: string, password: string}) {
-		let req = base.with(r => r
-			.path('/api/auth/register')
-			.json(data)
-		);
-	
-		return req.fetch<Result<User, RegisterError>>('POST');
+	if (method !== 'GET' && data !== undefined) {
+		options.headers['Content-Type'] = 'application/json';
+		options.body = JSON.stringify(data);
 	}
 
-	export function getUser() {
-		let req = base.with(r => r
-			.path('/api/auth/user')
-			.setCredentials('include')
-		);
+	if (token) {
+		options.headers['Authorization'] = 'Bearer ' + token;
+	}
 
-		return req.fetch<User, User | null>('GET', {
-			ok: user => user,
-			401: () => null,
-		});
+	let res = await fetch(url, options);
+	let new_token = res.headers.get(TOKEN_UPDATE_HEADER);
+
+	if (new_token) {
+		sessionStorage.setItem(TOKEN_STORAGE_KEY, new_token);
+	}
+
+	if (res.ok) {
+		let data = await res.json() as T;
+
+		if (handlers) {
+			return handlers.ok(data);
+		} else {
+			return data;
+		}
+	} else if (handlers && res.status in handlers) {
+		return handlers[res.status](res);
+	} else {
+		throw Error(`Server responded with ${res.status}`)
 	}
 }

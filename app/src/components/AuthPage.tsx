@@ -3,8 +3,8 @@ import { useState, useContext } from "react"
 import { FormSubmitHandler } from "../lib/useFormSchema";
 import { LoginForm, LoginFormData, RegisterForm, RegisterFormData } from "./AuthForms";
 import SwipeViewsContainer from "./SwipeViewsContainer";
-import { api } from "../api/api";
-import { AuthControllerContext } from "../controllers/AuthController";
+import { AuthControllerContext } from "../controllers/globals";
+import { apiLogin, apiRegister } from "../api/auth";
 
 
 export default function AuthPage() {
@@ -15,7 +15,7 @@ export default function AuthPage() {
 
 	const submitRegisterForm: FormSubmitHandler<RegisterFormData> = async (data, setError) => {
 		setIsFetching(true);
-		await api.register(data).then(
+		await apiRegister(data).then(
 			res => {
 				if (res.ok) {
 					userController.setValue(res.value);
@@ -35,7 +35,7 @@ export default function AuthPage() {
 
 	const submitLoginForm: FormSubmitHandler<LoginFormData> = async (data, setError) => {
 		setIsFetching(true);
-		await api.login(data).then(
+		await apiLogin(data).then(
 			res => {
 				if (res.ok) {
 					userController.setValue(res.value);
