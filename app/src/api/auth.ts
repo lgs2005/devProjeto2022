@@ -8,6 +8,12 @@ export type User = {
 	email: string,
 };
 
+export type Pagina = {
+	id: number,
+	nome: string,
+	favorito: boolean
+;}
+
 export function apiLogin(data: { email: string, password: string }) {
 	return fetch2<Result<User, LoginError>>(
 		'/api/auth/login',
@@ -33,5 +39,12 @@ export function apiGetUser() {
 			ok: user => user,
 			401: () => null,
 		}
+	);
+}
+
+export function apiListarPaginas() {
+	return fetch2<Pagina[]>(
+		'/api/listar-paginas',
+		'GET',
 	);
 }

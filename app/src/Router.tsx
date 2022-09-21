@@ -6,6 +6,7 @@ import { AuthControllerContext } from "./controllers/globals";
 import AuthPage from "./components/AuthPage";
 import Sidebar from "./components/Sidebar";
 import { apiGetUser } from "./api/auth";
+import PaginaPrincipal from "./components/PaginaPrincipal";
 
 export default function Router() {
 	const userController = useContext(AuthControllerContext);
@@ -30,6 +31,6 @@ export default function Router() {
 	}
 
 	return <>
-		<Sidebar />
+		<PaginaPrincipal />
 	</>;
 }

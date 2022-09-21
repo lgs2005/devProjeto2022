@@ -28,7 +28,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1, minutes=20)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-cors = CORS(app, expose_headers=[TOKEN_UPDATE_HEADER])
+cors = CORS(app, expose_headers=[TOKEN_UPDATE_HEADER], methods=['POST'])
 jwt = JWTManager(app)
 
 def catimg(code):
