@@ -7,17 +7,18 @@ export default function PaginaPrincipal() {
     const [idPagina, setIdPagina] = useState<number | null>(null);
     const [conteudo, setConteudo] = useState<string | null>(null);
 
-    useEffect(() => {(async () => {
+    useEffect(() => {
 
-        let conteudo = await fetch2<{markdown: { titulo: string, conteudo: string }}>(
+        fetch2<{markdown: { titulo: string, conteudo: string }}>(
             '/api/conteudo/' + idPagina,
             'GET',
         )
+        .then(conteudo => {
+            setConteudo(conteudo.markdown.titulo);
+            console.log(conteudo)
+        });
 
-        setConteudo(conteudo.markdown.titulo)
-        console.log(conteudo)
-
-    })()}, [idPagina]);
+    }, [idPagina]);
 
     return <>
         <Sidebar onPageSelected={(id) => setIdPagina(id)}>
