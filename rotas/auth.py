@@ -1,11 +1,11 @@
-from http.client import OK
+from hashlib import new
 import re
 
-from flask import request, jsonify, make_response
-from flask_jwt_extended import create_access_token, jwt_required, current_user, set_access_cookies, unset_jwt_cookies
-
-from init import app, bcrypt, catimg, db
+from flask import request, jsonify, Response
+from flask_jwt_extended import create_access_token, jwt_required, current_user, get_jwt, get_current_user
+from init import app, bcrypt, db, jwt, TOKEN_UPDATE_HEADER
 from modelos import Usuario
+from datetime import datetime, timedelta
 
 from rotas.utils import invalid_response, valid_response, validate_data
 
@@ -35,13 +35,12 @@ def rota_login():
 	if usuario == None:
 		return invalid_response('no-such-user')
 
-	elif not bcrypt.check_password_hash(usuario.pwhash, dados['password']):
-		return invalid_response('wrong-password')
-
 	else:
-		response = valid_response(usuario.json()) 
 		token = create_access_token(identity=usuario)
-		set_access_cookies(response, token)
+		
+		response = valid_response(usuario.json()) 
+		response.headers.set(TOKEN_UPDATE_HEADER, token)
+
 		return response
 
 
@@ -79,28 +78,12 @@ def rota_registro():
 			pwhash=pwhash,
 		)
 
-		db.session.add(new_user)
-		db.session.commit()
-
-		response = valid_response(new_user.json()) 
 		token = create_access_token(identity=new_user)
-		set_access_cookies(response, token)
+
+		response = valid_response(new_user.json())
+		response.headers.set(TOKEN_UPDATE_HEADER, token)
+
 		return response
-
-
-@app.route('/api/auth/logout', methods=['POST'])
-def rota_logout():
-	'''
-	Rota logout de usuário da sessão.
-
-	Faz a retificação de valores JWT para vazios.
-
-	Returns: 
-		OK (cod. 200): logout válido.
-	'''
-	response = make_response(catimg(OK), OK)
-	unset_jwt_cookies(response)
-	return response
 
 
 @app.route('/api/auth/user', methods=['GET'])
@@ -115,6 +98,36 @@ def rota_usuario():
 	return jsonify(current_user.json())
 
 
+# https://flask-jwt-extended.readthedocs.io/en/stable/automatic_user_loading/
+# Usuários são identificados por id
+
+@jwt.user_identity_loader
+def get_user_identity(user: Usuario):
+    return user.id
+
+@jwt.user_lookup_loader
+def load_user(_jwt_header, jwt_data):
+    return Usuario.query.get(jwt_data['sub'])
+
+# https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
+# Como não utilizamos cookies, apenas é enviado o novo JWT nos headers
+
+@app.after_request
+def refresh_jwt(response: Response):
+    try:
+        timestamp: float = get_jwt()['exp']
+        min_exp_time = datetime.timestamp(datetime.utcnow() + timedelta(minutes=15))
+
+        if min_exp_time > timestamp:
+            new_token = create_access_token(identity=get_current_user())
+            response.headers.set(TOKEN_UPDATE_HEADER, new_token)
+
+        return response
+    except (RuntimeError, KeyError):
+        return response
+
+
+# TODO: atualizar isso aq feio
 @app.route("/api/alterar-senha", methods=["POST"])
 @jwt_required()
 def rota_api_alterar_senha():

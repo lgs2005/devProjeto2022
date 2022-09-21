@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Main from './Main';
-import { AuthController } from './controllers/AuthController';
+import Router from './Router';
+import { AuthController } from './controllers/globals';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 
 const appRoot = document.getElementById('react-app-root')!;
@@ -11,7 +11,7 @@ ReactDOM.createRoot(appRoot).render(
 		<CssBaseline />
 		<GlobalStyles styles={{ fontFamily: '"Roboto", sans-serif' }} />
 		<AuthController>
-			<Main />
+			<Router />
 		</AuthController>
 	</React.StrictMode>
 );

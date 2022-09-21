@@ -2,17 +2,17 @@ import { useContext, useEffect, useState } from "react";
 
 import { Backdrop, CircularProgress } from "@mui/material";
 
-import { AuthControllerContext } from "./controllers/AuthController";
+import { AuthControllerContext } from "./controllers/globals";
 import AuthPage from "./components/AuthPage";
 import Sidebar from "./components/Sidebar";
-import { api } from "./api/api";
+import { apiGetUser } from "./api/auth";
 
-export default function Main() {
+export default function Router() {
 	const userController = useContext(AuthControllerContext);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		api.getUser()
+		apiGetUser()
 			.catch(() => null)
 			.then(userController.setValue)
 			.then(() => setLoading(false))
