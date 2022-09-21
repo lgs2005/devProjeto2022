@@ -6,11 +6,13 @@ from modelos import Pagina
 @app.route("/api/listar-paginas", methods=["GET"])
 @jwt_required()
 def rota_listar_paginas():
-    """Lista as páginas do usuário da 
+    """
+	Rota listagem de páginas do usuário da 
     sessão atual.
 
-    Returns:
-        Response: objeto json com as páginas.
+	Returns:
+		GET:
+			OK (cod. 200): páginas em JSON.
     """
     paginas: 'list[Pagina]' = Pagina.query \
         .filter_by(usuario=current_user).all()
