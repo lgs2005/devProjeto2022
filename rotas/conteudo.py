@@ -5,26 +5,26 @@ from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
 from flask_jwt_extended import jwt_required, current_user
+
 from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from rotas.utils import validar_objeto
-
+from rotas.utils import validate_data
 
 @app.route('/api/criar-pagina', methods=["POST"])
 @jwt_required()
 def rota_api_criar_pagina():
-    """Rota de criação de página.
+    """
+	Rota de criação de página.
     Recebe dados em json do front end: nome da página
 
     Returns:
         Response (jsonify): resposta em json contendo sucesso e erro.
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
-
     """
 
-    dados = validar_objeto(request.get_json(), {
+    dados = validate_data(request.get_json(), {
         'nome': str
     })
 
@@ -99,29 +99,31 @@ def rota_api_conteudo(id: int = None):
 
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
 def deletar_pagina(id:int):
-    pagina: Pagina = Pagina.query.get_or_404(id)
+	'''
+	'''
+	pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.existe_compartilhamento(current_user):
-        abort(UNAUTHORIZED)
+	if not pagina.existe_compartilhamento(current_user):
+		abort(UNAUTHORIZED)
 
-    pagina.excluir_em = datetime.utcnow() + timedelta(days=30)
-    db.session.commit()
+	pagina.excluir_em = datetime.utcnow() + timedelta(days=30)
+	db.session.commit()
     
-    return catimg(OK), OK
+	return catimg(OK), OK
 
-# ok eu não tenho certeza quando isso deveria acontecer
-# então porenquanto essa função fica aqui mesmo
 def limpar_paginas_excluidas():
-    paginas_para_excluir = Pagina.query\
-        .filter(Pagina.excluir_em != None)\
-        .filter(Pagina.excluir_em > datetime.utcnow())\
-        .all()
+	'''
+	'''
+	paginas_para_excluir = Pagina.query\
+		.filter(Pagina.excluir_em != None)\
+		.filter(Pagina.excluir_em > datetime.utcnow())\
+		.all()
 
-    for pagina in paginas_para_excluir:
-        try:
-            os.remove(caminho_para_pagina(pagina.caminho_id))
-            Pagina.query.filter_by(pagina=pagina).delete()
-        except FileNotFoundError:
-            pass
-        except OSError:
-            pass
+	for pagina in paginas_para_excluir:
+		try:
+			os.remove(caminho_para_pagina(pagina.caminho_id))
+			Pagina.query.filter_by(pagina=pagina).delete()
+		except FileNotFoundError:
+			pass
+		except OSError:
+			pass

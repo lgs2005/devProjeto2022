@@ -1,6 +1,6 @@
 from datetime import timedelta
-import os
 from typing import TYPE_CHECKING
+import os
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
@@ -9,8 +9,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 if TYPE_CHECKING:
-    import db_type_proxy
-    db: db_type_proxy.SQLAlchemy
+	import db_type_proxy
+	db: db_type_proxy.SQLAlchemy
 
 caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
@@ -30,4 +30,4 @@ cors = CORS(app, supports_credentials=True)
 jwt = JWTManager(app)
 
 def catimg(code):
-    return f'<img src="https://http.cat/{code}"/>'
+	return f'<img src="https://http.cat/{code}"/>'
