@@ -1,3 +1,5 @@
+import json
+import os
 from os.path import dirname
 from typing import Union
 from uuid import uuid4
@@ -34,12 +36,11 @@ def criar_arquivo_pagina() -> Union[str, None]:
         
         try:
             pagina = open(caminho, 'x')
-            pagina.write("""{
-"markdown": {
-    "titulo": "Sem titulo",
-    "conteudo": "..." 
-}
-}""")
+            pagina.write(json.dumps({
+                'titulo': 'Sem título',
+                'markdown': '#teste \n Esta página é um teste.',
+            }))
+            
             pagina.close()
 
             return id

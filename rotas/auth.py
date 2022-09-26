@@ -1,14 +1,14 @@
-from hashlib import new
+from http.client import UNAUTHORIZED
+from os import abort
 import re
 
 from flask import request, jsonify, Response
-from flask_jwt_extended import create_access_token, jwt_required, current_user, get_jwt, get_current_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_current_user
 from init import app, bcrypt, db, jwt, TOKEN_UPDATE_HEADER
 from modelos import Usuario
 from datetime import datetime, timedelta
 
-from rotas.utils import invalid_response, valid_response, validate_data
-
+from rotas.utils import reserr, resok, validar_dados
 
 emailPattern = re.compile(
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
@@ -25,7 +25,7 @@ def rota_login():
 			feedback - senha incorreta, usuário inválido ou
 			informações válidas.
 	'''
-	dados = validate_data(request.get_json(), {
+	dados = validar_dados(request.get_json(), {
 		'email': str,
 		'password': str,
 	})
@@ -33,12 +33,12 @@ def rota_login():
 	usuario: Usuario = Usuario.query.filter_by(email=dados['email']).first()
 
 	if usuario == None:
-		return invalid_response('no-such-user')
+		return reserr('no-such-user')
 
 	else:
 		token = create_access_token(identity=usuario)
 		
-		response = valid_response(usuario.json()) 
+		response = resok(usuario.dados()) 
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
 
 		return response
@@ -56,31 +56,31 @@ def rota_registro():
 			feedback - email inválido, usuário já existe ou
 			informações válidas.
 	'''
-	data = validate_data(request.get_json(), {
+	data = validar_dados(request.get_json(), {
 		'name': str,
 		'email': str,
 		'password': str,
 	})
 
 	if Usuario.query.filter_by(email=data['email']).first() != None:
-		return invalid_response('already-exists')
+		return reserr('already-exists')
 
 	elif not emailPattern.fullmatch(data['email']):
-		return invalid_response('invalid-email')
+		return reserr('invalid-email')
 
 	else:
 		pwhash = bcrypt.generate_password_hash(data['password']) \
 			.decode('utf-8', 'ignore')
 		
-		new_user = Usuario(
+		usuario = Usuario(
 			nome=data['name'],
 			email=data['email'],
 			pwhash=pwhash,
 		)
 
-		token = create_access_token(identity=new_user)
+		token = create_access_token(identity=usuario)
 
-		response = valid_response(new_user.json())
+		response = resok(usuario.dados())
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
 
 		return response
@@ -95,7 +95,8 @@ def rota_usuario():
 	Returns:
 		OK (cod. 200): objeto JSON.
 	'''
-	return jsonify(current_user.json())
+	usuario: Usuario = get_current_user()
+	return jsonify(usuario.dados())
 
 
 # https://flask-jwt-extended.readthedocs.io/en/stable/automatic_user_loading/
@@ -127,8 +128,8 @@ def refresh_jwt(response: Response):
         return response
 
 
-# TODO: atualizar isso aq feio
-@app.route("/api/alterar-senha", methods=["POST"])
+# TODO: seria necessário testar a senha novamente? acho que sim.
+@app.route("/api/auth/alterar-senha", methods=["POST"])
 @jwt_required()
 def rota_api_alterar_senha():
 	'''
@@ -141,23 +142,19 @@ def rota_api_alterar_senha():
 			feedback - senha incorreta ou
 			informações válidas.
 	'''
-	err = None
-	data = validate_data(request.get_json(), {
-		'password': str,
-		'newPassword': str,
+	usuario: Usuario = get_current_user()
+	dados = validar_dados(request.get_json(), {
+		'old_password': str,
+		'new_password': str,
 	})
 
-	if not bcrypt.check_password_hash(current_user.pwhash, data['password']):
-		err = "Senha incorreta"
+	if not bcrypt.check_password_hash(usuario.pwhash, dados['old_password']):
+		abort(UNAUTHORIZED)
 	else:
-		nova_pwhash = bcrypt.generate_password_hash(data['newPassword']) \
+		new_hash = bcrypt.generate_password_hash(dados['new_password']) \
 			.decode('utf-8', 'ignore')
 
-		current_user.pwhash = nova_pwhash
+		usuario.pwhash = new_hash
 		db.session.commit()
-
-	return {
-		'ok': err == None,
-		'erro': err,
-		'errtarget': "senha", # só temos erros aqui, então...
-	}
+		
+	return jsonify(usuario.dados())

@@ -1,9 +1,9 @@
-from http.client import BAD_REQUEST, UNAUTHORIZED
+from http.client import BAD_REQUEST
+from typing import Any
 
 from flask import abort, jsonify
 
-
-def validate_data(data: any, validate: 'dict[str, type]') -> 'dict[str, any]':
+def validar_dados(dados: any, schema: 'dict[str, type]') -> 'dict[str, Any]':
     """Recebe dados em json (dict) e dicionário 
     com chaves que devem estar contidas nos dados,
     realizando a verificação necessária.
@@ -17,16 +17,16 @@ def validate_data(data: any, validate: 'dict[str, type]') -> 'dict[str, any]':
         dados (any): dados válidos.
     """
 
-    if type(data) != dict:
+    if type(dados) != dict:
         abort(BAD_REQUEST)
 
-    for key in validate:
-        if (key not in data) or (type(data[key]) != validate[key]):
+    for key in schema:
+        if (key not in dados) or (type(dados[key]) != schema[key]):
             abort(BAD_REQUEST)
 
-    return data
+    return dados
 
-def valid_response(value):
+def resok(value):
 	'''
 	Resposta padrão OK.
 
@@ -41,7 +41,7 @@ def valid_response(value):
 		'value': value,
 	})
 
-def invalid_response(error):
+def reserr(error):
 	'''
 	Resposta padrão NÃO OK.
 

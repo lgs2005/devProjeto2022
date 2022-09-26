@@ -2,8 +2,6 @@ const BASE_URL = 'http://127.0.0.1:5000';
 const TOKEN_UPDATE_HEADER = 'X-OTP-Update-Bearer-Token';
 const TOKEN_STORAGE_KEY = 'otp-bread-token';
 
-export type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
-
 export type FetchHandlers<T, R> = {
 	[code: number]: (res: Response) => R,
 	ok: (data: T) => R,
