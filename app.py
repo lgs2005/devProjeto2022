@@ -1,10 +1,11 @@
 from init import app, db
-from flask import send_from_directory, request
+from flask import send_from_directory
 
 import modelos
 
 import rotas.conteudo
 import rotas.auth
+import rotas.share
 
 
 @app.route('/', methods=['GET'])

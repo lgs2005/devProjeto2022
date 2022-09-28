@@ -49,8 +49,8 @@ class Pagina(db.Model):
 class Acesso(db.Model):
 	__tablename__ = 'Acesso'
 
-	id_usuario = db.Column(db.Integer, db.ForeignKey('Usuario.id'))
-	id_pagina = db.Column(db.Integer, db.ForeignKey('Pagina.id'))
+	id_usuario = db.Column(db.Integer, db.ForeignKey('Usuario.id'), primary_key=True)
+	id_pagina = db.Column(db.Integer, db.ForeignKey('Pagina.id'), primary_key=True)
 
 	usuario = db.relationship(Usuario)
 	pagina = db.relationship(Pagina)

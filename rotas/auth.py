@@ -36,7 +36,7 @@ def rota_login():
 		return reserr('no-such-user')
 
 	else:
-		token = create_access_token(identity=usuario)
+		token = create_access_token(identity=usuario.id)
 		
 		response = resok(usuario.dados()) 
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
@@ -78,7 +78,10 @@ def rota_registro():
 			pwhash=pwhash,
 		)
 
-		token = create_access_token(identity=usuario)
+		db.session.add(usuario)
+		db.session.commit()
+
+		token = create_access_token(identity=usuario.id)
 
 		response = resok(usuario.dados())
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
@@ -102,10 +105,6 @@ def rota_usuario():
 # https://flask-jwt-extended.readthedocs.io/en/stable/automatic_user_loading/
 # Usuários são identificados por id
 
-@jwt.user_identity_loader
-def get_user_identity(user: Usuario):
-    return user.id
-
 @jwt.user_lookup_loader
 def load_user(_jwt_header, jwt_data):
     return Usuario.query.get(jwt_data['sub'])
@@ -120,7 +119,7 @@ def refresh_jwt(response: Response):
         min_exp_time = datetime.timestamp(datetime.utcnow() + timedelta(minutes=15))
 
         if min_exp_time > timestamp:
-            new_token = create_access_token(identity=get_current_user())
+            new_token = create_access_token(identity=get_current_user().id)
             response.headers.set(TOKEN_UPDATE_HEADER, new_token)
 
         return response
