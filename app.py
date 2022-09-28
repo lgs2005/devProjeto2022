@@ -4,7 +4,6 @@ from flask import send_from_directory, request
 import modelos
 
 import rotas.conteudo
-import rotas.listar_paginas
 import rotas.auth
 
 
