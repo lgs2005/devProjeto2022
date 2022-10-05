@@ -1,16 +1,19 @@
-import { Alert, Backdrop, CircularProgress, Collapse, Container, Tab, Tabs, Typography } from "@mui/material";
 import { useState, useContext } from "react"
-import { FormSubmitHandler } from "../lib/useFormSchema";
+
+import { Alert, Backdrop, CircularProgress, Collapse, Container, Tab, Tabs, Typography } from "@mui/material";
+
 import { LoginForm, LoginFormData, RegisterForm, RegisterFormData } from "./AuthForms";
-import SwipeViewsContainer from "./SwipeViewsContainer";
 import { AuthControllerContext } from "../controllers/globals";
 import { apiLogin, apiRegister } from "../api/auth";
+import { FormSubmitHandler } from "../lib/useFormSchema";
+import SwipeViewsContainer from "./SwipeViewsContainer";
 
 
 export default function AuthPage() {
 	const [currentTab, setCurrentTab] = useState(0);
 	const [isFetching, setIsFetching] = useState(false);
 	const [globalError, setGlobalError] = useState<string | null>(null);
+
 	const userController = useContext(AuthControllerContext);
 
 	const submitRegisterForm: FormSubmitHandler<RegisterFormData> = async (data, setError) => {
@@ -74,18 +77,22 @@ export default function AuthPage() {
 				<Tab label='Cadastrar' value={1} />
 			</Tabs>
 
-			<SwipeViewsContainer currentIndex={currentTab}>
-				<LoginForm onSubmit={submitLoginForm} />
-				<RegisterForm onSubmit={submitRegisterForm} />
-			</SwipeViewsContainer>
-
 			<Collapse in={globalError != null}>
 				<Alert
+					sx={{
+						my: 2
+					}}
 					severity='error'
 					onClose={ () => setGlobalError(null) }>
 					{globalError}
 				</Alert>
 			</Collapse>
+
+			<SwipeViewsContainer currentIndex={currentTab}>
+				<LoginForm onSubmit={submitLoginForm} />
+				<RegisterForm onSubmit={submitRegisterForm} />
+			</SwipeViewsContainer>
+
 
 			<Backdrop open={isFetching}>
 				<CircularProgress />
