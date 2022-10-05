@@ -34,7 +34,7 @@ db.session.execute('PRAGMA FOREIGN_KEYS=ON')
 
 app.config['JWT_SECRET_KEY'] = 'b227b977deca4b8bacfe627c35511a16-libarya-librya-lbirayry-libsty-nocap?-5b72846c1cf441ad8cc1363ede851336'
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1, minutes=20)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=2, minutes=20)
 
 jwt = JWTManager(app)
 # X -> header customizado, OTP -> OnTrack Pages
