@@ -1,11 +1,12 @@
-import { fetch2 } from "./api";
-import { Result, Usuario } from "./tipos";
+import { fetchAt } from "./api";
+import { Result, User } from "./types";
+
 
 type LoginError = 'no-such-user' | 'wrong-password';
 type RegisterError = 'already-exists';
 
 function apiLogin(data: { email: string, password: string }) {
-	return fetch2<Result<Usuario, LoginError>>(
+	return fetchAt<Result<User, LoginError>>(
 		'/api/auth/login',
 		'POST',
 		data
@@ -13,7 +14,7 @@ function apiLogin(data: { email: string, password: string }) {
 }
 
 function apiRegister(data: { name: string, email: string, password: string }) {
-	return fetch2<Result<Usuario, RegisterError>>(
+	return fetchAt<Result<User, RegisterError>>(
 		'/api/auth/register',
 		'POST',
 		data
@@ -21,7 +22,7 @@ function apiRegister(data: { name: string, email: string, password: string }) {
 }
 
 function apiGetUser() {
-	return fetch2<Usuario, Usuario | null>(
+	return fetchAt<User, User | null>(
 		'/api/auth/user',
 		'GET',
 		undefined,
@@ -33,7 +34,7 @@ function apiGetUser() {
 }
 
 function apiMudarSenha(dados: { old_password: string, new_password: string }) {
-	return fetch2<Usuario, Usuario | null>(
+	return fetchAt<User, User | null>(
 		'/api/auth/alterar-senha',
 		'POST',
 		dados,
