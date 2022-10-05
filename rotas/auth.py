@@ -8,7 +8,7 @@ from init import app, bcrypt, db, jwt, TOKEN_UPDATE_HEADER
 from modelos import Usuario
 from datetime import datetime, timedelta
 
-from rotas.utils import reserr, resok, validar_dados
+from rotas.utils import res_err, res_ok, validar_dados
 
 emailPattern = re.compile(
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
@@ -33,12 +33,12 @@ def rota_login():
 	usuario: Usuario = Usuario.query.filter_by(email=dados['email']).first()
 
 	if usuario == None:
-		return reserr('no-such-user')
+		return res_err('no-such-user')
 
 	else:
 		token = create_access_token(identity=usuario)
 		
-		response = resok(usuario.dados()) 
+		response = res_ok(usuario.dados()) 
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
 
 		return response
@@ -63,10 +63,10 @@ def rota_registro():
 	})
 
 	if Usuario.query.filter_by(email=data['email']).first() != None:
-		return reserr('already-exists')
+		return res_err('already-exists')
 
 	elif not emailPattern.fullmatch(data['email']):
-		return reserr('invalid-email')
+		return res_err('invalid-email')
 
 	else:
 		pwhash = bcrypt.generate_password_hash(data['password']) \
@@ -80,7 +80,7 @@ def rota_registro():
 
 		token = create_access_token(identity=usuario)
 
-		response = resok(usuario.dados())
+		response = res_ok(usuario.dados())
 		response.headers.set(TOKEN_UPDATE_HEADER, token)
 
 		return response
@@ -115,17 +115,17 @@ def load_user(_jwt_header, jwt_data):
 
 @app.after_request
 def refresh_jwt(response: Response):
-    try:
-        timestamp: float = get_jwt()['exp']
-        min_exp_time = datetime.timestamp(datetime.utcnow() + timedelta(minutes=15))
+	try:
+		timestamp: float = get_jwt()['exp']
+		min_exp_time = datetime.timestamp(datetime.utcnow() + timedelta(minutes=15))
 
-        if min_exp_time > timestamp:
-            new_token = create_access_token(identity=get_current_user())
-            response.headers.set(TOKEN_UPDATE_HEADER, new_token)
+		if min_exp_time > timestamp:
+			new_token = create_access_token(identity=get_current_user())
+			response.headers.set(TOKEN_UPDATE_HEADER, new_token)
 
-        return response
-    except (RuntimeError, KeyError):
-        return response
+		return response
+	except (RuntimeError, KeyError):
+		return response
 
 
 # TODO: seria necessário testar a senha novamente? acho que sim.
