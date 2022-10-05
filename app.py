@@ -1,11 +1,8 @@
 from init import app, db
-from flask import send_from_directory, request
+from flask import send_from_directory
 
-import modelos
-
-import rotas.conteudo
-import rotas.listar_paginas
 import rotas.auth
+import rotas.conteudo
 
 
 @app.route('/', methods=['GET'])
@@ -18,8 +15,11 @@ def rota_react():
 
 @app.after_request
 def allow_authorization_cors(request):
-    request.headers.add('Access-Control-Allow-Headers', 'Authorization')
-    return request
+	'''
+	Habilitar CORS: React
+	'''
+	request.headers.add('Access-Control-Allow-Headers', 'Authorization')
+	return request
 
 if __name__ == '__main__':
-    db.create_all()
+	db.create_all()
