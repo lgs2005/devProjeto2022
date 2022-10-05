@@ -1,34 +1,54 @@
+from datetime import datetime
+
+from flask_jwt_extended import current_user
 from init import db
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, ForeignKey
+from sqlalchemy.orm import Mapped
+
 
 def extrair_campos(*campos):
 	return lambda self: { campo: self.__getattribute__(campo) for campo in campos }
 
 
 class Usuario(db.Model):
-	__tablename__ = 'Usuario'
-	id = db.Column(db.Integer, primary_key=True)
+	__tablename__ = 'usuario'
 
-	nome = db.Column(db.Text, nullable=False)
-	email = db.Column(db.Text, unique=True, nullable=False)
-	pwhash = db.Column(db.Text, nullable=False)
+	id: Mapped[int] = Column(Integer, primary_key=True)
+
+	nome: Mapped[str] = Column(String(255), nullable=False)
+	email: Mapped[str] = Column(String(255), nullable=False, unique=True)
+	pwhash: Mapped[str] = Column(String(60), nullable=False)
 
 	dados = extrair_campos('id', 'nome', 'email')
+	logado: 'Usuario' = current_user
+
+
+class Pasta(db.Model):
+	__tablename__ = 'pasta'
+
+	id: Mapped[int] = Column(Integer, primary_key=True)
+	nome: Mapped[str] = Column(String(255), nullable=False)
+
+	paginas: Mapped['list[Pagina]'] = db.relationship('Pagina', back_populates='pasta')
 
 
 class Pagina(db.Model):
-	__tablename__ = 'Pagina'
-	id = db.Column(db.Integer, primary_key=True)
+	__tablename__ = 'pagina'
 
-	id_autor = db.Column(db.Integer, db.ForeignKey('Usuario.id'))
-	autor = db.relationship(Usuario)
+	id: Mapped[int] = Column(Integer, primary_key=True)
 
-	nome = db.Column(db.Text, nullable=False)
-	arquivo = db.Column(db.Text, nullable=False)
+	autor_id: Mapped[int] = Column(ForeignKey(Usuario.id), nullable=False)
+	autor: Mapped[Usuario] = db.relationship(Usuario)
 
-	favorito = db.Column(db.Boolean, nullable=False, default=False)
+	pasta_id: Mapped[int] = Column(ForeignKey(Pasta.id), nullable=False)
+	pasta: Mapped[Pasta] = db.relationship(Pasta, back_populates='paginas')
 
-	data_criacao = db.Column(db.DateTime, nullable=False)
-	data_excluir = db.Column(db.DateTime, nullable=True)
+	nome: Mapped[str] = Column(String(255), nullable=False)
+	arquivo: Mapped[str] = Column(String(32), nullable=False)
+
+	data_criacao: Mapped[datetime] = Column(DateTime, nullable=False)
+	data_excluir: Mapped[datetime] = Column(DateTime, nullable=True)
 
 	dados = extrair_campos('id', 'id_autor', 'nome', 'favorito', 'data_criacao', 'data_excluir')
 
@@ -47,12 +67,12 @@ class Pagina(db.Model):
 
 
 class Acesso(db.Model):
-	__tablename__ = 'Acesso'
+	__tablename__ = 'acesso'
 
-	id_usuario = db.Column(db.Integer, db.ForeignKey('Usuario.id'), primary_key=True)
-	id_pagina = db.Column(db.Integer, db.ForeignKey('Pagina.id'), primary_key=True)
+	usuario_id: Mapped[int] = Column(ForeignKey(Usuario.id), primary_key=True)
+	pagina_id: Mapped[int] = Column(ForeignKey(Pagina.id), primary_key=True)
 
-	usuario = db.relationship(Usuario)
-	pagina = db.relationship(Pagina)
+	usuario: Mapped[Usuario] = db.relationship(Usuario)
+	pagina: Mapped[Pagina] = db.relationship(Pagina)
 
-	data_expira = db.Column(db.DateTime, nullable=True)
+	data_expira = Column(DateTime, nullable=True)

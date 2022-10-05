@@ -1,7 +1,8 @@
 from http.client import BAD_REQUEST
-from typing import Any
+from operator import itemgetter
+from typing import Any, TypeVar
 
-from flask import abort, jsonify
+from flask import abort, jsonify, request
 
 def validar_dados(dados: any, schema: 'dict[str, type]') -> 'dict[str, Any]':
 	"""Recebe dados em json (dict) e dicionário 
@@ -25,6 +26,28 @@ def validar_dados(dados: any, schema: 'dict[str, type]') -> 'dict[str, Any]':
 			abort(BAD_REQUEST)
 
 	return dados
+
+
+T = TypeVar('T')
+
+
+def get_campos(tipo: 'type[T]', *campos: str) -> 'tuple[T, ...]':
+	'''Retorna os valores em campos como uma tuple, verificando que tem o tipo correto
+	Para uso em view functions. Causa BAD REQUEST se os campos não estiverem corretos'''
+
+	dados = request.get_json()
+
+	if type(dados) != dict:
+		abort(BAD_REQUEST)
+
+	for campo in campos:
+		if (campo not in dados) or (type(dados[campo]) != tipo):
+			abort(BAD_REQUEST)
+	
+	return itemgetter(*campos)(dados)
+
+
+
 
 def res_ok(value):
 	'''

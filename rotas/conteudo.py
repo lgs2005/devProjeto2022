@@ -10,10 +10,10 @@ from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from rotas.utils import validar_dados
+from rotas.utils import get_campos, validar_dados
 
 
-@app.route('/api/pagina/criar', methods=["POST"])
+@app.post('/api/pagina/criar')
 @jwt_required()
 def rota_api_criar_pagina():
     """
@@ -24,10 +24,8 @@ def rota_api_criar_pagina():
         Response (jsonify): resposta em json contendo sucesso e erro.
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
     """
-    usuario: Usuario = get_current_user()
-    dados = validar_dados(request.get_json(), {
-        'nome': str
-    })
+    nome = get_campos(str, 'nome')
+    pasta_id = get_campos(int, 'pasta-id')
 
     arquivo = criar_arquivo_pagina()
 
@@ -37,11 +35,10 @@ def rota_api_criar_pagina():
     print('Arquivo criado: ' + arquivo)
 
     pagina = Pagina(
-        nome=dados['nome'],
+        nome=nome,
         arquivo=arquivo,
-        autor=usuario,
-
-        favorito=False,
+        autor=Usuario.logado,
+        pasta_id=pasta_id,
         data_criacao=datetime.now(timezone.utc)
     )
 
@@ -50,7 +47,7 @@ def rota_api_criar_pagina():
 
     return jsonify(pagina.dados())
 
-@app.route('/api/pagina/listar', methods=['GET'])
+@app.get('/api/pagina/listar')
 @jwt_required()
 def rota_listar_paginas():
     """
@@ -61,13 +58,8 @@ def rota_listar_paginas():
 		GET:
 			OK (cod. 200): páginas em JSON.
     """
-    usuario: Usuario = get_current_user()
-    paginas: 'list[Pagina]' = Pagina.query \
-        .filter_by(usuario=usuario).all()
-
-    resposta = jsonify([p.dados() for p in paginas])
-
-    return resposta
+    paginas = Pagina.query.filter_by(usuario=Usuario.logado).all()
+    return jsonify([p.dados() for p in paginas])
 
 
 @app.route("/api/conteudo/<int:id>", methods=["GET", "PUT"])
@@ -94,10 +86,9 @@ def rota_api_conteudo(id: int = None):
         INTERNAL_SERVER_ERROR (cod. 500): erro do servidor. inválido
     """
 
-    usuario: Usuario = get_current_user()
-    pagina: Pagina = Pagina.query.get_or_404(id)
+    pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(usuario):
+    if not pagina.tem_acesso(Usuario.logado):
         abort(UNAUTHORIZED)
 
     try:
@@ -121,10 +112,9 @@ def rota_api_conteudo(id: int = None):
 
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
 def deletar_pagina(id: int):
-    usuario: Usuario = get_current_user()
-    pagina: Pagina = Pagina.query.get_or_404(id)
+    pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(usuario):
+    if not pagina.tem_acesso(Usuario.logado):
         abort(UNAUTHORIZED)
     
     pagina.data_excluir = datetime.now(timezone.utc) + timedelta(days=30)
@@ -132,9 +122,10 @@ def deletar_pagina(id: int):
     
     return catimg(OK), OK
 
+
 def limpar_paginas_excluidas():
-    paginas_para_excluir: list[Pagina] = Pagina.query\
-        .filter(Pagina.data_excluir  != None)\
+    paginas_para_excluir = Pagina.query\
+        .filter(Pagina.data_excluir != None)\
         .filter(Pagina.data_excluir > datetime.now(timezone.utc))\
         .all()
 
