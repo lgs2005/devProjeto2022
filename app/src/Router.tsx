@@ -3,10 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 import { AuthControllerContext } from "./controllers/globals";
+
+import MainPage from "./components/MainPage";
 import AuthPage from "./components/AuthPage";
-import Sidebar from "./components/Sidebar";
+
 import { apiGetUser } from "./api/auth";
-import PaginaPrincipal from "./components/PaginaPrincipal";
 
 export default function Router() {
 	const userController = useContext(AuthControllerContext);
@@ -26,11 +27,11 @@ export default function Router() {
 		</Backdrop>
 	}
 
-	if (userController.value == null) {
-		return <AuthPage />
-	}
+	// if (userController.value == null) {
+	// 	return <AuthPage />
+	// }
 
 	return <>
-		<PaginaPrincipal />
+		<MainPage />
 	</>;
 }

@@ -1,19 +1,31 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState, useEffect } from "react";
 
-import { Grid, Typography } from "@mui/material";
+import { Typography, Drawer, Box, useMediaQuery, useTheme } from "@mui/material";
+
+const drawerWidth = 240;
 
 export default function Sidebar(props: PropsWithChildren<{ onPageSelected: (id: number) => void }>)  {
+	
+	const [ open, setOpen ] = useState(true);
+
+	const shouldCollapse = useMediaQuery('(max-width: 1280px)')
+
+	useEffect(() => {
+		shouldCollapse? setOpen(false) : setOpen(true);
+	}, [shouldCollapse])
+	
 	return <>
-		<Grid container spacing={0}>
-			<Grid item xs={3} md={2}>
-				<Typography color={primary.main}>
+		<Drawer variant={'persistent'} open={open}>
+			<Box width={drawerWidth}>
+				<Typography>
 					oi
 				</Typography>
-			</Grid>
+			</Box>
+		</Drawer>
 
-			<Grid item xs={8}>
-				Dashboard
-			</Grid>
-		</Grid>
+		<Box component='main' height='100vh' width={`calc(100% - ${drawerWidth}px)`}>
+			hrlo
+		</Box>
+
 	</>
 }
