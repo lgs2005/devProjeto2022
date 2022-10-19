@@ -4,29 +4,6 @@ from typing import Any, TypeVar
 
 from flask import abort, jsonify, request
 
-def validar_dados(dados: any, schema: 'dict[str, type]') -> 'dict[str, Any]':
-	"""Recebe dados em json (dict) e dicionário 
-	com chaves que devem estar contidas nos dados,
-	realizando a verificação necessária.
-
-	Args:
-		dados (any): dados json do front-end.
-		validar (dict[str, type]): dados que devem estar presentes em dados.
-
-	Returns:
-		BAD REQUEST (cod. 400): dados inválidos.
-		dados (any): dados válidos.
-	"""
-
-	if type(dados) != dict:
-		abort(BAD_REQUEST)
-
-	for key in schema:
-		if (key not in dados) or (type(dados[key]) != schema[key]):
-			abort(BAD_REQUEST)
-
-	return dados
-
 
 T = TypeVar('T')
 def get_campos(tipo: 'type[T]', *campos: str) -> 'tuple[T, ...]':

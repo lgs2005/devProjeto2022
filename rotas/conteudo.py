@@ -22,8 +22,8 @@ def rota_api_criar_pagina():
         Response (jsonify): resposta em json contendo sucesso e erro.
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
     """
-    nome = get_campos(str, 'nome')
-    pasta_id = get_campos(int, 'pasta-id')
+    nome = get_campos(str, 'name')
+    pasta_id = get_campos(int, 'folder')
 
     arquivo = criar_arquivo_pagina()
 
@@ -35,7 +35,7 @@ def rota_api_criar_pagina():
     pagina = Pagina(
         nome=nome,
         arquivo=arquivo,
-        autor=Usuario.logado,
+        autor=Usuario.atual(),
         pasta_id=pasta_id,
         data_criacao=datetime.now(timezone.utc)
     )
@@ -57,13 +57,9 @@ def rota_listar_paginas():
                 GET:
                         OK (cod. 200): páginas em JSON.
     """
-    usuario: Usuario = get_current_user()
-
-    paginas = Pagina.query.filter_by(autor=usuario).all()
-
-    resposta = jsonify([p.dados() for p in paginas])
-
-    return resposta
+    paginas = Pagina.query.filter_by(autor=Usuario.atual()).all()
+    dados = [ p.dados() for p in paginas ]
+    return jsonify(dados)
 
 
 @app.route("/api/conteudo/<int:id>", methods=["GET", "PUT"])
@@ -90,9 +86,9 @@ def rota_api_conteudo(id: int = None):
         INTERNAL_SERVER_ERROR (cod. 500): erro do servidor. inválido
     """
 
-    pagina = Pagina.query.get_or_404(id)
+    pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(Usuario.logado):
+    if not pagina.tem_acesso(Usuario.atual()):
         abort(UNAUTHORIZED)
 
     try:
@@ -118,7 +114,7 @@ def rota_api_conteudo(id: int = None):
 def deletar_pagina(id: int):
     pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(Usuario.logado):
+    if not pagina.tem_acesso(Usuario.atual()):
         abort(UNAUTHORIZED)
 
     pagina.data_excluir = datetime.now(timezone.utc) + timedelta(days=30)

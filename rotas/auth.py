@@ -88,7 +88,7 @@ def rota_registro():
 @jwt_required()
 def rota_usuario():
     '''Rota que retorna informações do usuário logado.'''
-    return jsonify(Usuario.logado.dados())
+    return jsonify(Usuario.atual().dados())
 
 
 @jwt.user_lookup_loader
@@ -123,13 +123,14 @@ def rota_api_alterar_senha():
             401 UNAUTHORIZED: Senha incorreta
             409 CONFLICT: E-mail já está em uso
     '''
+    usuario = Usuario.atual()
     dados = request.get_json()
     password = dados['password']
 
     if type(password) != str or type(dados['new']) != dict:
         abort(BAD_REQUEST)
 
-    if not bcrypt.check_password_hash(Usuario.logado.pwhash, password):
+    if not bcrypt.check_password_hash(usuario.pwhash, password):
         abort(UNAUTHORIZED)
 
     new_email, new_name, new_password = itemgetter(
@@ -142,17 +143,17 @@ def rota_api_alterar_senha():
         if Usuario.query.filter_by(email=new_email).first() != None:
             abort(CONFLICT)
 
-        Usuario.logado.email = new_email
+        usuario.email = new_email
 
     if type(new_name) == str:
-        Usuario.logado.nome = new_name
+        usuario.nome = new_name
 
     if type(new_password) == str:
         new_hash = bcrypt.generate_password_hash(new_password).decode('UTF-8')
-        Usuario.logado.pwhash = new_hash
+        usuario.pwhash = new_hash
 
     db.session.commit()
-    return jsonify(Usuario.logado.dados())
+    return jsonify(usuario.dados())
 
 
 # {

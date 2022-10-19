@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 db.session.execute('PRAGMA FOREIGN_KEYS=ON')
 
-app.config['JWT_SECRET_KEY'] = 'b227b977deca4b8bacfe627c35511a16-libarya-librya-lbirayry-libsty-nocap?-5b72846c1cf441ad8cc1363ede851336'
+app.config['JWT_SECRET_KEY'] = 'b227b977deca4b8bacfe627c35511a16-?v=6pKE-95ixwU-5b72846c1cf441ad8cc1363ede851336'
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=2, minutes=20)
 
