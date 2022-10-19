@@ -11,19 +11,20 @@ from flask_jwt_extended import JWTManager
 caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
 
-# Tipos para queries
 if TYPE_CHECKING:
 	import flask_sqlalchemy
+	import sqlalchemy
 	import sqlalchemy.orm
+	from typing_extensions import Self
+	from typing import Any
 
 	class Model(flask_sqlalchemy.Model):
-		query: flask_sqlalchemy.BaseQuery
+		query: flask_sqlalchemy.BaseQuery[Self]
 
-	class Database():
-		Query = flask_sqlalchemy.BaseQuery
-		Model = Model
-		session: sqlalchemy.orm.scoped_session
-	
+	class Database(flask_sqlalchemy.SQLAlchemy):
+		Model: type[Model]
+		relationship: type[sqlalchemy.orm.relationship]
+
 	db: Database
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_base}/test.db'
@@ -41,7 +42,10 @@ jwt = JWTManager(app)
 TOKEN_UPDATE_HEADER = 'X-OTP-Update-Bearer-Token'
 
 bcrypt = Bcrypt(app)
-cors = CORS(app, expose_headers=[TOKEN_UPDATE_HEADER], methods=['POST'])
+cors = CORS(app,
+	allow_headers=['Authorization'],
+	expose_headers=[TOKEN_UPDATE_HEADER]
+)
 
 def catimg(code):
 	return f'<img src="https://http.cat/{code}"/>'

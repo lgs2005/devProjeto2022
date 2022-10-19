@@ -1,58 +1,71 @@
+from datetime import datetime, timezone
+from typing import Callable
+
+from flask_jwt_extended import get_current_user
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        select)
+from sqlalchemy.orm import Mapped
+
 from init import db
 
+
 def extrair_campos(*campos):
-	return lambda self: { campo: self.__getattribute__(campo) for campo in campos }
+    return lambda self: {campo: self.__getattribute__(campo) for campo in campos}
 
 
 class Usuario(db.Model):
-	__tablename__ = 'Usuario'
-	id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'usuario'
 
-	nome = db.Column(db.Text, nullable=False)
-	email = db.Column(db.Text, unique=True, nullable=False)
-	pwhash = db.Column(db.Text, nullable=False)
+    id: Mapped[int] = Column(Integer, primary_key=True)
 
-	dados = extrair_campos('id', 'nome', 'email')
+    nome: Mapped[str] = Column(String(255), nullable=False)
+    email: Mapped[str] = Column(String(255), nullable=False, unique=True)
+    hash_senha: Mapped[str] = Column(String(60), nullable=False)
+
+    dados = extrair_campos('id', 'nome', 'email')
+    atual: 'Callable[[], Usuario]' = lambda: get_current_user()
 
 
 class Pagina(db.Model):
-	__tablename__ = 'Pagina'
-	id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'pagina'
+    id: Mapped[int] = Column(Integer, primary_key=True)
 
-	id_autor = db.Column(db.Integer, db.ForeignKey('Usuario.id'))
-	autor = db.relationship(Usuario)
+    id_autor = Column(ForeignKey(Usuario.id))
+    autor = db.relationship(Usuario)
 
-	nome = db.Column(db.Text, nullable=False)
-	arquivo = db.Column(db.Text, nullable=False)
+    nome = Column(String(255), nullable=False)
+    arquivo = Column(String(32), nullable=False)
 
-	favorito = db.Column(db.Boolean, nullable=False, default=False)
+    favorito = Column(Boolean, nullable=False, default=False)
 
-	data_criacao = db.Column(db.DateTime, nullable=False)
-	data_excluir = db.Column(db.DateTime, nullable=True)
+    data_excluir = Column(DateTime, nullable=True)
+    data_criacao = Column(DateTime, nullable=False,
+                          default=datetime.now(timezone.utc))
 
-	dados = extrair_campos('id', 'id_autor', 'nome', 'favorito', 'data_criacao', 'data_excluir')
+    dados = extrair_campos('id', 'id_autor', 'nome',
+                           'favorito', 'data_excluir', 'data_criacao')
 
-	def tem_acesso(self, usuario: 'Usuario') -> bool:
-		if self.id_autor == usuario.id:
-			return True
+    def permite_acesso(self, usuario: Usuario) -> bool:
+        if usuario.id == self.id_autor:
+            return True
+        else:
+            acesso = db.session.execute(
+                select(Acesso).filter(
+                    Acesso.id_usuario == self.id_autor,
+                    Acesso.id_pagina == self.id,
+                )
+            ).first()
 
-		acesso = Acesso.query\
-			.filter_by(
-				id_usuario = usuario.id,
-				id_pagina = self.id,
-			)\
-			.first()
-			
-		return acesso != None
+            return acesso != None
 
 
 class Acesso(db.Model):
-	__tablename__ = 'Acesso'
+    __tablename__ = 'acesso'
 
-	id_usuario = db.Column(db.Integer, db.ForeignKey('Usuario.id'), primary_key=True)
-	id_pagina = db.Column(db.Integer, db.ForeignKey('Pagina.id'), primary_key=True)
+    id_usuario = Column(ForeignKey(Usuario.id), primary_key=True)
+    id_pagina = Column(ForeignKey(Pagina.id), primary_key=True)
 
-	usuario = db.relationship(Usuario)
-	pagina = db.relationship(Pagina)
+    usuario = db.relationship(Usuario)
+    pagina = db.relationship(Pagina)
 
-	data_expira = db.Column(db.DateTime, nullable=True)
+    data_expira = Column(DateTime, nullable=True)

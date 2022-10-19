@@ -16,10 +16,6 @@ def rota_react():
 	'''
 	return send_from_directory('static', 'index.html')
 
-@app.after_request
-def allow_authorization_cors(request):
-    request.headers.add('Access-Control-Allow-Headers', 'Authorization')
-    return request
 
 if __name__ == '__main__':
     db.create_all()

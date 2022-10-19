@@ -1,105 +1,91 @@
 from http.client import UNAUTHORIZED
-from os import abort
 import re
 
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_current_user
 from init import app, bcrypt, db, jwt, TOKEN_UPDATE_HEADER
 from modelos import Usuario
 from datetime import datetime, timedelta
 
-from rotas.utils import reserr, resok, validar_dados
+from rotas.utils import get_json_fields, reserr, resok, validar_dados
 
 emailPattern = re.compile(
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
 
-@app.route('/api/auth/login', methods=['POST'])
+
+@app.post('/api/auth/login')
 def rota_login():
-	'''
-	Rota de login de usuário.
-	Realiza a validação dos dados obtidos por formulário:
-	email e senha.
+    '''
+    Rota de login de usuário.
+    Realiza a validação dos dados obtidos por formulário:
+    email e senha.
 
-	Returns:
-		OK (cod. 200): objeto JSON contendo resposta de 
-			feedback - senha incorreta, usuário inválido ou
-			informações válidas.
-	'''
-	dados = validar_dados(request.get_json(), {
-		'email': str,
-		'password': str,
-	})
+    Returns:
+            OK (cod. 200): objeto JSON contendo resposta de 
+                    feedback - senha incorreta, usuário inválido ou
+                    informações válidas.
+    '''
+    email, senha = get_json_fields(str, 'email', 'password')
+    usuario = Usuario.query.filter_by(email=email).first()
 
-	usuario: Usuario = Usuario.query.filter_by(email=dados['email']).first()
+    if usuario == None:
+        return reserr('no-such-user')
 
-	if usuario == None:
-		return reserr('no-such-user')
+    if not bcrypt.check_password_hash(usuario.hash_senha, senha):
+        return reserr('wrong-password')
 
-	else:
-		token = create_access_token(identity=usuario.id)
-		
-		response = resok(usuario.dados()) 
-		response.headers.set(TOKEN_UPDATE_HEADER, token)
+    token = create_access_token(identity=usuario.id)
 
-		return response
+    resposta = resok(usuario.dados())
+    resposta.headers.set(TOKEN_UPDATE_HEADER, token)
+
+    return resposta
 
 
-@app.route('/api/auth/register', methods=['POST'])
+@app.post('/api/auth/register')
 def rota_registro():
-	'''
-	Rota de registro de usuário.
-	Realiza a validação dos dados obtidos por formulário:
-	nome, email e senha.
+    '''
+    Rota de registro de usuário.
+    Realiza a validação dos dados obtidos por formulário:
+    nome, email e senha.
 
-	Returns:
-		OK (cod. 200): objeto JSON contendo resposta de 
-			feedback - email inválido, usuário já existe ou
-			informações válidas.
-	'''
-	data = validar_dados(request.get_json(), {
-		'name': str,
-		'email': str,
-		'password': str,
-	})
+    Returns:
+            OK (cod. 200): objeto JSON contendo resposta de 
+                    feedback - email inválido, usuário já existe ou
+                    informações válidas.
+    '''
+    name, email, password = get_json_fields(str, 'name', 'email', 'password')
 
-	if Usuario.query.filter_by(email=data['email']).first() != None:
-		return reserr('already-exists')
+    if Usuario.query.filter_by(email=email).first() != None:
+        return reserr('already-exists')
 
-	elif not emailPattern.fullmatch(data['email']):
-		return reserr('invalid-email')
+    if not emailPattern.fullmatch(email):
+        return reserr('invalid-email')
 
-	else:
-		pwhash = bcrypt.generate_password_hash(data['password']) \
-			.decode('utf-8', 'ignore')
-		
-		usuario = Usuario(
-			nome=data['name'],
-			email=data['email'],
-			pwhash=pwhash,
-		)
+    senha_hash = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-		db.session.add(usuario)
-		db.session.commit()
+    usuario = Usuario()
+    usuario.nome = name
+    usuario.email = email
+    usuario.hash_senha = senha_hash
 
-		token = create_access_token(identity=usuario.id)
+    db.session.add(usuario)
+    db.session.commit()
 
-		response = resok(usuario.dados())
-		response.headers.set(TOKEN_UPDATE_HEADER, token)
+    token = create_access_token(identity=usuario.id)
 
-		return response
+    response = resok(usuario.dados())
+    response.headers.set(TOKEN_UPDATE_HEADER, token)
+
+    return response
 
 
-@app.route('/api/auth/user', methods=['GET'])
+@app.get('/api/auth/user')
 @jwt_required()
 def rota_usuario():
-	'''
-	Rota informações usuário.
-	
-	Returns:
-		OK (cod. 200): objeto JSON.
-	'''
-	usuario: Usuario = get_current_user()
-	return jsonify(usuario.dados())
+    '''Retorno as informações do usuário'''
+    usuario: Usuario = get_current_user()
+    return jsonify(usuario.dados())
 
 
 # https://flask-jwt-extended.readthedocs.io/en/stable/automatic_user_loading/
@@ -112,11 +98,13 @@ def load_user(_jwt_header, jwt_data):
 # https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
 # Como não utilizamos cookies, apenas é enviado o novo JWT nos headers
 
+
 @app.after_request
 def refresh_jwt(response: Response):
     try:
         timestamp: float = get_jwt()['exp']
-        min_exp_time = datetime.timestamp(datetime.utcnow() + timedelta(minutes=15))
+        min_exp_time = datetime.timestamp(
+            datetime.utcnow() + timedelta(minutes=15))
 
         if min_exp_time > timestamp:
             new_token = create_access_token(identity=get_current_user().id)
@@ -131,29 +119,24 @@ def refresh_jwt(response: Response):
 @app.route("/api/auth/alterar-senha", methods=["POST"])
 @jwt_required()
 def rota_api_alterar_senha():
-	'''
-	Rota de alteração de senha.
-	Realiza a validação dos dados obtidos por formulário:
-	senha e nova senha.
+    '''
+    Rota de alteração de senha.
+    Realiza a validação dos dados obtidos por formulário:
+    senha e nova senha.
 
-	Returns:
-		OK (cod. 200): objeto JSON contendo resposta de 
-			feedback - senha incorreta ou
-			informações válidas.
-	'''
-	usuario: Usuario = get_current_user()
-	dados = validar_dados(request.get_json(), {
-		'old_password': str,
-		'new_password': str,
-	})
+    Returns:
+            OK (cod. 200): objeto JSON contendo resposta de 
+                    feedback - senha incorreta ou
+                    informações válidas.
+    '''
+    usuario: Usuario = get_current_user()
+    old_password, new_password = get_json_fields(str, 'old_password', 'new_password')
 
-	if not bcrypt.check_password_hash(usuario.pwhash, dados['old_password']):
-		abort(UNAUTHORIZED)
-	else:
-		new_hash = bcrypt.generate_password_hash(dados['new_password']) \
-			.decode('utf-8', 'ignore')
+    if not bcrypt.check_password_hash(usuario.hash_senha, old_password):
+        abort(UNAUTHORIZED)
+    
+    usuario.hash_senha = bcrypt.generate_password_hash(new_password).decode('UTF-8')
 
-		usuario.pwhash = new_hash
-		db.session.commit()
-		
-	return jsonify(usuario.dados())
+    db.session.commit()
+
+    return jsonify(usuario.dados())

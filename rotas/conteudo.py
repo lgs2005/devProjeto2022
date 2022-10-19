@@ -10,10 +10,10 @@ from init import app, db, catimg
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from rotas.utils import validar_dados
+from rotas.utils import get_json_fields, validar_dados
 
 
-@app.route('/api/pagina/criar', methods=["POST"])
+@app.post('/api/pagina/criar')
 @jwt_required()
 def rota_api_criar_pagina():
     """
@@ -25,9 +25,7 @@ def rota_api_criar_pagina():
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
     """
     usuario: Usuario = get_current_user()
-    dados = validar_dados(request.get_json(), {
-        'nome': str
-    })
+    nome = get_json_fields(str, 'nome')
 
     arquivo = criar_arquivo_pagina()
 
@@ -37,12 +35,9 @@ def rota_api_criar_pagina():
     print('Arquivo criado: ' + arquivo)
 
     pagina = Pagina(
-        nome=dados['nome'],
+        nome=nome,
         arquivo=arquivo,
-        autor=usuario,
-
-        favorito=False,
-        data_criacao=datetime.now(timezone.utc)
+        autor=usuario
     )
 
     db.session.add(pagina)
@@ -50,7 +45,7 @@ def rota_api_criar_pagina():
 
     return jsonify(pagina.dados())
 
-@app.route('/api/pagina/listar', methods=['GET'])
+@app.get('/api/pagina/listar')
 @jwt_required()
 def rota_listar_paginas():
     """
@@ -62,8 +57,8 @@ def rota_listar_paginas():
 			OK (cod. 200): páginas em JSON.
     """
     usuario: Usuario = get_current_user()
-    paginas: 'list[Pagina]' = Pagina.query \
-        .filter_by(usuario=usuario).all()
+
+    paginas = Pagina.query.filter_by(autor=usuario).all()
 
     resposta = jsonify([p.dados() for p in paginas])
 
@@ -97,7 +92,7 @@ def rota_api_conteudo(id: int = None):
     usuario: Usuario = get_current_user()
     pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(usuario):
+    if not pagina.permite_acesso(usuario):
         abort(UNAUTHORIZED)
 
     try:
