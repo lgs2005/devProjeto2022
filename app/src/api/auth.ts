@@ -1,4 +1,4 @@
-import { fetchAt } from "./api";
+import { fetch2 } from "./api";
 import { User } from "./types";
 
 
@@ -8,7 +8,7 @@ export enum LoginError {
 }
 
 export function apiLogin(data: { email: string, password: string }) {
-	return fetchAt<User, User | LoginError>(
+	return fetch2<User, User | LoginError>(
 		'/api/auth/login',
 		'POST',
 		data,
@@ -26,7 +26,7 @@ export enum RegisterError {
 }
 	
 export function apiRegister(data: { name: string, email: string, password: string }) {
-	return fetchAt<User, User | RegisterError>(
+	return fetch2<User, User | RegisterError>(
 		'/api/auth/register',
 		'POST',
 		data,
@@ -39,7 +39,7 @@ export function apiRegister(data: { name: string, email: string, password: strin
 
 
 export function apiGetUser() {
-	return fetchAt<User, User | null>(
+	return fetch2<User, User | null>(
 		'/api/auth/user',
 		'GET',
 		undefined,
@@ -63,7 +63,7 @@ export function apiAlterUser(dados: {
 		email: string,
 	}
 }) {
-	return fetchAt<User, User | AlterError>(
+	return fetch2<User, User | AlterError>(
 		'/api/auth/alter',
 		'PATCH',
 		dados,

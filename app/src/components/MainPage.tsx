@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { fetchAt } from "../api/api";
+import { fetch2 } from "../api/api";
 import Sidebar from "./Sidebar";
 
 
@@ -11,7 +11,7 @@ export default function MainPage() {
 
     useEffect(() => {
 
-        fetchAt<{markdown: { title: string, content: string }}>(
+        fetch2<{markdown: { title: string, content: string }}>(
             '/api/conteudo/' + idPage,
             'GET',
         )

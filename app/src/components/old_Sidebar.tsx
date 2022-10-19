@@ -10,7 +10,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { apiListPages } from "../api/pages";
 import { Page } from "../api/types";
-import { fetchAt } from "../api/api";
+import { fetch2 } from "../api/api";
 
 
 const enum PagesList {
@@ -85,7 +85,7 @@ export default function Sidebar(props: PropsWithChildren<{ onPageSelected: (id: 
 	return <>
 		<button
 			onClick={() => {
-				fetchAt<null>(
+				fetch2<null>(
 					'/api/criar-pagina',
 					'POST',
 					{

@@ -8,7 +8,7 @@ export type FetchHandlers<T, R> = {
 	ok: (data: T) => R,
 }
 
-export async function fetchAt<T, R=T>(
+export async function fetch2<T, R=T>(
 	path: string,
 	method: 'GET' | 'POST' | 'PUT' | 'PATCH',
 	data?: any,

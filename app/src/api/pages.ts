@@ -1,9 +1,9 @@
-import { fetchAt } from "./api";
+import { fetch2 } from "./api";
 import { Page } from "./types";
 
 
 export function apiCreatePage(dados: { name: string, folder: number }) {
-	return fetchAt<Page>(
+	return fetch2<Page>(
 		'/api/pagina/criar',
 		'POST',
 		dados,
@@ -11,21 +11,21 @@ export function apiCreatePage(dados: { name: string, folder: number }) {
 }
 
 export function apiListPages() {
-	return fetchAt<Page[]>(
+	return fetch2<Page[]>(
 		'/api/pagina/listar',
 		'GET',
 	);
 }
 
 export function apiGetContent(id: number) {
-	return fetchAt<string>(
+	return fetch2<string>(
 		'/api/conteudo/' + id.toString(),
 		'GET',
 	)
 }
 
 export function apiPutContent(id: number, content: string) {
-	return fetchAt<null>(
+	return fetch2<null>(
 		'/api/conteudo/' + id.toString(),
 		'PUT',
 		{ content },
