@@ -100,14 +100,18 @@ def rota_api_conteudo(id: int = None):
         if request.method == "GET":
             return arquivo_pagina.read()
         else:
+            novo_conteudo = get_campos(str, 'content')
+
             arquivo_pagina.truncate()
-            arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
+            arquivo_pagina.write(novo_conteudo)
             return catimg(OK), OK
 
     except FileNotFoundError:
         abort(NOT_FOUND)
     except OSError:
         abort(INTERNAL_SERVER_ERROR)
+    finally:
+        arquivo_pagina.close()
 
 
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])

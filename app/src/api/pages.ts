@@ -2,26 +2,32 @@ import { fetchAt } from "./api";
 import { Page } from "./types";
 
 
-function apiCreatePage(nome: string) {
+export function apiCreatePage(dados: { name: string, folder: number }) {
 	return fetchAt<Page>(
 		'/api/pagina/criar',
 		'POST',
-		{ nome },
+		dados,
 	);
 }
 
-function apiListPages() {
+export function apiListPages() {
 	return fetchAt<Page[]>(
 		'/api/pagina/listar',
 		'GET',
 	);
 }
 
-function apiGetContent(id: number) {
-	return fetchAt<null>(
+export function apiGetContent(id: number) {
+	return fetchAt<string>(
 		'/api/conteudo/' + id.toString(),
 		'GET',
 	)
 }
 
-export { apiListPages, apiCreatePage, apiGetContent }
+export function apiPutContent(id: number, content: string) {
+	return fetchAt<null>(
+		'/api/conteudo/' + id.toString(),
+		'PUT',
+		{ content },
+	)
+}

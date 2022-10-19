@@ -1,27 +1,44 @@
 import { fetchAt } from "./api";
-import { Result, User } from "./types";
+import { User } from "./types";
 
 
-type LoginError = 'no-such-user' | 'wrong-password';
-type RegisterError = 'already-exists';
+export enum LoginError {
+	NoSuchUser,
+	WrongPassword,
+}
 
-function apiLogin(data: { email: string, password: string }) {
-	return fetchAt<Result<User, LoginError>>(
+export function apiLogin(data: { email: string, password: string }) {
+	return fetchAt<User, User | LoginError>(
 		'/api/auth/login',
 		'POST',
-		data
+		data,
+		{
+			ok: (user) => user,
+			404: () => LoginError.NoSuchUser,
+			409: () => LoginError.WrongPassword,
+		}
 	);
 }
 
-function apiRegister(data: { name: string, email: string, password: string }) {
-	return fetchAt<Result<User, RegisterError>>(
+
+export enum RegisterError {
+	EmailInUse
+}
+	
+export function apiRegister(data: { name: string, email: string, password: string }) {
+	return fetchAt<User, User | RegisterError>(
 		'/api/auth/register',
 		'POST',
-		data
+		data,
+		{
+			ok: (user) => user,
+			409: () => RegisterError.EmailInUse,
+		}
 	);
 }
 
-function apiGetUser() {
+
+export function apiGetUser() {
 	return fetchAt<User, User | null>(
 		'/api/auth/user',
 		'GET',
@@ -33,16 +50,26 @@ function apiGetUser() {
 	);
 }
 
-function apiMudarSenha(dados: { old_password: string, new_password: string }) {
-	return fetchAt<User, User | null>(
-		'/api/auth/alterar-senha',
-		'POST',
-		dados,
-		{
-			ok: user => user,
-			401: () => null,
-		}
-	);
+
+export enum AlterError {
+	EmailInUse
 }
 
-export { apiLogin, apiRegister, apiGetUser, apiMudarSenha }
+export function apiAlterUser(dados: {
+	password: string,
+	new: {
+		password: string,
+		name: string,
+		email: string,
+	}
+}) {
+	return fetchAt<User, User | AlterError>(
+		'/api/auth/alter',
+		'PATCH',
+		dados,
+		{
+			ok: (user) => user,
+			409: () => AlterError.EmailInUse,
+		}
+	)
+}
