@@ -2,23 +2,15 @@ from datetime import timedelta
 from http.client import BAD_REQUEST, NOT_FOUND
 from init import app, db
 from modelos import Acesso, Pagina, Usuario
-from rotas.utils import validar_dados
+from rotas.utils import get_campos, validar_dados
 from flask_jwt_extended import create_access_token, get_current_user, jwt_required, decode_token
 from flask import abort, jsonify, request
 
 @app.post('/api/create-share')
 @jwt_required()
 def route_create_share():
-    usuario: Usuario = get_current_user()
-    dados = validar_dados(request.get_json(), {
-        'pageid': int,
-    })
-
-    pagina: Pagina = Pagina.query\
-        .filter_by(id_autor=usuario.id, id=dados['pageid']).first()
-
-    if pagina == None:
-        abort(NOT_FOUND)
+    pageid = get_campos(int, 'pageid')
+    pagina: Pagina = Pagina.query.filter_by(autor=Usuario.logado, id=pageid).first_or_404()
 
     token = create_access_token(
         -1,
@@ -36,13 +28,8 @@ def route_create_share():
 @app.post('/api/claim-share')
 @jwt_required()
 def route_claim_share():
-    usuario: Usuario = get_current_user()
-    dados = validar_dados(request.get_json(), {
-        'claim-token': str,
-    })
-
-    claims = decode_token(dados['claim-token'])
-    print(claims)
+    token = get_campos(str, 'claim-token')
+    claims = decode_token(token)
 
     if claims['otp-type'] != 'share':
         abort(BAD_REQUEST)
@@ -50,11 +37,13 @@ def route_claim_share():
     pagina: Pagina = Pagina.query.get_or_404(claims['otp-page'])
     
     acesso = Acesso(
-        id_usuario = usuario.id,
-        id_pagina = pagina.id,
+        usuario=Usuario.logado,
+        pagina=pagina,
     )
 
     db.session.add(acesso)
     db.session.commit()
 
-    return ''
+    return jsonify({
+        'pageid': claims['otp-page']
+    })

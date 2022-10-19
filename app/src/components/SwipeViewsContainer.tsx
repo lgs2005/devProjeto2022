@@ -1,5 +1,7 @@
-import { styled } from "@mui/material";
 import { Children, PropsWithChildren } from "react";
+
+import { styled } from "@mui/material";
+
 
 export default function SwipeViewsContainer(props: PropsWithChildren<{ currentIndex: number }>) {
 	return <SContainer>

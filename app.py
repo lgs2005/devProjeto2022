@@ -8,7 +8,7 @@ import rotas.auth
 import rotas.share
 
 
-@app.route('/', methods=['GET'])
+@app.get('/')
 def rota_react():
 	'''
 	Rota compartilhada com ReactJS.
@@ -18,4 +18,4 @@ def rota_react():
 
 
 if __name__ == '__main__':
-    db.create_all()
+	db.create_all()

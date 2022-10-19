@@ -6,6 +6,7 @@ packages = [
 	'flask-jwt-extended',
 	'flask-bcrypt',
 	'flask-cors',
+	'sqlalchemy2-stubs',
 ]
 
 if __name__ == "__main__":

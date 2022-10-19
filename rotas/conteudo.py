@@ -1,31 +1,29 @@
-from datetime import datetime, timedelta, timezone
 import os
-
+from datetime import datetime, timedelta, timezone
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
-from flask_jwt_extended import jwt_required, get_current_user
-
-from init import app, db, catimg
+from flask_jwt_extended import get_current_user, jwt_required
+from init import app, catimg, db
 from modelos import Pagina, Usuario
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
-from rotas.utils import get_json_fields, validar_dados
+from rotas.utils import get_campos
 
 
 @app.post('/api/pagina/criar')
 @jwt_required()
 def rota_api_criar_pagina():
     """
-	Rota de criação de página.
+        Rota de criação de página.
     Recebe dados em json do front end: nome da página
 
     Returns:
         Response (jsonify): resposta em json contendo sucesso e erro.
         INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
     """
-    usuario: Usuario = get_current_user()
-    nome = get_json_fields(str, 'nome')
+    nome = get_campos(str, 'nome')
+    pasta_id = get_campos(int, 'pasta-id')
 
     arquivo = criar_arquivo_pagina()
 
@@ -37,7 +35,9 @@ def rota_api_criar_pagina():
     pagina = Pagina(
         nome=nome,
         arquivo=arquivo,
-        autor=usuario
+        autor=Usuario.logado,
+        pasta_id=pasta_id,
+        data_criacao=datetime.now(timezone.utc)
     )
 
     db.session.add(pagina)
@@ -45,16 +45,17 @@ def rota_api_criar_pagina():
 
     return jsonify(pagina.dados())
 
+
 @app.get('/api/pagina/listar')
 @jwt_required()
 def rota_listar_paginas():
     """
-	Rota listagem de páginas do usuário da 
+        Rota listagem de páginas do usuário da 
     sessão atual.
 
-	Returns:
-		GET:
-			OK (cod. 200): páginas em JSON.
+        Returns:
+                GET:
+                        OK (cod. 200): páginas em JSON.
     """
     usuario: Usuario = get_current_user()
 
@@ -89,10 +90,9 @@ def rota_api_conteudo(id: int = None):
         INTERNAL_SERVER_ERROR (cod. 500): erro do servidor. inválido
     """
 
-    usuario: Usuario = get_current_user()
-    pagina: Pagina = Pagina.query.get_or_404(id)
+    pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.permite_acesso(usuario):
+    if not pagina.tem_acesso(Usuario.logado):
         abort(UNAUTHORIZED)
 
     try:
@@ -116,20 +116,20 @@ def rota_api_conteudo(id: int = None):
 
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
 def deletar_pagina(id: int):
-    usuario: Usuario = get_current_user()
-    pagina: Pagina = Pagina.query.get_or_404(id)
+    pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(usuario):
+    if not pagina.tem_acesso(Usuario.logado):
         abort(UNAUTHORIZED)
-    
+
     pagina.data_excluir = datetime.now(timezone.utc) + timedelta(days=30)
     db.session.commit()
-    
+
     return catimg(OK), OK
 
+
 def limpar_paginas_excluidas():
-    paginas_para_excluir: list[Pagina] = Pagina.query\
-        .filter(Pagina.data_excluir  != None)\
+    paginas_para_excluir = Pagina.query\
+        .filter(Pagina.data_excluir != None)\
         .filter(Pagina.data_excluir > datetime.now(timezone.utc))\
         .all()
 

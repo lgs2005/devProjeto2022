@@ -1,9 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Callable
 
 from flask_jwt_extended import get_current_user
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        select)
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String)
 from sqlalchemy.orm import Mapped
 
 from init import db
@@ -20,27 +19,38 @@ class Usuario(db.Model):
 
     nome: Mapped[str] = Column(String(255), nullable=False)
     email: Mapped[str] = Column(String(255), nullable=False, unique=True)
-    hash_senha: Mapped[str] = Column(String(60), nullable=False)
+    pwhash: Mapped[str] = Column(String(60), nullable=False)
 
     dados = extrair_campos('id', 'nome', 'email')
     atual: 'Callable[[], Usuario]' = lambda: get_current_user()
 
 
+class Pasta(db.Model):
+    __tablename__ = 'pasta'
+
+    id: Mapped[int] = Column(Integer, primary_key=True)
+    nome: Mapped[str] = Column(String(255), nullable=False)
+
+    paginas: Mapped['list[Pagina]'] = db.relationship(
+        'Pagina', back_populates='pasta')
+
+
 class Pagina(db.Model):
     __tablename__ = 'pagina'
+
     id: Mapped[int] = Column(Integer, primary_key=True)
 
-    id_autor = Column(ForeignKey(Usuario.id))
-    autor = db.relationship(Usuario)
+    autor_id: Mapped[int] = Column(ForeignKey(Usuario.id), nullable=False)
+    autor: Mapped[Usuario] = db.relationship(Usuario)
 
-    nome = Column(String(255), nullable=False)
-    arquivo = Column(String(32), nullable=False)
+    pasta_id: Mapped[int] = Column(ForeignKey(Pasta.id), nullable=False)
+    pasta: Mapped[Pasta] = db.relationship(Pasta, back_populates='paginas')
 
-    favorito = Column(Boolean, nullable=False, default=False)
+    nome: Mapped[str] = Column(String(255), nullable=False)
+    arquivo: Mapped[str] = Column(String(32), nullable=False)
 
-    data_excluir = Column(DateTime, nullable=True)
-    data_criacao = Column(DateTime, nullable=False,
-                          default=datetime.now(timezone.utc))
+    data_criacao: Mapped[datetime] = Column(DateTime, nullable=False)
+    data_excluir: Mapped[datetime] = Column(DateTime, nullable=True)
 
     dados = extrair_campos('id', 'id_autor', 'nome',
                            'favorito', 'data_excluir', 'data_criacao')
@@ -49,12 +59,10 @@ class Pagina(db.Model):
         if usuario.id == self.id_autor:
             return True
         else:
-            acesso = db.session.execute(
-                select(Acesso).filter(
-                    Acesso.id_usuario == self.id_autor,
-                    Acesso.id_pagina == self.id,
-                )
-            ).first()
+            acesso = Acesso.query.filter_by(
+                usuario_id=usuario.id,
+                pagina_id=self.id,
+            )
 
             return acesso != None
 
@@ -62,10 +70,10 @@ class Pagina(db.Model):
 class Acesso(db.Model):
     __tablename__ = 'acesso'
 
-    id_usuario = Column(ForeignKey(Usuario.id), primary_key=True)
-    id_pagina = Column(ForeignKey(Pagina.id), primary_key=True)
+    usuario_id: Mapped[int] = Column(ForeignKey(Usuario.id), primary_key=True)
+    pagina_id: Mapped[int] = Column(ForeignKey(Pagina.id), primary_key=True)
 
-    usuario = db.relationship(Usuario)
-    pagina = db.relationship(Pagina)
+    usuario: Mapped[Usuario] = db.relationship(Usuario)
+    pagina: Mapped[Pagina] = db.relationship(Pagina)
 
     data_expira = Column(DateTime, nullable=True)

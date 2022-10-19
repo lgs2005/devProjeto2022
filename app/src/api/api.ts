@@ -2,12 +2,13 @@ const BASE_URL = 'http://127.0.0.1:5000';
 const TOKEN_UPDATE_HEADER = 'X-OTP-Update-Bearer-Token';
 const TOKEN_STORAGE_KEY = 'otp-bread-token';
 
+
 export type FetchHandlers<T, R> = {
 	[code: number]: (res: Response) => R,
 	ok: (data: T) => R,
 }
 
-export async function fetch2<T, R=T>(
+export async function fetchAt<T, R=T>(
 	path: string,
 	method: 'GET' | 'POST' | 'PUT' | 'PATCH',
 	data?: any,
