@@ -1,5 +1,6 @@
 from init import app, db
-from flask import send_from_directory
+from flask import render_template
+import json
 
 import modelos
 
@@ -14,7 +15,7 @@ def rota_react():
 	Rota compartilhada com ReactJS.
 	./static/index.html
 	'''
-	return send_from_directory('static', 'index.html')
+	return render_template('index.html', extradata=json.dumps({'test': 'hi'}))
 
 
 if __name__ == '__main__':
