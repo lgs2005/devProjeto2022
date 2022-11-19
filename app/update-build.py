@@ -8,11 +8,7 @@ def update_build():
 		shutil.rmtree('./../static')
 
 	shutil.move('./build/static', './../')
-	
-	if os.path.exists('./../templates/index.html'):
-		os.remove('./../templates/index.html')
-
-	shutil.move('./build/index.html', './../templates/index.html')
+	shutil.move('./build/index.html', './../static/index.html')
 
 
 if __name__ == '__main__':
