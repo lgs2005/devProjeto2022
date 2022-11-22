@@ -14,130 +14,140 @@ from rotas.utils import get_campos
 @app.post('/api/pagina/criar')
 @jwt_required()
 def rota_api_criar_pagina():
-    """
-        Rota de criação de página.
-    Recebe dados em json do front end: nome da página
+	"""Rota de criação de página.
+	Recebe dados em json do front end: nome da página
 
-    Returns:
-        Response (jsonify): resposta em json contendo sucesso e erro.
-        INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
-    """
-    nome = get_campos(str, 'name')
-    pasta_id = get_campos(int, 'folder')
+	Returns:
+		Response (jsonify): resposta em json contendo sucesso e erro.
+		INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
+	"""
 
-    arquivo = criar_arquivo_pagina()
+	dados = validar_objeto(request.get_json(), {
+		'nome': str
+	})
 
-    if arquivo == None:
-        abort(INTERNAL_SERVER_ERROR)
+	nome: str = dados['nome']
+	arquivo = criar_arquivo_pagina(nome)
+	sucesso = False
 
-    print('Arquivo criado: ' + arquivo)
+	print(arquivo)
 
-    pagina = Pagina(
-        nome=nome,
-        arquivo=arquivo,
-        autor=Usuario.atual(),
-        pasta_id=pasta_id,
-        data_criacao=datetime.now(timezone.utc)
-    )
+	if arquivo == None:
+		abort(INTERNAL_SERVER_ERROR)
 
-    db.session.add(pagina)
-    db.session.commit()
+	nova_pagina = Pagina(
+		nome=nome, id_usuario=current_user.id, caminho_id=arquivo)
 
-    return jsonify(pagina.dados())
+	db.session.add(nova_pagina)
+	db.session.commit()
 
+	sucesso = True
 
-@app.get('/api/pagina/listar')
-@jwt_required()
-def rota_listar_paginas():
-    """
-        Rota listagem de páginas do usuário da 
-    sessão atual.
-
-        Returns:
-                GET:
-                        OK (cod. 200): páginas em JSON.
-    """
-    paginas = Pagina.query.filter_by(autor=Usuario.atual()).all()
-    dados = [ p.dados() for p in paginas ]
-    return jsonify(dados)
+	return jsonify({
+		'sucesso': sucesso,
+	})
 
 
 @app.route("/api/conteudo/<int:id>", methods=["GET", "PUT"])
 @jwt_required()
 def rota_api_conteudo(id: int = None):
-    """Gerencia determinada página do usuário, passando o
-    id da mesma.
-    Realiza as operações GET (método read file) e POST (método
-    write file).
+	"""Gerencia determinada página do usuário, passando o
+	id da mesma.
+	Realiza as operações GET (método read file) e POST (método
+	write file).
 
-    Args:
-        id (int, opcional): id da página. Padrão None.
+	Args:
+		id (int, opcional): id da página. Padrão None.
 
-    Returns:
-        GET:
-            str: leitura da página. válido
+	Returns:
+		GET:
+			str: leitura da página. válido
 
-        POST:
-            OK (cod. 200): sucesso. válido
+		POST:
+			OK (cod. 200): sucesso. válido
 
-        UNAUTHORIZED (cod. 401): compartilhamento de página não
-        autorizado. inválido.
-        NOT_FOUND (cod. 404): página não encontrada. inválido
-        INTERNAL_SERVER_ERROR (cod. 500): erro do servidor. inválido
-    """
+		UNAUTHORIZED (cod. 401): compartilhamento de página não
+		autorizado. inválido.
+		NOT_FOUND (cod. 404): página não encontrada. inválido
+		INTERNAL_SERVER_ERROR (cod. 500): erro do servidor. inválido
+	"""
 
-    pagina: Pagina = Pagina.query.get_or_404(id)
+	pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(Usuario.atual()):
-        abort(UNAUTHORIZED)
+	if not pagina.existe_compartilhamento(current_user):
+		abort(UNAUTHORIZED)
 
-    try:
-        arquivo_pagina = open(
-            caminho_para_pagina(pagina.arquivo),
-            'r' if request.method == "GET" else 'w'
-        )
+	try:
+		arquivo_pagina = open(
+			caminho_para_pagina(pagina.caminho_id),
+			'r' if request.method == "GET" else 'w'
+		)
 
-        if request.method == "GET":
-            return arquivo_pagina.read()
-        else:
-            novo_conteudo = get_campos(str, 'content')
-
-            arquivo_pagina.truncate()
-            arquivo_pagina.write(novo_conteudo)
-            return catimg(OK), OK
-
-    except FileNotFoundError:
-        abort(NOT_FOUND)
-    except OSError:
-        abort(INTERNAL_SERVER_ERROR)
-    finally:
-        arquivo_pagina.close()
+		if request.method == "GET":
+			return arquivo_pagina.read()
+		else:
+			arquivo_pagina.truncate()
+			arquivo_pagina.write(request.get_data().decode('utf-8', 'ignore'))
+			return catimg(OK), OK
+	except FileNotFoundError:
+		abort(NOT_FOUND)
+	except OSError:
+		abort(INTERNAL_SERVER_ERROR)
 
 
 @app.route("/api/excluir/pagina/<int:id>", methods=['DELETE'])
-def deletar_pagina(id: int):
-    pagina = Pagina.query.get_or_404(id)
+def deletar_pagina(id:int):
+	pagina: Pagina = Pagina.query.get_or_404(id)
 
-    if not pagina.tem_acesso(Usuario.atual()):
-        abort(UNAUTHORIZED)
+	if not pagina.existe_compartilhamento(current_user):
+		abort(UNAUTHORIZED)
 
-    pagina.data_excluir = datetime.now(timezone.utc) + timedelta(days=30)
-    db.session.commit()
-
-    return catimg(OK), OK
+	pagina.excluir_em = datetime.utcnow() + timedelta(seconds=10)
+	db.session.commit()
+	
+	return catimg(OK), OK
 
 
 def limpar_paginas_excluidas():
-    paginas_para_excluir = Pagina.query\
-        .filter(Pagina.data_excluir != None)\
-        .filter(Pagina.data_excluir > datetime.now(timezone.utc))\
-        .all()
+	paginas_para_excluir = Pagina.query\
+		.filter(Pagina.excluir_em != None)\
+		.filter(Pagina.excluir_em <= datetime.utcnow())\
+		.all()
 
-    for pagina in paginas_para_excluir:
-        try:
-            os.remove(caminho_para_pagina(pagina.arquivo))
-            db.session.delete(pagina)
-        except FileNotFoundError:
-            pass
-        except OSError:
-            pass
+	print(paginas_para_excluir)
+
+	for pagina in paginas_para_excluir:
+		deletar_pagina_definitivamente(pagina)
+
+def deletar_pagina_definitivamente(pagina: Pagina):
+	try:
+		os.remove(caminho_para_pagina(pagina.caminho_id))
+		Pagina.query.filter_by(id=pagina.id).delete()
+		db.session.commit()
+	except FileNotFoundError:
+		pass
+	except OSError:
+		pass
+
+@app.route("/api/deletar/pagina/<int:id>", methods=['DELETE'])
+def rota_deletar_pagina_definitivamente(id:int):
+	pagina: Pagina = Pagina.query.get_or_404(id)
+
+	if not pagina.existe_compartilhamento(current_user):
+		abort(UNAUTHORIZED)
+
+	deletar_pagina_definitivamente(pagina)
+	
+	return catimg(OK), OK
+
+@app.route("/api/recuperar/pagina/<int:id>", methods=['POST'])
+def recuperar_pagina(id:int):
+	pagina: Pagina = Pagina.query.get_or_404(id)
+
+	if not pagina.existe_compartilhamento(current_user):
+		abort(UNAUTHORIZED)
+
+	pagina.excluir_em = None
+	db.session.commit()
+	
+	return catimg(OK), OK
