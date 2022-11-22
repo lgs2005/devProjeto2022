@@ -30,7 +30,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_base}/test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
-db.session.execute('PRAGMA FOREIGN_KEYS=ON')
 
 app.config['JWT_SECRET_KEY'] = 'b227b977deca4b8bacfe627c35511a16-?v=6pKE-95ixwU-5b72846c1cf441ad8cc1363ede851336'
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
@@ -41,7 +40,7 @@ jwt = JWTManager(app)
 TOKEN_UPDATE_HEADER = 'X-OTP-Update-Bearer-Token'
 
 bcrypt = Bcrypt(app)
-cors = CORS(app, expose_headers=[TOKEN_UPDATE_HEADER], allow_headers=['Authorization'])
+cors = CORS(app, expose_headers=[TOKEN_UPDATE_HEADER])
 
 def catimg(code):
 	return f'<img src="https://http.cat/{code}"/>'

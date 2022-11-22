@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { fetch2 } from "../api/api";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar"
 
 
 export default function MainPage() {
@@ -24,11 +24,9 @@ export default function MainPage() {
 
     return <>
         <Sidebar onPageSelected={(id) => setIdPage(id)}>
-            {content}
         </Sidebar>
 
         <div>
-            {content}
         </div>
     </>
 }

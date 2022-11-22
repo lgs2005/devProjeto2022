@@ -83,19 +83,6 @@ export default function Sidebar(props: PropsWithChildren<{ onPageSelected: (id: 
 
 	
 	return <>
-		<button
-			onClick={() => {
-				fetch2<null>(
-					'/api/criar-pagina',
-					'POST',
-					{
-						nome: 'Sem título',
-					}
-				);
-			}}
-		>
-			Criar Paginas
-		</button>
 
 		<Grid
 			container
@@ -157,5 +144,19 @@ export default function Sidebar(props: PropsWithChildren<{ onPageSelected: (id: 
 				<h1>{props.children}</h1>
 			</Grid>
 		</Grid>
+				<button
+					onClick={() => {
+						fetch2<null>(
+							'/api/pagina/criar',
+							'POST',
+							{
+								name: 'Sem título',
+								folder: 0,
+							}
+						);
+					}}
+				>
+					Criar Paginas
+				</button>
 	</>
 }

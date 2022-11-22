@@ -27,9 +27,9 @@ export default function Router() {
 		</Backdrop>
 	}
 
-	// if (userController.value == null) {
-	// 	return <AuthPage />
-	// }
+	if (userController.value == null) {
+		return <AuthPage />
+	}
 
 	return <>
 		<MainPage />
