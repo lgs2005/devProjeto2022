@@ -4,9 +4,10 @@ import { Alert, Backdrop, CircularProgress, Collapse, Container, Tab, Tabs, Typo
 
 import { LoginForm, LoginFormData, RegisterForm, RegisterFormData } from "./AuthForms";
 import { AuthControllerContext } from "../controllers/globals";
-import { apiLogin, apiRegister } from "../api/auth";
+import { apiLogin, apiRegister, LoginError, RegisterError } from "../api/auth";
 import { FormSubmitHandler } from "../lib/useFormSchema";
 import SwipeViewsContainer from "./SwipeViewsContainer";
+import { resourceUsage } from "process";
 
 
 export default function AuthPage() {
@@ -20,12 +21,10 @@ export default function AuthPage() {
 		setIsFetching(true);
 		await apiRegister(data).then(
 			res => {
-				if (res.ok) {
-					userController.setValue(res.value);
-				} else if (res.error === 'already-exists') {
+				if (res == RegisterError.EmailInUse) {
 					setError('email', 'Um usuário com este email já existe');
 				} else {
-					setGlobalError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+					userController.setValue(res);
 				}
 			},
 
@@ -40,14 +39,14 @@ export default function AuthPage() {
 		setIsFetching(true);
 		await apiLogin(data).then(
 			res => {
-				if (res.ok) {
-					userController.setValue(res.value);
-				} else if (res.error === 'no-such-user') {
+				if (res == LoginError.NoSuchUser) {
 					setError('email', 'Este usuário não existe.');
-				} else if (res.error === 'wrong-password') {
+				}
+				else if (res == LoginError.WrongPassword) {
 					setError('password', 'Senha incorreta.');
-				} else {
-					setGlobalError('Ocorreu um erro desconhecido, tente novamente mais tarde.');
+				}
+				else {
+					userController.setValue(res);
 				}
 			},
 

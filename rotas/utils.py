@@ -12,7 +12,7 @@ def get_campos(tipo: 'type[T]', *campos: str) -> 'tuple[T, ...]':
 
 	dados = request.get_json()
 
-	if isinstance(dados, dict):
+	if not isinstance(dados, dict):
 		abort(BAD_REQUEST)
 
 	for campo in campos:

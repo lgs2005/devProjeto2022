@@ -52,8 +52,7 @@ class Pagina(db.Model):
 	data_criacao: Mapped[datetime] = Column(DateTime, nullable=False)
 	data_excluir: Mapped[datetime] = Column(DateTime, nullable=True)
 
-	dados = extrair_campos('id', 'id_autor', 'nome',
-						   'favorito', 'data_excluir', 'data_criacao')
+	dados = extrair_campos('id', 'autor_id', 'nome', 'data_excluir', 'data_criacao')
 
 	def permite_acesso(self, usuario: Usuario) -> bool:
 		if usuario.id == self.id_autor:
