@@ -12,19 +12,19 @@ caminho_base = os.path.dirname(__file__)
 app = Flask("projeto 2")
 
 if TYPE_CHECKING:
-    import flask_sqlalchemy
-    import sqlalchemy
-    import sqlalchemy.orm
-    from typing_extensions import Self
+	import flask_sqlalchemy
+	import sqlalchemy
+	import sqlalchemy.orm
+	from typing_extensions import Self
 
-    class Model(flask_sqlalchemy.Model):
-        query: flask_sqlalchemy.BaseQuery[Self]
+	class Model(flask_sqlalchemy.Model):
+		query: flask_sqlalchemy.BaseQuery[Self]
 
-    class Database(flask_sqlalchemy.SQLAlchemy):
-        Model: 'type[Model]'
-        relationship: 'type[sqlalchemy.orm.relationship]'
+	class Database(flask_sqlalchemy.SQLAlchemy):
+		Model: 'type[Model]'
+		relationship: 'type[sqlalchemy.orm.relationship]'
 
-    db: Database
+	db: Database
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_base}/test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
