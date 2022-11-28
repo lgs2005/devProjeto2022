@@ -1,19 +1,22 @@
 from __future__ import annotations
+
 from datetime import datetime
 from typing import TYPE_CHECKING, Callable
 
 from flask_jwt_extended import get_current_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped
 
 db = SQLAlchemy()
 
 if TYPE_CHECKING:
     import sqlalchemy.orm
+
     class AppDatabase(SQLAlchemy):
         session: sqlalchemy.orm.scoped_session
-    db:AppDatabase
+    db: AppDatabase
+
 
 def extract_fields(*fields: str) -> Callable[[object], dict]:
     def dado(o: object, c: str):
@@ -22,7 +25,7 @@ def extract_fields(*fields: str) -> Callable[[object], dict]:
             v = v.isoformat()
 
         return v
-    return lambda self: { c: dado(self, c) for c in fields }
+    return lambda self: {c: dado(self, c) for c in fields}
 
 
 class User(db.Model):
@@ -47,7 +50,8 @@ class Folder(db.Model):
     user_id: Mapped[int] = Column(ForeignKey(User.id))
     user: Mapped[User] = db.relationship('User')
 
-    pages: Mapped[list[Page]] = db.relationship('Page', back_populates='folder')
+    pages: Mapped[list[Page]] = db.relationship(
+        'Page', back_populates='folder')
 
     data = extract_fields('id', 'name')
 
@@ -66,9 +70,10 @@ class Page(db.Model):
     file: Mapped[str] = Column(String(32), nullable=False)
 
     creation_date: Mapped[datetime] = Column(DateTime, nullable=False)
-    deletion_date: Mapped[datetime] = Column(DateTime) # nullable
+    deletion_date: Mapped[datetime] = Column(DateTime)  # nullable
 
-    data = extract_fields('id', 'author_id', 'folder_id', 'name', 'file', 'creation_date', 'deletion_date')
+    data = extract_fields('id', 'author_id', 'folder_id',
+                          'name', 'file', 'creation_date', 'deletion_date')
 
 
 class Access(db.Model):

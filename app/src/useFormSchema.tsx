@@ -8,7 +8,7 @@ export type FormSubmitHandler<T extends object> = (
 export default function useFormSchema<T extends object>(initialValue: T) {
     const [formData, setFormData] = useState(initialValue);
     const [formErrors, setFormErrors] = useState({} as T);
-    
+
     function setFieldError(field: keyof T, error: string) {
         setFormErrors({
             ...formErrors,

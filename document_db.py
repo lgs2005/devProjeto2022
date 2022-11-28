@@ -1,6 +1,6 @@
-import uuid
 import json
 import os
+import uuid
 
 from flask import current_app
 
@@ -20,6 +20,7 @@ def docfile_path(file_id: str) -> str:
         DOCFILE_FOLDER,
         file_id + '.json'
     )
+
 
 def create_docfile() -> str | None:
     while True:

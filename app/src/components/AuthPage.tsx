@@ -1,5 +1,5 @@
 import { Alert, Backdrop, CircularProgress, Collapse, Container, Tab, Tabs, Typography } from "@mui/material";
-import { useCallback, useState,  } from "react";
+import { useCallback, useState } from "react";
 import { User } from "../api/api_types";
 import { api_loginUser, api_registerUser, LoginError, RegisterError } from "../api/authentication";
 import { FormSubmitHandler } from "../useFormSchema";
@@ -53,14 +53,14 @@ export default function AuthPage(props: { onLoginFinish: (user: User) => void })
             textAlign='center'
             marginTop='1em'
         >
-            Welcome to <br/> OnTrack Pages
+            Welcome to <br /> OnTrack Pages
         </Typography>
 
         <Tabs
             value={tab}
             onChange={(_, newTab) => setTab(newTab)}
             variant='fullWidth'
-            sx={{my: 2}}
+            sx={{ my: 2 }}
         >
             <Tab label='Login' value={0} />
             <Tab label='Cadastrar' value={1} />

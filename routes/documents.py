@@ -1,14 +1,13 @@
 from datetime import datetime
 from http.client import INTERNAL_SERVER_ERROR
 
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, abort, jsonify
 from flask_jwt_extended import jwt_required
 from sqlalchemy import select
 
-from database import Folder, User, db, Page
-from utils import json_fields
+from database import Folder, Page, User, db
 from document_db import create_docfile
-
+from utils import json_fields
 
 bp = Blueprint('documents', __name__, url_prefix='/api/docs')
 
@@ -73,7 +72,7 @@ def route_list_all_docs():
         }
         for f in folders
     ]
-    
+
     return jsonify(folder_data)
 
 

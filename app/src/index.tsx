@@ -6,6 +6,6 @@ const appRoot = document.getElementById('react-app-root')!;
 
 ReactDOM.createRoot(appRoot).render(
     <React.StrictMode>
-         <Router />
+        <Router />
     </React.StrictMode>
 )

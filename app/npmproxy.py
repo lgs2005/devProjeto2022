@@ -1,9 +1,9 @@
 # proxy for npm
 
-from urllib.request import urlretrieve
 import os
 import sys
 import tarfile
+from urllib.request import urlretrieve
 
 NODE_16_URL = "https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz"
 ARCHIVE_NAME = "node-v16.16.0-linux-x64"

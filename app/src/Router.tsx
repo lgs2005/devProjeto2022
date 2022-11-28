@@ -1,10 +1,10 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react";
 import { User } from "./api/api_types";
 import { api_currentUser } from "./api/authentication";
 import AuthPage from "./components/AuthPage";
 import MainPage from "./components/MainPage";
-import { UserContext } from "./global_context"
+import { UserContext } from "./global_context";
 
 export default function Router() {
     const [user, setUser] = useState<User | null>(null);

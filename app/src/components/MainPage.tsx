@@ -1,8 +1,8 @@
-import { PropsWithChildren, useEffect, useState } from "react"
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { CircularProgress, Collapse, Grid, List, ListItemButton, ListItemText } from "@mui/material";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Folder } from "../api/api_types";
 import { api_doclistFull } from "../api/documents";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 export default function MainPage(props: PropsWithChildren<{}>) {
     const [documentList, setDocumentList] = useState<Folder[]>([]);
@@ -33,8 +33,8 @@ export default function MainPage(props: PropsWithChildren<{}>) {
             >
                 {
                     loadingDocuments
-                    ? <CircularProgress />
-                    : <DocumentList list={documentList}></DocumentList>
+                        ? <CircularProgress />
+                        : <DocumentList list={documentList}></DocumentList>
                 }
             </Grid>
 
@@ -52,28 +52,28 @@ export default function MainPage(props: PropsWithChildren<{}>) {
 }
 
 function DocumentList(props: { list: Folder[] }) {
-    const [openLists, setOpenLists] = useState<{[name: string]: boolean}>({});
+    const [openLists, setOpenLists] = useState<{ [name: string]: boolean }>({});
 
     return (
         <List sx={{ minWidth: '100%' }}>
-            { props.list.map((folder, index) => <div key={index}>
+            {props.list.map((folder, index) => <div key={index}>
                 <ListItemButton
                     onClick={() => {
-                        setOpenLists({...openLists, [folder.name]: !openLists[folder.name]})
+                        setOpenLists({ ...openLists, [folder.name]: !openLists[folder.name] })
                     }}
                 >
                     <ListItemText primary={folder.name} />
-                    { openLists[folder.name] ? <ExpandLess /> : <ExpandMore />}
+                    {openLists[folder.name] ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
 
                 <Collapse in={openLists[folder.name]}>
-                    { folder.pages.map((page, index) => <List key={index}>
+                    {folder.pages.map((page, index) => <List key={index}>
                         <ListItemButton>
                             {page.name}
                         </ListItemButton>
-                    </List>) }
+                    </List>)}
                 </Collapse>
-            </div>) }
+            </div>)}
         </List>
     )
 }

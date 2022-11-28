@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useState } from "react"
+import { createContext, PropsWithChildren, useState } from "react";
 import { User } from "./api/api_types";
 
 interface GlobalContext<T> {

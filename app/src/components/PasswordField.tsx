@@ -8,12 +8,12 @@ export default function PasswordField(props: PasswordFieldProps) {
 
     return <TextField
         {...props}
-        type={ visible ? 'text' : 'password' }
+        type={visible ? 'text' : 'password'}
         InputProps={{
             endAdornment: (
                 <InputAdornment position='end'>
                     {/* TODO: ícone */}
-                    <Checkbox 
+                    <Checkbox
                         onChange={(_, checked) => setVisible(checked)}
                     />
                 </InputAdornment>

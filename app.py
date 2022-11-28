@@ -1,11 +1,13 @@
 from datetime import timedelta
+
 from flask import Flask
 from flask_cors import CORS
 
-from database import db
 import document_db
 import routes.authentication
 import routes.documents
+from database import db
+
 
 def create_app():
     app = Flask(__name__)

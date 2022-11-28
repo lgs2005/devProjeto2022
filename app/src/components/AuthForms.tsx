@@ -1,5 +1,5 @@
 import { Button, ButtonProps, Stack, TextField, TextFieldProps } from "@mui/material";
-import useFormSchema, { FormSubmitHandler } from "../useFormSchema"
+import useFormSchema, { FormSubmitHandler } from "../useFormSchema";
 import PasswordField from "./PasswordField";
 
 export type LoginFormData = {
@@ -41,7 +41,7 @@ export function LoginForm(props: { onSubmit: FormSubmitHandler<LoginFormData> })
         <Stack
             alignItems='center'
         >
-            <TextField 
+            <TextField
                 name='email'
                 type='email'
                 value={data.email}
@@ -92,7 +92,7 @@ export function RegisterForm(props: { onSubmit: FormSubmitHandler<RegisterFormDa
                 type='text'
                 value={data.name}
                 required
-    
+
                 label='Nome'
                 {...textFieldStyle}
             />
