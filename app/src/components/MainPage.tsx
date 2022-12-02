@@ -3,10 +3,12 @@ import { CircularProgress, Collapse, Grid, List, ListItemButton, ListItemText } 
 import { PropsWithChildren, useEffect, useState } from "react";
 import { Folder } from "../api/api_types";
 import { api_doclistFull } from "../api/documents";
+import DocumentEditor from "./DocumentEditor";
 
 export default function MainPage(props: PropsWithChildren<{}>) {
     const [documentList, setDocumentList] = useState<Folder[]>([]);
     const [loadingDocuments, setLoadingDocuments] = useState(true);
+    const [currentDocument, setCurrentDocument] = useState(0);
 
     useEffect(() => {
         api_doclistFull()
@@ -34,11 +36,15 @@ export default function MainPage(props: PropsWithChildren<{}>) {
                 {
                     loadingDocuments
                         ? <CircularProgress />
-                        : <DocumentList list={documentList}></DocumentList>
+                        : <DocumentList list={documentList} onSelect={setCurrentDocument} />
                 }
             </Grid>
 
             <Grid item xs={8}>
+                <DocumentEditor
+                    documentID={currentDocument}
+                />
+                {/*
                 <button
                     onClick={() => {
                         api_doclistFull().then(data => alert(JSON.stringify(data)))
@@ -46,12 +52,13 @@ export default function MainPage(props: PropsWithChildren<{}>) {
                 >
                     Click me
                 </button>
+                */}
             </Grid>
         </Grid>
     </>
 }
 
-function DocumentList(props: { list: Folder[] }) {
+function DocumentList(props: { list: Folder[], onSelect: (docid: number) => void }) {
     const [openLists, setOpenLists] = useState<{ [name: string]: boolean }>({});
 
     return (
@@ -68,7 +75,9 @@ function DocumentList(props: { list: Folder[] }) {
 
                 <Collapse in={openLists[folder.name]}>
                     {folder.pages.map((page, index) => <List key={index}>
-                        <ListItemButton>
+                        <ListItemButton
+                            onClick={ () => { props.onSelect(page.id) } }
+                        >
                             {page.name}
                         </ListItemButton>
                     </List>)}
