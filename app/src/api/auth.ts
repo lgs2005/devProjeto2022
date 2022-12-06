@@ -40,7 +40,7 @@ export function apiRegister(data: { name: string, email: string, password: strin
 
 export function apiGetUser() {
 	return fetch2<User, User | null>(
-		'/api/auth/user',
+		'/api/auth/minha-conta',
 		'GET',
 		undefined,
 		{

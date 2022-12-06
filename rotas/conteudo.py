@@ -1,11 +1,14 @@
 import os
-from datetime import datetime, timedelta, timezone
+
+from datetime import datetime, timedelta
+
 from http.client import INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNAUTHORIZED
 
 from flask import abort, jsonify, request
-from flask_jwt_extended import get_current_user, jwt_required
+from flask_jwt_extended import jwt_required
+
 from init import app, catimg, db
-from modelos import Pagina, Usuario
+from modelos import Pagina
 from paginas import caminho_para_pagina, criar_arquivo_pagina
 
 from rotas.utils import get_campos
@@ -14,23 +17,19 @@ from rotas.utils import get_campos
 @app.post('/api/pagina/criar')
 @jwt_required()
 def rota_api_criar_pagina():
-	"""Rota de criação de página.
+	'''
+	Rota de criação de página.
 	Recebe dados em json do front end: nome da página
 
 	Returns:
 		Response (jsonify): resposta em json contendo sucesso e erro.
 		INTERNAL SERVER ERROR (cod. 500): erro do servidor. inválido
-	"""
+	'''
 
-	dados = validar_objeto(request.get_json(), {
-		'nome': str
-	})
+	nome = get_campos(str, 'nome')
 
-	nome: str = dados['nome']
 	arquivo = criar_arquivo_pagina(nome)
 	sucesso = False
-
-	print(arquivo)
 
 	if arquivo == None:
 		abort(INTERNAL_SERVER_ERROR)
